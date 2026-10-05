@@ -16,7 +16,7 @@ export function SiteHeader() {
             Opus Sound Directory
           </span>
           <span className="text-xs text-zinc-500 group-hover:text-zinc-400">
-            Synthesised beds & SFX — human taste still required
+            Synthesized beds & SFX — human taste still required
           </span>
         </Link>
         <nav className="flex items-center gap-1 sm:gap-2" aria-label="Main">

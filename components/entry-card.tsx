@@ -14,6 +14,8 @@ import {
   subscribePlayback,
 } from "@/lib/audio-controller";
 import { UsageBadges } from "@/components/usage-badges";
+import { MoodChips } from "@/components/mood-chips";
+import { ModelBadge } from "@/components/model-badge";
 
 export function EntryCard({ entry }: { entry: SoundEntry }) {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -60,6 +62,10 @@ export function EntryCard({ entry }: { entry: SoundEntry }) {
         <div className="min-w-0 flex-1">
           <h3 className="font-medium text-zinc-100 group-hover:text-white">{entry.title}</h3>
           <p className="mt-1 text-xs text-zinc-500">{cat}</p>
+          <ModelBadge entry={entry} />
+          <div className="mt-2">
+            <MoodChips entry={entry} compact />
+          </div>
           <UsageBadges entryId={entry.id} className="mt-2" compact />
         </div>
         <button

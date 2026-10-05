@@ -26,7 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <a href="/submit" className="text-zinc-500 hover:text-zinc-300">Submit</a>
               <a href="/sponsor" className="text-zinc-500 hover:text-zinc-300">Sponsors</a>
             </nav>
-            Sounds are synthesised for video timing — not realistic instruments or vocals.
+            Sounds are synthesized for video timing — not realistic instruments or vocals.
             Royalty-free stubs; verify in your mix.
           </footer>
         </StatsProvider>

@@ -4,8 +4,15 @@ export type SoundEntry = {
   title: string;
   category: string;
   tags: string[];
+  /** Style facets for browse/filter display (e.g. upbeat, sad, bright). */
+  mood: string[];
+  /** Coarse tempo bucket. */
+  tempo?: "slow" | "medium" | "fast";
   prompt: string;
+  /** Generation source shown in UI (`local-synth` or Anthropic model id). */
   modelId: string;
+  /** Opus model id intended for `--agent` runs when `modelId` is local-synth. */
+  targetModelId?: string;
   generatedAt: string;
   seed: number;
   timing: {

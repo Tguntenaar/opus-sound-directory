@@ -11,6 +11,8 @@ import { MetricsPanel } from "@/components/metrics-panel";
 import { CodeViewer } from "@/components/code-viewer";
 import { DownloadLinks } from "@/components/download-links";
 import { UsageBadges } from "@/components/usage-badges";
+import { MoodChips } from "@/components/mood-chips";
+import { ModelBadge } from "@/components/model-badge";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -65,10 +67,14 @@ export default async function EntryPage({ params }: Props) {
           ← Browse
         </Link>
         <h1 className="text-3xl font-semibold text-zinc-50">{entry.title}</h1>
-        <p className="text-sm text-zinc-500">
-          {catLabel} · {entry.modelId} · {entry.generatedAt}
-        </p>
-        <UsageBadges entryId={entry.id} className="mt-1" />
+        <p className="text-sm text-zinc-500">{catLabel} · {entry.generatedAt}</p>
+        <div className="mt-3 max-w-md">
+          <ModelBadge entry={entry} prominent />
+        </div>
+        <div className="mt-3">
+          <MoodChips entry={entry} />
+        </div>
+        <UsageBadges entryId={entry.id} className="mt-3" />
       </div>
 
       <AudioPlayer audioId={entry.id} src={entry.assets.wav} title={entry.title} />
