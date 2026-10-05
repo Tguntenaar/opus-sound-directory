@@ -1,0 +1,42 @@
+{
+  "name": "opus-sound-directory",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "npm@10.9.7",
+  "dependencies": {
+    "@vinext/cloudflare": "^1.0.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.52.0",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-server-dom-webpack": "^19.3.0",
+    "tailwind-merge": "^3.7.0",
+    "vinext": "^1.0.1"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^2.0.0-beta.sha-52b0dc0e9",
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "^6.1.2",
+    "@vitejs/plugin-rsc": "^0.5.35",
+    "cf": "^1.0.0-beta.12",
+    "tailwindcss": "latest",
+    "typescript": "latest",
+    "vite": "^8.3.0",
+    "wrangler": "^4.147.0"
+  },
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/sync-entries.mjs",
+    "dev": "vite dev --port 43123 --host 127.0.0.1",
+    "prebuild": "node scripts/sync-entries.mjs",
+    "build": "vite build",
+    "start": "vite preview",
+    "deploy": "vinext-cloudflare deploy"
+  }
+}
