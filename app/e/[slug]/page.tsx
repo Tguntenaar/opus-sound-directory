@@ -6,6 +6,8 @@ import { AudioPlayer } from "@/components/audio-player";
 import { CopyButton } from "@/components/copy-button";
 import { MetricsPanel } from "@/components/metrics-panel";
 import { CodeViewer } from "@/components/code-viewer";
+import { DownloadLinks } from "@/components/download-links";
+import { UsageBadges } from "@/components/usage-badges";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -30,14 +32,21 @@ export default async function EntryPage({ params }: Props) {
         <p className="text-sm text-zinc-500">
           {catLabel} · {entry.modelId} · {entry.generatedAt}
         </p>
+        <UsageBadges entryId={entry.id} className="mt-1" />
       </div>
 
-      <AudioPlayer src={entry.assets.wav} title={entry.title} />
+      <AudioPlayer audioId={entry.id} src={entry.assets.wav} title={entry.title} />
+      <DownloadLinks
+        entryId={entry.id}
+        wav={entry.assets.wav}
+        mp3={entry.assets.mp3}
+        title={entry.title}
+      />
 
       <section className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg font-medium text-zinc-100">Prompt</h2>
-          <CopyButton text={entry.prompt} />
+          <CopyButton text={entry.prompt} entryId={entry.id} />
         </div>
         <pre
           className="whitespace-pre-wrap rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-sm leading-relaxed text-zinc-300"

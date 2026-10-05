@@ -1,17 +1,26 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  getPlayingId,
+  notifyEnded,
+  registerAudioElement,
+  requestPause,
+  requestPlay,
+  subscribePlayback,
+} from "@/lib/audio-controller";
 
 type Props = {
+  audioId: string;
   src: string;
   title: string;
   className?: string;
 };
 
-export function AudioPlayer({ src, title, className }: Props) {
+export function AudioPlayer({ audioId, src, title, className }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -19,39 +28,54 @@ export function AudioPlayer({ src, title, className }: Props) {
   useEffect(() => {
     const el = audioRef.current;
     if (!el) return;
+    return registerAudioElement(audioId, el);
+  }, [audioId]);
+
+  useEffect(() => {
+    return subscribePlayback((id) => {
+      setPlaying(id === audioId);
+    });
+  }, [audioId]);
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
     const onTime = () => setProgress(el.duration ? el.currentTime / el.duration : 0);
-    const onEnd = () => setPlaying(false);
+    const onEnd = () => {
+      notifyEnded(audioId);
+      setPlaying(false);
+    };
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("ended", onEnd);
     return () => {
       el.removeEventListener("timeupdate", onTime);
       el.removeEventListener("ended", onEnd);
     };
-  }, []);
+  }, [audioId]);
 
-  function toggle() {
-    const el = audioRef.current;
-    if (!el) return;
-    if (playing) {
-      el.pause();
-      setPlaying(false);
+  const toggle = useCallback(async () => {
+    if (getPlayingId() === audioId && playing) {
+      requestPause(audioId);
     } else {
-      void el.play();
-      setPlaying(true);
+      try {
+        await requestPlay(audioId);
+      } catch {
+        requestPause(audioId);
+      }
     }
-  }
+  }, [audioId, playing]);
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.code !== "Space" || e.target instanceof HTMLInputElement) return;
       if (document.activeElement?.closest("[data-audio-player]")) {
         e.preventDefault();
-        toggle();
+        void toggle();
       }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  });
+  }, [toggle]);
 
   return (
     <div
@@ -67,7 +91,7 @@ export function AudioPlayer({ src, title, className }: Props) {
           type="button"
           variant="default"
           size="sm"
-          onClick={toggle}
+          onClick={() => void toggle()}
           aria-pressed={playing}
           aria-label={playing ? "Pause" : "Play"}
         >

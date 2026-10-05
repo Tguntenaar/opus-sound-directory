@@ -10,6 +10,8 @@ export default defineConfig({
     env: {
       ASSETS: bindings.assets(),
       IMAGES: bindings.images(),
+      /** Copy/download counters per entry (`stats:{id}:copy|download`). */
+      STATS_KV: bindings.kv(),
     },
   }),
 });

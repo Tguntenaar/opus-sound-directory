@@ -70,6 +70,23 @@ Workers static assets are limited to **5 MiB per file**; long beds may need R2 o
 
 Stack: **Next.js via [vinext](https://github.com/nicolo-ribaudo/vinext)** on Cloudflare Workers, Tailwind CSS.
 
+
+### Copy / download stats (Workers KV)
+
+Prompt copies and audio downloads are counted per entry via **`STATS_KV`** in `cloudflare.config.ts`.
+
+- **API:** `GET /api/stats` returns all entry counts; `POST /api/stats` with `{ "id": "<entry-id>", "event": "copy" | "download" }` increments.
+- **Keys:** `stats:<entry-id>:copy` and `stats:<entry-id>:download` (integers as strings).
+- **UI:** optimistic updates on copy, download links, and browse cards.
+
+**Dashboard setup (first permanent deploy):**
+
+1. Deploy with `npm run deploy` (or `cf deploy --prebuilt`). The `bindings.kv()` entry usually **creates** a KV namespace named for the binding (`STATS_KV`) on first upload.
+2. In [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → your Worker → **Bindings**, confirm **KV namespace** `STATS_KV` is attached.
+3. If deploy errors on KV, create a namespace manually (**Workers KV** → **Create**), copy its ID, and set `STATS_KV: bindings.kv({ id: "…" })` in `cloudflare.config.ts`.
+
+Local `npm run dev` uses an in-memory fallback when KV is unavailable; production needs the binding.
+
 ### Cloudflare / R2 (later)
 
 - Today: static WAV/MP3/spectrograms live in `public/assets/` and ship with the Worker.
