@@ -40,7 +40,7 @@ async function resolveKv(): Promise<KvLike | null> {
 
 async function readCount(kv: KvLike, entryId: string, event: StatEvent): Promise<number> {
   const raw = await kv.get(key(entryId, event));
-  const n= raw ? parseInt(raw, 10) : 0;
+  const n = raw ? parseInt(raw, 10) : 0;
   return Number.isFinite(n) ? n : 0;
 }
 
