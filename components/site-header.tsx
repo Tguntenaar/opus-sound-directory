@@ -4,6 +4,7 @@ const links = [
   { href: "/", label: "Browse" },
   { href: "/about", label: "About" },
   { href: "/submit", label: "Submit" },
+  { href: "/sponsor", label: "Sponsors" },
 ];
 
 export function SiteHeader() {

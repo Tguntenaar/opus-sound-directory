@@ -1,6 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getAllEntries, getEntryBySlug } from "@/lib/entries";
+import { entryShareDescription } from "@/lib/site-metadata";
+import { SITE_NAME } from "@/lib/site-url";
 import { CATEGORIES } from "@/lib/categories";
 import { AudioPlayer } from "@/components/audio-player";
 import { CopyButton } from "@/components/copy-button";
@@ -13,6 +16,39 @@ type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
   return getAllEntries().map((e) => ({ slug: e.slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const entry = getEntryBySlug(slug);
+  if (!entry) {
+    return { title: "Not found" };
+  }
+  const description = entryShareDescription(entry);
+  const image = entry.assets.spectrogram;
+  const title = entry.title;
+  return {
+    title,
+    description,
+    openGraph: {
+      type: "article",
+      title,
+      description,
+      url: `/e/${entry.slug}`,
+      images: [
+        {
+          url: image,
+          alt: `Spectrogram for ${entry.title}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} · ${SITE_NAME}`,
+      description,
+      images: [image],
+    },
+  };
 }
 
 export default async function EntryPage({ params }: Props) {
