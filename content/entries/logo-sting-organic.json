@@ -1,0 +1,57 @@
+{
+  "id": "logo-sting-organic",
+  "slug": "logo-sting-organic",
+  "title": "Organic kalimba logo",
+  "category": "logo-stings",
+  "tags": [
+    "logo",
+    "3s",
+    "96bpm",
+    "kalimba",
+    "hand drum"
+  ],
+  "prompt": "A 3-second warm, earthy brand motif in G major at 96 BPM. On frame 0 a thumb-plucked kalimba G4 sounds together with a deep hand-drum bass tone. The kalimba then walks up B4, D5 and E5 in eighth notes and sighs back down to D5. Each note is a steel tine with inharmonic overtones (about 5.9x and 17x the fundamental), a slow coupling beat, a soft thumb click and a hollow wooden body. Under it, a hand drum plays open tones and a light slap, and a seed shaker swishes in sixteenths with off-beat accents. The groove breathes out just before frame 48 (1.6 s). There the motif resolves on a soft drum (bass plus open tone) and a five-tine G major chord (G3 D4 G4 B4 G5). The chord rings in a small wooden room and decays to silence. Only the hand-drum bass tone sits below 120 Hz, and it is mono.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 96048,
+  "timing": {
+    "fps": 30,
+    "durationSec": 3.0,
+    "samples": 144000,
+    "sampleRate": 48000,
+    "bpm": 96
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "motif"
+    },
+    {
+      "frame": 48,
+      "label": "resolve"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.01,
+    "truePeak": -1.3,
+    "durationSec": 3.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/logo-sting-organic/out.wav",
+    "mp3": "/assets/logo-sting-organic/out.mp3",
+    "spectrogram": "/assets/logo-sting-organic/spectrogram.png",
+    "code": "/assets/logo-sting-organic/generate.py"
+  },
+  "notes": "Kalimba tines are additive: a cosine-phase fundamental with a slow coupling beat, inharmonic overtones near 5.9x and 17x that die fast, a thumb click and a hollow-box EQ. Goblet hand drum: a mono pitch-dropping Helmholtz thump (the only content under 120 Hz) plus circular-membrane modes. Seed shaker: band-passed grainy noise in 16ths. The shaker cuts with a 3 ms fade 20 ms before frame 48, and the motif tines dip 6 dB, so the soft drum plus five-tine G major chord lands cleanly and rings out in a small wooden room.",
+  "mood": [
+    "happy",
+    "calm",
+    "bright"
+  ],
+  "tempo": "medium"
+}
