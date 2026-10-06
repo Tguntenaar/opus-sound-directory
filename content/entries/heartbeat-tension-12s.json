@@ -35,10 +35,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.02,
-    "truePeak": -1.4,
+    "lufs": -14.1,
+    "truePeak": -6.1,
     "durationSec": 12.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -11.7,
+    "lufsShortTermMax": -12.2
   },
   "assets": {
     "wav": "/assets/heartbeat-tension-12s/out.wav",

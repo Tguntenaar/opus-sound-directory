@@ -9,6 +9,8 @@ import { useStats } from "@/components/stats-provider";
 import { cn } from "@/lib/utils";
 import { captureEvent } from "@/lib/analytics-client";
 import { soundEventProps, type AnalyticsSource } from "@/lib/analytics";
+import { entryWavDownloadPath } from "@/lib/wav-url";
+import { isCommunityEntry } from "@/lib/community-types";
 
 export function CardQuickActions({
   entry,
@@ -46,7 +48,9 @@ export function CardQuickActions({
     track(entry.id, "download");
     captureEvent("sound_download", { ...soundEventProps(entry, source), format: "wav" });
     const a = document.createElement("a");
-    a.href = entry.assets.wav;
+    a.href = isCommunityEntry(entry)
+      ? entry.assets.wav
+      : entryWavDownloadPath(entry.id);
     a.download = `${entry.title.replace(/\s+/g, "-").toLowerCase()}.wav`;
     a.click();
   }

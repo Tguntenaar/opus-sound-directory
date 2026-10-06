@@ -31,10 +31,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.01,
-    "truePeak": -1.3,
+    "lufs": -13.7,
+    "truePeak": -6.9,
     "durationSec": 24.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -9.4,
+    "lufsShortTermMax": -10.7
   },
   "assets": {
     "wav": "/assets/ocean-shore-loop/out.wav",

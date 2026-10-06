@@ -31,9 +31,10 @@
   },
   "metrics": {
     "lufs": -17.0,
-    "truePeak": -8.87,
+    "truePeak": -10.6,
     "durationSec": 0.5,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -15.9
   },
   "assets": {
     "wav": "/assets/game-coin-pickup/out.wav",

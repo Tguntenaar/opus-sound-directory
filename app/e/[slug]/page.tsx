@@ -29,6 +29,7 @@ import { JsonLd } from "@/components/json-ld";
 import { RelatedEntries } from "@/components/related-entries";
 import { RelatedGuideLink } from "@/components/related-guide-link";
 import { DEFAULT_OG_IMAGE } from "@/lib/site-url";
+import { entryWavDownloadPath } from "@/lib/wav-url";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -153,7 +154,11 @@ export default async function EntryPage({ params }: Props) {
           />
           <DownloadLinks
             entryId={entry.id}
-            wav={entry.assets.wav}
+            wav={
+              community || !entry.assets.wav
+                ? entry.assets.wav
+                : entryWavDownloadPath(entry.id)
+            }
             mp3={entry.assets.mp3}
             title={entry.title}
             entry={entry}

@@ -1,7 +1,7 @@
 {
   "id": "countdown-10-to-0",
   "slug": "countdown-10-to-0",
-  "title": "Countdown 10 → 0",
+  "title": "Countdown 10 \u2192 0",
   "category": "risers",
   "tags": [
     "11s",
@@ -71,10 +71,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.03,
-    "truePeak": -1.3,
+    "lufs": -14.1,
+    "truePeak": -5.8,
     "durationSec": 11.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -9.2,
+    "lufsShortTermMax": -12.4
   },
   "assets": {
     "wav": "/assets/countdown-10-to-0/out.wav",

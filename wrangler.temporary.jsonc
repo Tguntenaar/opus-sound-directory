@@ -7,4 +7,6 @@
     "directory": ".cloudflare/output/v0/workers/default/assets",
     "binding": "ASSETS"
   }
+  // After R2 is enabled, add:
+  // "r2_buckets": [{ "binding": "AUDIO_R2", "bucket_name": "opus-sounds-audio" }]
 }

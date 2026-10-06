@@ -52,7 +52,7 @@
     "spectrogram": "/assets/ad-bed-60-story/spectrogram.png",
     "code": "/assets/ad-bed-60-story/generate.py"
   },
-  "notes": "Triplet reed-pulse ostinato, breathy ocarina lead, triangle pad and brassy filter-swell pad over a mono sine bass, heartbeat kick, toms and shakers; Am-F-Dm-Em intro, Am-F-C-G build, C-F peak resolving to a rolled C major. Build hit f900 lands after a half-beat dropout; a 7-hit triplet tom fill plus a 217 ms breath sets up the peak at f1500. Side channel high-passed at 260 Hz so the low end stays mono. Deployed WAV is 16 kHz stereo (960000 frames) to stay under the Workers 5 MiB asset cap; MP3 is encoded from the 48 kHz master.",
+  "notes": "Triplet reed-pulse ostinato, breathy ocarina lead, triangle pad and brassy filter-swell pad over a mono sine bass, heartbeat kick, toms and shakers; Am-F-Dm-Em intro, Am-F-C-G build, C-F peak resolving to a rolled C major. Build hit f900 lands after a half-beat dropout; a 7-hit triplet tom fill plus a 217 ms breath sets up the peak at f1500. Side channel high-passed at 260 Hz so the low end stays mono. WAV download is the full 48 kHz master via /audio/ad-bed-60-story/out.wav (R2); the static preview asset stays 16 kHz stereo for the Workers 5 MiB cap.",
   "mood": [
     "slow",
     "sad",

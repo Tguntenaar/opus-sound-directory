@@ -36,10 +36,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.01,
-    "truePeak": -1.3,
+    "lufs": -14.0,
+    "truePeak": -7.5,
     "durationSec": 10.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -11.6,
+    "lufsShortTermMax": -13.3
   },
   "assets": {
     "wav": "/assets/podcast-intro-10s/out.wav",

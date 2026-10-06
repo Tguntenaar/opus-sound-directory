@@ -4,6 +4,8 @@ import { listCommunityEntries } from "@/lib/community-kv";
 import { getSiteUrl } from "@/lib/site-url";
 import { modelAttribution } from "@/lib/model-display";
 import { scoreEntry } from "@/lib/mcp/search-scoring";
+import { entryWavDownloadUrl } from "@/lib/wav-url";
+import { isCommunityEntry } from "@/lib/community-types";
 
 export type SoundSearchHit = {
   id: string;
@@ -64,11 +66,13 @@ export async function searchSounds(options: {
         : entry.assets.mp3
           ? `${base}${entry.assets.mp3}`
           : "",
-      wav: entry.assets.wav.startsWith("http")
-        ? entry.assets.wav
-        : entry.assets.wav
-          ? `${base}${entry.assets.wav}`
-          : "",
+      wav: isCommunityEntry(entry)
+        ? entry.assets.wav.startsWith("http")
+          ? entry.assets.wav
+          : entry.assets.wav
+            ? `${base}${entry.assets.wav}`
+            : ""
+        : entryWavDownloadUrl(entry.id, base),
       lufs: entry.metrics.lufs,
       score: s,
     });

@@ -13,6 +13,14 @@ from verify import render_spectrogram, verify_wav
 
 SAMPLE_RATE = 48000
 LUFS_TOLERANCE_LU = 0.5
+ROOT = Path(__file__).resolve().parents[1]
+MASTER_ROOT = ROOT / "masters"
+
+
+def save_master_wav(entry_id: str, wav_path: Path) -> None:
+    dest_dir = MASTER_ROOT / entry_id
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(wav_path, dest_dir / "out.wav")
 
 
 def export_mp3(wav_path: Path, mp3_path: Path) -> bool:
@@ -99,6 +107,7 @@ def finish_entry_assets(
     expected_samples: int | None,
 ) -> tuple[dict, str]:
     remaster_entry_wav(entry, wav_path)
+    save_master_wav(entry["id"], wav_path)
     export_mp3(wav_path, mp3_path)
     shipped_note = ship_wav_for_workers(entry, wav_path)
     expected_samples = entry["timing"].get("samples", expected_samples)

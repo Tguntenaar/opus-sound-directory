@@ -34,10 +34,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.02,
-    "truePeak": -1.4,
+    "lufs": -13.6,
+    "truePeak": -6.6,
     "durationSec": 4.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -10.5,
+    "lufsShortTermMax": -13.2
   },
   "assets": {
     "wav": "/assets/logo-sting-dark-cinematic/out.wav",

@@ -31,10 +31,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.02,
-    "truePeak": -1.3,
+    "lufs": -13.8,
+    "truePeak": -7.3,
     "durationSec": 20.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -11.3,
+    "lufsShortTermMax": -12.8
   },
   "assets": {
     "wav": "/assets/sci-fi-hangar-loop/out.wav",

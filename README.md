@@ -86,7 +86,23 @@ npm run build
 CI=true npx wrangler deploy --temporary --config wrangler.temporary.jsonc
 ```
 
-Workers static assets are limited to **5 MiB per file**; long beds may need R2 or re-encoded WAVs for Workers-only hosting.
+Workers static assets are limited to **5 MiB per file**. By default, WAV downloads use the static asset at `/audio/<entry-id>/out.wav` (downsampled copy under `public/assets/<id>/out.wav` when needed). After R2 is enabled on the account, swap deploy config to serve full **48 kHz** masters from bucket `opus-sounds-audio`:
+
+```bash
+cp cloudflare.config.with-r2.ts cloudflare.config.ts && npm run deploy
+```
+
+Uncomment the `r2_buckets` block in `wrangler.temporary.jsonc` for temporary preview deploys with R2.
+
+**48 kHz masters (not deployed as static assets)** live in `masters/<entry-id>/out.wav`. The runner copies each mastered WAV there before optional downsampling for Workers.
+
+After deploy, create the R2 bucket if needed (dashboard → **R2** → create `opus-sounds-audio`), then upload masters:
+
+```bash
+node scripts/upload-wavs-r2.mjs
+```
+
+That runs `wrangler r2 object put opus-sounds-audio/<entry-id>/out.wav --file=masters/<entry-id>/out.wav --content-type=audio/wav --remote` for every entry. Requires `CLOUDFLARE_API_TOKEN` or `wrangler login`.
 
 Stack: **Next.js via [vinext](https://github.com/nicolo-ribaudo/vinext)** on Cloudflare Workers, Tailwind CSS.
 

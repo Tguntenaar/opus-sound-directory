@@ -40,10 +40,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.03,
-    "truePeak": -1.3,
+    "lufs": -13.8,
+    "truePeak": -7.3,
     "durationSec": 20.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -12.0,
+    "lufsShortTermMax": -12.4
   },
   "assets": {
     "wav": "/assets/synthwave-drive-20s/out.wav",

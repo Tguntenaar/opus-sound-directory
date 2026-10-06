@@ -36,10 +36,11 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.03,
-    "truePeak": -1.3,
+    "lufs": -14.0,
+    "truePeak": -7.8,
     "durationSec": 2.5,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -12.0
   },
   "assets": {
     "wav": "/assets/game-level-up/out.wav",

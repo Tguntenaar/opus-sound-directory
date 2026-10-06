@@ -32,10 +32,11 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.01,
-    "truePeak": -1.3,
+    "lufs": -13.7,
+    "truePeak": -7.1,
     "durationSec": 1.2,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -11.7
   },
   "assets": {
     "wav": "/assets/glitch-transition-digital/out.wav",

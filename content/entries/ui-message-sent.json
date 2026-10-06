@@ -31,9 +31,10 @@
   },
   "metrics": {
     "lufs": -17.0,
-    "truePeak": -2.81,
+    "truePeak": -8.0,
     "durationSec": 0.6,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -15.3
   },
   "assets": {
     "wav": "/assets/ui-message-sent/out.wav",

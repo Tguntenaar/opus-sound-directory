@@ -21,6 +21,8 @@ export default defineConfig({
       SPONSOR_SEND_EMAIL: bindings.sendEmail(),
       /** Workers AI — automated submission review (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`). */
       AI: bindings.ai(),
+      /** Full-quality 48 kHz WAV masters — enable after R2 bucket exists (see `cloudflare.config.with-r2.ts`). */
+      // AUDIO_R2: bindings.r2({ name: "opus-sounds-audio" }),
     },
   }),
 });

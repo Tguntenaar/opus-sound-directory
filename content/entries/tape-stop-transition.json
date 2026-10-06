@@ -35,10 +35,11 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.02,
-    "truePeak": -1.3,
+    "lufs": -13.8,
+    "truePeak": -7.0,
     "durationSec": 1.5,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -12.0
   },
   "assets": {
     "wav": "/assets/tape-stop-transition/out.wav",

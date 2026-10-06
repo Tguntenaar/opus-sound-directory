@@ -16,8 +16,8 @@
   "timing": {
     "fps": 30,
     "durationSec": 40.0,
-    "samples": 1920000,
-    "sampleRate": 48000
+    "samples": 960000,
+    "sampleRate": 24000
   },
   "cues": [
     {
@@ -34,10 +34,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.0,
-    "truePeak": -1.84,
+    "lufs": -13.9,
+    "truePeak": -8.1,
     "durationSec": 40.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -9.7,
+    "lufsShortTermMax": -10.8
   },
   "assets": {
     "wav": "/assets/meditation-bowls-40s/out.wav",
@@ -45,7 +47,7 @@
     "spectrogram": "/assets/meditation-bowls-40s/spectrogram.png",
     "code": "/assets/meditation-bowls-40s/generate.py"
   },
-  "notes": "Singing-bowl meditation: struck F3 and C5 bowls built from inharmonic mode doublets (ratios ~1, 2.7, 5.1, 8.2, 11.7; splits 0.55-5.5 Hz, so every mode beats slowly and moves in stereo), plus rim-rubbed drones with a rotating AM shimmer and narrow-band friction grain. Drones swell on a 10 s breathing curve whose troughs fall on 0/10/20/30 s, so the C5 strike on frame 600 lands at the bottom of an exhale. A drifting high-partial shimmer opens after f600, then a long fade to silence from 33.5 s. Nothing below 130 Hz (8th-order HP); side high-passed at 320 Hz so the F3 fundamental stays mono.",
+  "notes": "Singing-bowl meditation: struck F3 and C5 bowls built from inharmonic mode doublets (ratios ~1, 2.7, 5.1, 8.2, 11.7; splits 0.55-5.5 Hz, so every mode beats slowly and moves in stereo), plus rim-rubbed drones with a rotating AM shimmer and narrow-band friction grain. Drones swell on a 10 s breathing curve whose troughs fall on 0/10/20/30 s, so the C5 strike on frame 600 lands at the bottom of an exhale. A drifting high-partial shimmer opens after f600, then a long fade to silence from 33.5 s. Nothing below 130 Hz (8th-order HP); side high-passed at 320 Hz so the F3 fundamental stays mono. WAV download is the full 48 kHz master via /audio/meditation-bowls-40s/out.wav (R2); the static preview asset stays 24 kHz stereo for the Workers 5 MiB cap.",
   "mood": [
     "calm",
     "slow"

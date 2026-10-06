@@ -3,6 +3,7 @@ import { getCommunityCode, getCommunityEntryBySlug } from "@/lib/community-kv";
 import type { SoundEntry } from "@/lib/entries-types";
 import { getSiteUrl } from "@/lib/site-url";
 import { isCommunityEntry } from "@/lib/community-types";
+import { entryWavDownloadUrl } from "@/lib/wav-url";
 
 const MAX_INLINE_CODE = 20_000;
 
@@ -58,11 +59,13 @@ export async function getSoundDetail(id: string) {
         : entry.assets.mp3
           ? `${base}${entry.assets.mp3}`
           : "",
-      wav: entry.assets.wav.startsWith("http")
-        ? entry.assets.wav
-        : entry.assets.wav
-          ? `${base}${entry.assets.wav}`
-          : "",
+      wav: isCommunityEntry(entry)
+        ? entry.assets.wav.startsWith("http")
+          ? entry.assets.wav
+          : entry.assets.wav
+            ? `${base}${entry.assets.wav}`
+            : ""
+        : entryWavDownloadUrl(entry.id, base),
       spectrogram: entry.assets.spectrogram
         ? entry.assets.spectrogram.startsWith("http")
           ? entry.assets.spectrogram

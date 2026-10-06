@@ -5,6 +5,7 @@ import { getSiteUrl, SITE_NAME, DEFAULT_SITE_DESCRIPTION } from "@/lib/site-url"
 import { entryShareDescription } from "@/lib/site-metadata";
 import { CC0_LICENSE_URL } from "@/lib/licenses";
 import { OWNER_SAME_AS } from "@/lib/owner-profiles";
+import { entryWavDownloadPath } from "@/lib/wav-url";
 
 export function iso8601Duration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds <= 0) return "PT0S";
@@ -45,7 +46,7 @@ function recordingCreator(entry: SoundEntry) {
 
 export function entryAudioObjectJsonLd(entry: SoundEntry) {
   const url = absoluteUrl(`/e/${entry.slug}`);
-  const contentUrl = absoluteUrl(entry.assets.mp3);
+  const contentUrl = absoluteUrl(entryWavDownloadPath(entry.id));
   const dur =
     entry.metrics.durationSec ?? entry.timing.durationSec;
   return {
@@ -55,7 +56,7 @@ export function entryAudioObjectJsonLd(entry: SoundEntry) {
     name: entry.title,
     description: entryShareDescription(entry),
     contentUrl,
-    encodingFormat: "audio/mpeg",
+    encodingFormat: "audio/wav",
     duration: iso8601Duration(dur),
     url,
     license: CC0_LICENSE_URL,
@@ -68,7 +69,7 @@ export function entryAudioObjectJsonLd(entry: SoundEntry) {
 
 export function entryListItemJsonLd(entry: SoundEntry, position: number) {
   const url = absoluteUrl(`/e/${entry.slug}`);
-  const contentUrl = absoluteUrl(entry.assets.mp3);
+  const contentUrl = absoluteUrl(entryWavDownloadPath(entry.id));
   const dur =
     entry.metrics.durationSec ?? entry.timing.durationSec;
   return {
@@ -79,7 +80,7 @@ export function entryListItemJsonLd(entry: SoundEntry, position: number) {
       name: entry.title,
       url,
       contentUrl,
-      encodingFormat: "audio/mpeg",
+      encodingFormat: "audio/wav",
       duration: iso8601Duration(dur),
       creator: recordingCreator(entry),
       ...(entry.modelId !== "local-synth"
