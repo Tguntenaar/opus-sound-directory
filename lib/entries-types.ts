@@ -16,7 +16,8 @@ export type SoundEntry = {
   generatedAt: string;
   seed: number;
   timing: {
-    bpm: number;
+    /** Omitted for untimed sounds (e.g. UI one-shots). */
+    bpm?: number;
     fps: number;
     durationSec: number;
     samples: number;
