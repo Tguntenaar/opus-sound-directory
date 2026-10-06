@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Pause, Play } from "lucide-react";
 import type { SoundEntry } from "@/lib/entries";
-import { CATEGORIES } from "@/lib/categories";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import {
   getPlayingId,
@@ -20,7 +19,6 @@ import { ModelBadge } from "@/components/model-badge";
 export function EntryCard({ entry }: { entry: SoundEntry }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
-  const cat = CATEGORIES[entry.category]?.label ?? entry.category;
   const audioId = entry.id;
 
   useEffect(() => {
@@ -50,7 +48,7 @@ export function EntryCard({ entry }: { entry: SoundEntry }) {
   return (
     <Link
       href={`/e/${entry.slug}`}
-      className="group flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4 transition hover:border-violet-500/40 hover:bg-zinc-900/70"
+      className="group flex flex-col gap-4 rounded-lg border border-zinc-800/80 bg-zinc-900/20 p-4 transition-colors hover:border-zinc-700 hover:bg-zinc-900/40"
     >
       <audio
         ref={audioRef}
@@ -58,34 +56,23 @@ export function EntryCard({ entry }: { entry: SoundEntry }) {
         preload="none"
         onEnded={() => notifyEnded(audioId)}
       />
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0 flex-1">
-          <h3 className="font-medium text-zinc-100 group-hover:text-white">{entry.title}</h3>
-          <p className="mt-1 text-xs text-zinc-500">{cat}</p>
-          <ModelBadge entry={entry} />
-          <div className="mt-2">
-            <MoodChips entry={entry} compact />
-          </div>
-          <UsageBadges entryId={entry.id} className="mt-2" compact />
-        </div>
+      <div className="flex items-start gap-3">
         <button
           type="button"
           onClick={playPreview}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-zinc-700 bg-zinc-950 text-zinc-200 hover:border-violet-500 hover:text-violet-300"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-colors hover:border-violet-500/50 hover:text-violet-300"
           aria-label={playing ? `Stop preview of ${entry.title}` : `Preview ${entry.title}`}
         >
-          {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          {playing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5" />}
         </button>
+        <h3 className="min-w-0 flex-1 pt-0.5 text-sm font-medium leading-snug text-zinc-100 group-hover:text-white">
+          {entry.title}
+        </h3>
       </div>
-      <div className="flex flex-wrap gap-1.5">
-        {entry.tags.slice(0, 3).map((tag) => (
-          <span
-            key={tag}
-            className="rounded-md bg-zinc-800/80 px-2 py-0.5 text-[10px] uppercase tracking-wide text-zinc-400"
-          >
-            {tag}
-          </span>
-        ))}
+      <MoodChips entry={entry} compact />
+      <div className="flex items-end justify-between gap-2">
+        <ModelBadge entry={entry} chip />
+        <UsageBadges entryId={entry.id} compact className="text-[10px] text-zinc-600" />
       </div>
     </Link>
   );

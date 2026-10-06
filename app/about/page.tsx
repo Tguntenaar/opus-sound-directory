@@ -9,6 +9,12 @@ export default function AboutPage() {
         audio built for video: ad beds, transitions, UI ticks, logo stings, and ambient layers. Each
         listing is stored as JSON in git with assets under <code className="text-zinc-300">public/assets/</code>.
       </p>
+      <p>
+        Each entry ships the prompt, Python synthesis code, waveform, spectrogram, and loudness
+        metrics. Audio here is <strong className="text-zinc-200">synthesised</strong> — precise and
+        royalty-free for video — but not a stand-in for real instruments, vocals, or a final mix. Your
+        ear still wins.
+      </p>
       <h2 className="text-xl font-medium text-zinc-100">What you are hearing</h2>
       <p>
         Everything is <strong className="text-zinc-200">synthesised in Python</strong> (numpy/scipy)

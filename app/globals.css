@@ -28,3 +28,9 @@ a {
 ::selection {
   background: rgb(139 92 246 / 0.35);
 }
+
+h1,
+h2,
+h3 {
+  font-weight: 500;
+}
