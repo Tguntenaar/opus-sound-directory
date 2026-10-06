@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /**
+   * vinext streams `generateMetadata()` into a hidden body slot for most browsers;
+   * crawlers and Lighthouse expect description/title/canonical in `<head>`.
+   * Match all UAs so entry, category, and blog metadata render like static layout metadata.
+   */
+  htmlLimitedBots: /.*/,
   /** Documented for Next; vinext ignores this but capture uses `/api/ingest` (API exempt from 308). */
   skipTrailingSlashRedirect: true,
   async redirects() {

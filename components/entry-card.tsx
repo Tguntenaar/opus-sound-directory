@@ -177,7 +177,7 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
       <MoodChips entry={entry} compact />
       <div className="flex items-end justify-between gap-2">
         <ModelBadge entry={entry} chip />
-        <UsageBadges entryId={entry.id} compact className="text-[10px] text-zinc-600" />
+        <UsageBadges entryId={entry.id} compact className="text-xs text-zinc-600" />
       </div>
     </Link>
   );

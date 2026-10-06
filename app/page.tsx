@@ -15,7 +15,7 @@ export default async function HomePage() {
         <h1 className="text-2xl font-medium tracking-tight text-balance text-zinc-50">
           Your AI video looks great. Now make it sound right.
         </h1>
-        <p className="mt-2 text-sm text-balance text-zinc-500">
+        <p className="mt-2 text-sm text-balance text-zinc-400">
           Royalty-free effects and music beds, each with the prompt and code that made it, so you
           can grab one or make your own.
         </p>

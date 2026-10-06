@@ -19,7 +19,7 @@ export function ModelBadge({
   if (chip) {
     return (
       <span
-        className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-medium tracking-wide ${
+        className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium tracking-wide ${
           variant === "community"
             ? "bg-emerald-500/10 text-emerald-200/90"
             : variant === "local"

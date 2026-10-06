@@ -200,7 +200,7 @@ export function BrowseGrid({
                 <ArrowDownAZ className="h-4 w-4" aria-hidden />
               )}
             </IconButton>
-            <span className="hidden items-center gap-1 text-[10px] uppercase tracking-wide text-zinc-600 sm:inline-flex">
+            <span className="hidden items-center gap-1 text-xs uppercase tracking-wide text-zinc-600 sm:inline-flex">
               <SlidersHorizontal className="h-3 w-3" aria-hidden />
               Filters
             </span>

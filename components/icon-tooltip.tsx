@@ -17,7 +17,7 @@ export function IconTooltip({ label, children, className, side = "top" }: Props)
       <span
         role="tooltip"
         className={cn(
-          "pointer-events-none absolute left-1/2 z-50 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-800 px-2 py-1 text-[11px] font-medium text-zinc-200 shadow-lg ring-1 ring-zinc-700/80 group-hover/tip:flex group-focus-within/tip:flex motion-reduce:transition-none",
+          "pointer-events-none absolute left-1/2 z-50 hidden -translate-x-1/2 whitespace-nowrap rounded-md bg-zinc-800 px-2 py-1 text-xs font-medium text-zinc-200 shadow-lg ring-1 ring-zinc-700/80 group-hover/tip:flex group-focus-within/tip:flex motion-reduce:transition-none",
           side === "top" ? "bottom-full mb-1.5" : "top-full mt-1.5",
         )}
       >
