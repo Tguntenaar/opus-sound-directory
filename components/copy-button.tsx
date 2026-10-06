@@ -6,17 +6,26 @@ import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/icon-button";
 import { useStats } from "@/components/stats-provider";
 import { cn } from "@/lib/utils";
+import { captureEvent } from "@/lib/analytics-client";
+import { soundEventProps, type AnalyticsSource } from "@/lib/analytics";
+import type { SoundEntry } from "@/lib/entries";
 
 export function CopyButton({
   text,
   entryId,
   label = "Copy prompt",
   iconOnly = false,
+  entry,
+  source = "detail",
+  copyKind = "prompt",
 }: {
   text: string;
   entryId: string;
   label?: string;
   iconOnly?: boolean;
+  entry?: Pick<SoundEntry, "id" | "category" | "mood" | "modelId">;
+  source?: AnalyticsSource;
+  copyKind?: "prompt" | "code";
 }) {
   const [copied, setCopied] = useState(false);
   const { track } = useStats();
@@ -25,6 +34,10 @@ export function CopyButton({
     try {
       await navigator.clipboard.writeText(text);
       track(entryId, "copy");
+      if (entry) {
+        const base = soundEventProps(entry, source);
+        captureEvent(copyKind === "code" ? "sound_copy_code" : "sound_copy_prompt", base);
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {

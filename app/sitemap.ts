@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
 import { getAllBlogPosts } from "@/lib/blog";
-import { getAllEntries } from "@/lib/entries";
+import { CATEGORY_ORDER } from "@/lib/categories";
+import { getAllEntriesMerged } from "@/lib/entries";
 import { getSiteUrl } from "@/lib/site-url";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getSiteUrl();
   const now = new Date();
-  const entries = getAllEntries();
+  const entries = await getAllEntriesMerged();
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -14,6 +15,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 1,
+    },
+    {
+      url: `${base}/about`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${base}/mcp`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.7,
     },
     {
       url: `${base}/sponsor`,
@@ -25,15 +38,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${base}/blog`,
       lastModified: now,
       changeFrequency: "weekly",
-      priority: 0.85,
+      priority: 0.7,
     },
   ];
+
+  const categoryPages: MetadataRoute.Sitemap = CATEGORY_ORDER.map((category) => ({
+    url: `${base}/c/${category}`,
+    lastModified: now,
+    changeFrequency: "weekly" as const,
+    priority: 0.88,
+  }));
 
   const blogPosts: MetadataRoute.Sitemap = getAllBlogPosts().map((post) => ({
     url: `${base}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: "monthly" as const,
-    priority: 0.75,
+    priority: 0.65,
   }));
 
   const entryPages: MetadataRoute.Sitemap = entries.map((entry) => ({
@@ -43,5 +63,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...blogPosts, ...entryPages];
+  return [...staticPages, ...categoryPages, ...blogPosts, ...entryPages];
 }

@@ -3,15 +3,22 @@
 import { useState } from "react";
 import { Check, Share2 } from "lucide-react";
 import { IconButton } from "@/components/icon-button";
+import { captureEvent } from "@/lib/analytics-client";
+import { soundEventProps, type AnalyticsSource } from "@/lib/analytics";
+import type { SoundEntry } from "@/lib/entries";
 
 export function ShareButton({
   url,
   title,
   className,
+  entry,
+  source = "card",
 }: {
   url: string;
   title: string;
   className?: string;
+  entry?: Pick<SoundEntry, "id" | "category" | "mood" | "modelId">;
+  source?: AnalyticsSource;
 }) {
   const [done, setDone] = useState(false);
 
@@ -25,6 +32,9 @@ export function ShareButton({
         await navigator.clipboard.writeText(url);
         setDone(true);
         window.setTimeout(() => setDone(false), 1600);
+      }
+      if (entry) {
+        captureEvent("sound_share", soundEventProps(entry, source));
       }
     } catch {
       /* cancelled */

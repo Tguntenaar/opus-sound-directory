@@ -33,9 +33,10 @@
   },
   "metrics": {
     "lufs": -17.0,
-    "truePeak": -6.49,
+    "truePeak": -9.3,
     "durationSec": 0.4,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -17.0
   },
   "assets": {
     "wav": "/assets/ui-error-soft/out.wav",

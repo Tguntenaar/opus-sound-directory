@@ -32,10 +32,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.02,
-    "truePeak": -1.3,
+    "lufs": -13.8,
+    "truePeak": -7.1,
     "durationSec": 12.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -10.8,
+    "lufsShortTermMax": -13.0
   },
   "assets": {
     "wav": "/assets/ambient-bed-lofi/out.wav",
@@ -45,8 +47,10 @@
   },
   "notes": "Seamless loop (verified with --loop): three identical cycles rendered with event tails, reverb, tape wow, tremolo and a wrap-mode limiter running across them; the middle cycle is kept, with no end fades. FM electric piano on rootless Ebmaj9 / Eb6/9 / Fm9 / Fm9 / Bb13 in five swung 3/4 bars (15 beats = 12 s at 75 BPM), sine bass, pillowy kick, brushy band-limited snare, low-passed hats, vinyl hiss and soft crackle. A pickup kick and bass on the last 3-and lead back into the frame-0 downbeat.",
   "mood": [
+    "slow",
     "calm",
-    "slow"
+    "sad",
+    "dark"
   ],
   "tempo": "slow"
 }

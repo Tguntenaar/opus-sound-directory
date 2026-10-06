@@ -34,10 +34,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.01,
-    "truePeak": -1.3,
+    "lufs": -13.7,
+    "truePeak": -7.5,
     "durationSec": 20.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -10.4,
+    "lufsShortTermMax": -11.0
   },
   "assets": {
     "wav": "/assets/chaos-calm-05/out.wav",
@@ -50,7 +52,7 @@
     "energetic",
     "dark",
     "calm",
-    "bright"
+    "sad"
   ],
   "tempo": "medium"
 }

@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { StatsProvider } from "@/components/stats-provider";
@@ -7,15 +8,25 @@ import { rootWebSiteJsonLd, organizationJsonLd } from "@/lib/structured-data";
 import { JsonLd } from "@/components/json-ld";
 import { FileUp, HeartHandshake, Info } from "lucide-react";
 import { IconTooltip } from "@/components/icon-tooltip";
+import { OwnerProfileLinks } from "@/components/owner-profile-links";
+import { PosthogProvider } from "@/components/posthog-provider";
 
 export const metadata = rootSiteMetadata();
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f4f4f5" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+  ],
+};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body className="bg-zinc-950 text-zinc-100 antialiased">
         <JsonLd data={[rootWebSiteJsonLd(), organizationJsonLd()]} />
-        <StatsProvider>
+        <PosthogProvider>
+          <StatsProvider>
           <PlaybackShortcuts />
           <SiteHeader />
           <main className="page-enter mx-auto max-w-6xl px-4 py-12 sm:py-16">{children}</main>
@@ -51,9 +62,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   <Info className="h-4 w-4" aria-hidden />
                 </a>
               </IconTooltip>
+              <span className="text-zinc-800" aria-hidden>
+                ·
+              </span>
+              <OwnerProfileLinks variant="footer" />
             </nav>
           </footer>
-        </StatsProvider>
+          </StatsProvider>
+        </PosthogProvider>
       </body>
     </html>
   );

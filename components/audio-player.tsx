@@ -14,18 +14,23 @@ import {
 import { PlayPauseIcon } from "@/components/play-pause-icon";
 import { EqualizerBars } from "@/components/equalizer-bars";
 import { WaveformScrubber } from "@/components/waveform-scrubber";
+import type { SoundEntry } from "@/lib/entries";
+import { useSoundPlaybackAnalytics } from "@/lib/use-sound-playback-analytics";
 
 type Props = {
   audioId: string;
   src: string;
   title: string;
   className?: string;
+  entry: Pick<SoundEntry, "id" | "category" | "mood" | "modelId">;
 };
 
-export function AudioPlayer({ audioId, src, title, className }: Props) {
+export function AudioPlayer({ audioId, src, title, className, entry }: Props) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  useSoundPlaybackAnalytics(entry, "detail", audioRef, playing);
 
   useEffect(() => {
     const el = audioRef.current;

@@ -7,13 +7,17 @@ import { IconButton } from "@/components/icon-button";
 import { ShareButton } from "@/components/share-button";
 import { useStats } from "@/components/stats-provider";
 import { cn } from "@/lib/utils";
+import { captureEvent } from "@/lib/analytics-client";
+import { soundEventProps, type AnalyticsSource } from "@/lib/analytics";
 
 export function CardQuickActions({
   entry,
   className,
+  source = "card",
 }: {
   entry: SoundEntry;
   className?: string;
+  source?: AnalyticsSource;
 }) {
   const { track } = useStats();
   const [copied, setCopied] = useState(false);
@@ -28,6 +32,7 @@ export function CardQuickActions({
     try {
       await navigator.clipboard.writeText(entry.prompt);
       track(entry.id, "copy");
+      captureEvent("sound_copy_prompt", soundEventProps(entry, source));
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1600);
     } catch {
@@ -39,6 +44,7 @@ export function CardQuickActions({
     e.preventDefault();
     e.stopPropagation();
     track(entry.id, "download");
+    captureEvent("sound_download", { ...soundEventProps(entry, source), format: "wav" });
     const a = document.createElement("a");
     a.href = entry.assets.wav;
     a.download = `${entry.title.replace(/\s+/g, "-").toLowerCase()}.wav`;
@@ -62,7 +68,7 @@ export function CardQuickActions({
       <IconButton label="Download WAV" onClick={downloadWav}>
         <Download className="h-3.5 w-3.5" aria-hidden />
       </IconButton>
-      <ShareButton url={shareUrl} title={entry.title} />
+      <ShareButton url={shareUrl} title={entry.title} entry={entry} source={source} />
     </div>
   );
 }

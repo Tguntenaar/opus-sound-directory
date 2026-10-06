@@ -17,8 +17,8 @@
     "bpm": 92,
     "fps": 30,
     "durationSec": 60.0,
-    "samples": 2880000,
-    "sampleRate": 48000
+    "samples": 960000,
+    "sampleRate": 16000
   },
   "cues": [
     {
@@ -39,10 +39,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.03,
-    "truePeak": -1.3,
+    "lufs": -13.6,
+    "truePeak": -6.9,
     "durationSec": 60.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -9.8,
+    "lufsShortTermMax": -10.4
   },
   "assets": {
     "wav": "/assets/ad-bed-60-story/out.wav",
@@ -50,12 +52,12 @@
     "spectrogram": "/assets/ad-bed-60-story/spectrogram.png",
     "code": "/assets/ad-bed-60-story/generate.py"
   },
-  "notes": "Triplet reed-pulse ostinato, breathy ocarina lead, triangle pad and brassy filter-swell pad over a mono sine bass, heartbeat kick, toms and shakers; Am-F-Dm-Em intro, Am-F-C-G build, C-F peak resolving to a rolled C major. Build hit f900 lands after a half-beat dropout; a 7-hit triplet tom fill plus a 217 ms breath sets up the peak at f1500. Side channel high-passed at 260 Hz so the low end stays mono.",
+  "notes": "Triplet reed-pulse ostinato, breathy ocarina lead, triangle pad and brassy filter-swell pad over a mono sine bass, heartbeat kick, toms and shakers; Am-F-Dm-Em intro, Am-F-C-G build, C-F peak resolving to a rolled C major. Build hit f900 lands after a half-beat dropout; a 7-hit triplet tom fill plus a 217 ms breath sets up the peak at f1500. Side channel high-passed at 260 Hz so the low end stays mono. Deployed WAV is 16 kHz stereo (960000 frames) to stay under the Workers 5 MiB asset cap; MP3 is encoded from the 48 kHz master.",
   "mood": [
-    "calm",
+    "slow",
     "sad",
-    "bright",
-    "happy"
+    "calm",
+    "dark"
   ],
-  "tempo": "medium"
+  "tempo": "slow"
 }

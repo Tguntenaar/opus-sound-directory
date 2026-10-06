@@ -31,6 +31,7 @@
   "metrics": {
     "lufs": -14.0,
     "truePeak": -5.0,
+    "lufsMomentaryMax": -12.3,
     "durationSec": 0.5,
     "passedChecks": true
   },

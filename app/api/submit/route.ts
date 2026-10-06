@@ -5,8 +5,8 @@ import {
   saveSubmitEntry,
   touchSubmitRateLimit,
 } from "@/lib/submit-kv";
-import { notifySubmitEntry } from "@/lib/submit-notify";
 import { isSubmitHoneypotDiscard, validateSubmitPayload } from "@/lib/submit-validate";
+import { captureServerEvent, hashDistinctSuffix } from "@/lib/posthog-server";
 
 function clientFingerprint(request: Request): string {
   const ip =
@@ -42,9 +42,30 @@ export async function POST(request: Request) {
     );
   }
 
-  const entry = await saveSubmitEntry(result.data);
+  const entry = await saveSubmitEntry(result.data, "web");
   await touchSubmitRateLimit(fingerprint);
-  scheduleBackground(notifySubmitEntry(entry));
+  const { runSubmissionPipeline } = await import("@/lib/submit-pipeline");
+  scheduleBackground(runSubmissionPipeline(entry.id));
 
-  return NextResponse.json({ ok: true, id: entry.id });
+  scheduleBackground(
+    hashDistinctSuffix(fingerprint).then((suffix) =>
+      captureServerEvent({
+        distinctId: `submit:${suffix}`,
+        event: "submit_form_submit",
+        properties: {
+          submission_id: entry.id,
+          source: "web",
+          category: entry.category,
+          mood_count: entry.mood.length,
+        },
+      }),
+    ),
+  );
+
+  return NextResponse.json({
+    ok: true,
+    id: entry.id,
+    submissionId: entry.id,
+    status: entry.status,
+  });
 }

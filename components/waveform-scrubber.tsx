@@ -24,8 +24,26 @@ export function WaveformScrubber({
   const railRef = useRef<HTMLDivElement>(null);
   const [peaks, setPeaks] = useState<number[] | null>(null);
   const [hoverRatio, setHoverRatio] = useState<number | null>(null);
+  const [loadPeaks, setLoadPeaks] = useState(false);
 
   useEffect(() => {
+    const rail = railRef.current;
+    if (!rail || loadPeaks) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) {
+          setLoadPeaks(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "120px" },
+    );
+    io.observe(rail);
+    return () => io.disconnect();
+  }, [loadPeaks]);
+
+  useEffect(() => {
+    if (!loadPeaks) return;
     let cancelled = false;
     void loadWaveformPeaks(src).then((p) => {
       if (!cancelled) setPeaks(p);
@@ -33,7 +51,7 @@ export function WaveformScrubber({
     return () => {
       cancelled = true;
     };
-  }, [src]);
+  }, [src, loadPeaks]);
 
   const ratioFromEvent = useCallback((e: MouseEvent<HTMLDivElement>) => {
     const rail = railRef.current;

@@ -2,13 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { CopyButton } from "@/components/copy-button";
+import type { SoundEntry } from "@/lib/entries";
 
 export function CodeViewer({
   assetPath,
   entryId,
+  entry,
 }: {
   assetPath: string;
   entryId: string;
+  entry?: Pick<SoundEntry, "id" | "category" | "mood" | "modelId">;
 }) {
   const [code, setCode] = useState<string>("Loading…");
 
@@ -33,7 +36,14 @@ export function CodeViewer({
     <div className="flex flex-col gap-2">
       {canCopy && (
         <div className="flex justify-end">
-          <CopyButton text={code} entryId={entryId} label="Copy code" />
+          <CopyButton
+            text={code}
+            entryId={entryId}
+            label="Copy code"
+            entry={entry}
+            copyKind="code"
+            source="detail"
+          />
         </div>
       )}
       <pre

@@ -2,6 +2,21 @@ import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
 
+const TRAILING_FAQ_HEADING =
+  /^##\s+(FAQ|Frequently asked questions)\s*$/i;
+
+function stripTrailingFaqSectionFromBody(content) {
+  const trimmed = content.trimEnd();
+  const lines = trimmed.split("\n");
+  let lastH2Index = -1;
+  for (let i = 0; i < lines.length; i++) {
+    if (/^##\s+/.test(lines[i])) lastH2Index = i;
+  }
+  if (lastH2Index < 0) return trimmed;
+  if (!TRAILING_FAQ_HEADING.test(lines[lastH2Index].trim())) return trimmed;
+  return lines.slice(0, lastH2Index).join("\n").trimEnd();
+}
+
 const root = path.resolve(import.meta.dirname, "..");
 const dir = path.join(root, "content", "blog");
 
@@ -34,7 +49,7 @@ const posts = files.map((f) => {
         }))
       : [],
     draft: Boolean(data.draft),
-    body: content.trim(),
+    body: stripTrailingFaqSectionFromBody(content.trim()),
   };
 });
 

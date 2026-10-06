@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import { BUDGET_RANGES, SPONSOR_PACKAGES, type SponsorPackageId } from "@/lib/sponsor-packages";
+import { captureEvent } from "@/lib/analytics-client";
 
 type FormState = {
   companyName: string;
@@ -28,6 +30,8 @@ const initial: FormState = {
 };
 
 export function SponsorInterestForm() {
+  const searchParams = useSearchParams();
+  const refFromUrl = useMemo(() => searchParams.get("ref")?.trim() ?? "", [searchParams]);
   const [form, setForm] = useState<FormState>(initial);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -90,6 +94,7 @@ export function SponsorInterestForm() {
           message: form.message.trim(),
           logoUrl: form.logoUrl.trim() || undefined,
           companyFax: form.companyFax,
+          ref: refFromUrl || undefined,
         }),
       });
       const data = (await res.json()) as { ok?: boolean; error?: string };
@@ -97,6 +102,11 @@ export function SponsorInterestForm() {
         setError(data.error ?? "Something went wrong. Try again.");
         return;
       }
+      captureEvent("sponsor_form_submit", {
+        package_count: form.packages.length,
+        budget_range: form.budgetRange,
+        ...(refFromUrl ? { ref: refFromUrl } : {}),
+      });
       setSuccess(true);
       setForm(initial);
     } catch {

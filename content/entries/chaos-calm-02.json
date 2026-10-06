@@ -1,7 +1,7 @@
 {
   "id": "chaos-calm-02",
   "slug": "chaos-calm-02",
-  "title": "Traffic glitch → warm strings",
+  "title": "Traffic glitch \u2192 warm strings",
   "category": "chaos-calm",
   "tags": [
     "youtube",
@@ -16,8 +16,8 @@
     "bpm": 90,
     "fps": 30,
     "durationSec": 30.0,
-    "samples": 1440000,
-    "sampleRate": 48000
+    "samples": 960000,
+    "sampleRate": 32000
   },
   "cues": [
     {
@@ -34,10 +34,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.01,
-    "truePeak": -1.3,
+    "lufs": -13.6,
+    "truePeak": -6.9,
     "durationSec": 30.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -8.8,
+    "lufsShortTermMax": -11.0
   },
   "assets": {
     "wav": "/assets/chaos-calm-02/out.wav",
@@ -45,7 +47,7 @@
     "spectrogram": "/assets/chaos-calm-02/spectrogram.png",
     "code": "/assets/chaos-calm-02/generate.py"
   },
-  "notes": "Traffic chaos (idling engines with mono lows, Doppler car passes with pan sweeps, clashing additive car horns on a 16th grid, distant wail siren, slapback street echoes) is chopped by a glitch layer (stutters, pitched slices, 32nd dropouts) that accelerates from 1/32 to 1/128 repeats into the cut. The bus is filtered, then gated with a 3 ms fade ending on frame 300. Warm synthetic strings (detuned additive saw ensembles, per-voice vibrato, brightness opening from 650 Hz to 3.6 kHz) build over 20 s through Db, Ab/C, Bbm7, Gbmaj7, Db/F, Gb, Absus4, Ab, Db. Layers enter one by one (contrabass, legato violin line with portamento, viola 8th pulse, octave doubling, sub swell) up to about -10 LUFS short-term, then ring out to exact silence. A sub-0.1 Hz Hann-bump DC trim follows the limiter.",
+  "notes": "Traffic chaos (idling engines with mono lows, Doppler car passes with pan sweeps, clashing additive car horns on a 16th grid, distant wail siren, slapback street echoes) is chopped by a glitch layer (stutters, pitched slices, 32nd dropouts) that accelerates from 1/32 to 1/128 repeats into the cut. The bus is filtered, then gated with a 3 ms fade ending on frame 300. Warm synthetic strings (detuned additive saw ensembles, per-voice vibrato, brightness opening from 650 Hz to 3.6 kHz) build over 20 s through Db, Ab/C, Bbm7, Gbmaj7, Db/F, Gb, Absus4, Ab, Db. Layers enter one by one (contrabass, legato violin line with portamento, viola 8th pulse, octave doubling, sub swell) up to about -10 LUFS short-term, then ring out to exact silence. A sub-0.1 Hz Hann-bump DC trim follows the limiter. Deployed WAV is 32 kHz stereo (960000 frames) for the Workers 5 MiB cap; MP3 from the 48 kHz master.",
   "mood": [
     "energetic",
     "dark",

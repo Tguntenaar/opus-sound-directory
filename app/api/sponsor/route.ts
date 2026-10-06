@@ -42,6 +42,18 @@ export async function POST(request: Request) {
 
   const lead = await saveSponsorLead(result.data);
   scheduleBackground(notifySponsorLead(lead));
+  const { captureServerEvent } = await import("@/lib/posthog-server");
+  scheduleBackground(
+    captureServerEvent({
+      distinctId: `sponsor:${lead.id}`,
+      event: "sponsor_form_submit",
+      properties: {
+        package_count: lead.packages.length,
+        budget_range: lead.budgetRange,
+        ...(lead.ref ? { ref: lead.ref } : {}),
+      },
+    }),
+  );
   return NextResponse.json({ ok: true });
 }
 

@@ -12,11 +12,14 @@ import {
   subscribePlayback,
 } from "@/lib/audio-controller";
 import { PlayPauseIcon } from "@/components/play-pause-icon";
+import { useSoundPlaybackAnalytics } from "@/lib/use-sound-playback-analytics";
 
 export function BlogEntryEmbed({ entry }: { entry: SoundEntry }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const audioId = entry.id;
+
+  useSoundPlaybackAnalytics(entry, "blog_embed", audioRef, playing);
 
   useEffect(() => {
     const el = audioRef.current;

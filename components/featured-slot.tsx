@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { captureEvent } from "@/lib/analytics-client";
 import { Megaphone, Sparkles } from "lucide-react";
 import type { SoundEntry } from "@/lib/entries";
 import { EntryCard } from "@/components/entry-card";
@@ -34,6 +35,7 @@ export function FeaturedSlot({ entry }: Props) {
             "inline-flex items-center gap-1.5 rounded-full border border-zinc-700/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60",
           )}
           title="Sponsor the homepage featured slot"
+          onClick={() => captureEvent("sponsor_cta_click", { placement: "featured_slot" })}
         >
           <Megaphone className="h-3 w-3" aria-hidden />
           <span>Sponsored slot</span>

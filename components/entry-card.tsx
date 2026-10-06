@@ -20,6 +20,8 @@ import { EqualizerBars } from "@/components/equalizer-bars";
 import { WaveformScrubber } from "@/components/waveform-scrubber";
 import { CardQuickActions } from "@/components/card-quick-actions";
 import { cn } from "@/lib/utils";
+import { useSoundPlaybackAnalytics } from "@/lib/use-sound-playback-analytics";
+import type { AnalyticsSource } from "@/lib/analytics";
 
 type Props = {
   entry: SoundEntry;
@@ -32,6 +34,9 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const audioId = entry.id;
+  const analyticsSource: AnalyticsSource = featured ? "featured" : "card";
+
+  useSoundPlaybackAnalytics(entry, analyticsSource, audioRef, playing);
 
   useEffect(() => {
     const el = audioRef.current;
@@ -155,7 +160,7 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
             </h3>
             <div className="flex shrink-0 items-center gap-1">
               {playing && <EqualizerBars active className="mt-0.5" />}
-              <CardQuickActions entry={entry} />
+              <CardQuickActions entry={entry} source={analyticsSource} />
             </div>
           </div>
         </div>

@@ -7,9 +7,9 @@ export function getSiteUrl(): string {
   return raw.replace(/\/$/, "");
 }
 
-export const SITE_NAME = "Opus Sound Directory";
+export const SITE_NAME = "Opus Sounds Directory";
 
 export const DEFAULT_SITE_DESCRIPTION =
-  "Browsable directory of synthesised audio for video: Claude Opus prompts and Python code, spectrograms, and measured loudness for beds and SFX.";
+  "Royalty-free sound effects and music beds for AI videos, each with the prompt, Python synth code and loudness metrics behind it.";
 
 export const DEFAULT_OG_IMAGE = "/og-default.png";

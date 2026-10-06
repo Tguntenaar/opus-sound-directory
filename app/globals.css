@@ -52,6 +52,16 @@ h3 {
   }
 }
 
+/** Entry cards: transform-only so stagger delays never leave cards semi-transparent. */
+@keyframes sound-card-enter {
+  from {
+    transform: translateY(8px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;
@@ -98,12 +108,38 @@ h3 {
   }
 }
 
+@keyframes brand-pulse-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .group:hover .brand-mark-interactive .brand-mark-arc-group {
+    animation: brand-pulse-sweep 0.65s cubic-bezier(0.4, 0, 0.2, 1) 1;
+    transform-origin: 32px 32px;
+    transform-box: fill-box;
+  }
+}
+
 .animate-fade-in {
   animation: fade-in 0.35s ease-out both;
 }
 
 .sound-card {
+  animation: sound-card-enter 0.45s ease-out both;
+}
+
+.about-card-section {
   animation: fade-in-up 0.45s ease-out both;
+}
+
+.brand-mark-arc-group {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 .eq-bar--active {
@@ -125,9 +161,11 @@ h3 {
 
 @media (prefers-reduced-motion: reduce) {
   .sound-card,
+  .about-card-section,
   .animate-fade-in,
   .page-enter,
-  .spectrogram-reveal {
+  .spectrogram-reveal,
+  .group:hover .brand-mark-interactive .brand-mark-arc-group {
     animation: none;
   }
 

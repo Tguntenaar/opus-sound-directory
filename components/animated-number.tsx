@@ -38,5 +38,9 @@ export function AnimatedNumber({ value }: { value: number }) {
     };
   }, [value, reduced]);
 
-  return <>{display.toLocaleString()}</>;
+  return (
+    <span className="inline-block min-w-[1.25rem] text-right tabular-nums">
+      {display.toLocaleString()}
+    </span>
+  );
 }

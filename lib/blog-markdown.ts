@@ -1,4 +1,5 @@
 import { marked } from "marked";
+import { stripTrailingFaqSectionFromBody } from "@/lib/blog-strip-faq";
 import { getEntryById, getEntryBySlug } from "@/lib/entries";
 
 export type BlogTocItem = { id: string; text: string };
@@ -61,10 +62,11 @@ marked.use({
     heading({ text, depth }) {
       const plain = String(text);
       const id = slugifyHeading(plain);
-      if (depth === 2 || depth === 3) {
-        return `<h${depth} id="${id}"><a class="blog-heading-anchor" href="#${id}">${plain}</a></h${depth}>\n`;
+      const level = depth === 1 ? 2 : depth;
+      if (level === 2 || level === 3) {
+        return `<h${level} id="${id}"><a class="blog-heading-anchor" href="#${id}">${plain}</a></h${level}>\n`;
       }
-      return `<h${depth}>${plain}</h${depth}>\n`;
+      return `<h${level}>${plain}</h${level}>\n`;
     },
   },
 });
@@ -76,6 +78,7 @@ export function renderBlogBody(body: string): {
   toc: BlogTocItem[];
   showToc: boolean;
 } {
+  body = stripTrailingFaqSectionFromBody(body);
   const toc = extractH2FromMarkdown(body);
   const showToc = toc.length >= 4;
   const chunks = body.split(/\n\n+/);

@@ -4,6 +4,7 @@ import { ArrowLeft, BookOpen } from "lucide-react";
 import { getAllBlogPosts } from "@/lib/blog";
 import { canonicalForPath } from "@/lib/site-metadata";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
+import { BlogAdvertiseLink } from "@/components/blog-advertise-link";
 
 const title = "Blog";
 
@@ -51,7 +52,9 @@ export default function BlogIndexPage() {
           <BookOpen className="h-5 w-5 text-violet-400/80" aria-hidden />
           <h1 className="text-2xl font-medium tracking-tight">Blog</h1>
         </div>
-        <p className="text-sm text-zinc-500">Short notes — prompts, synth, and video timing.</p>
+        <p className="text-sm text-zinc-500">
+          Short notes — prompts, synth, and video timing. <BlogAdvertiseLink />
+        </p>
       </header>
 
       {posts.length === 0 ? (

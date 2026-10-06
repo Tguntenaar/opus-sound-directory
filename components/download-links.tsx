@@ -4,16 +4,21 @@ import { useState } from "react";
 import { Check, Download } from "lucide-react";
 import { useStats } from "@/components/stats-provider";
 import { IconButton } from "@/components/icon-button";
+import { Cc0Badge } from "@/components/cc0-badge";
 import { cn } from "@/lib/utils";
+import { captureEvent } from "@/lib/analytics-client";
+import type { SoundEntry } from "@/lib/entries";
+import { soundEventProps } from "@/lib/analytics";
 
 type Props = {
   entryId: string;
   wav: string;
   mp3: string;
   title: string;
+  entry?: Pick<SoundEntry, "id" | "category" | "mood" | "modelId">;
 };
 
-export function DownloadLinks({ entryId, wav, mp3, title }: Props) {
+export function DownloadLinks({ entryId, wav, mp3, title, entry }: Props) {
   const { track } = useStats();
   const [lastFormat, setLastFormat] = useState<"wav" | "mp3" | null>(null);
 
@@ -21,6 +26,12 @@ export function DownloadLinks({ entryId, wav, mp3, title }: Props) {
 
   function triggerDownload(href: string, filename: string, format: "wav" | "mp3") {
     track(entryId, "download");
+    if (entry) {
+      captureEvent("sound_download", {
+        ...soundEventProps(entry, "detail"),
+        format,
+      });
+    }
     setLastFormat(format);
     const a = document.createElement("a");
     a.href = href;
@@ -56,6 +67,7 @@ export function DownloadLinks({ entryId, wav, mp3, title }: Props) {
         )}
       </IconButton>
       <span className="text-xs text-zinc-600" aria-hidden>WAV · MP3</span>
+      <Cc0Badge />
     </div>
   );
 }

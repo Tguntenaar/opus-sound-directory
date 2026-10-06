@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import wave
 from pathlib import Path
 
 MAX_BYTES = 4_800_000
-SHIP_SR = 32000
+SHIP_RATES = (32000, 24000, 22050, 16000)
 
 
 def maybe_downsample_for_workers(wav_path: Path) -> bool:
@@ -15,23 +16,36 @@ def maybe_downsample_for_workers(wav_path: Path) -> bool:
         return False
     if not shutil.which("ffmpeg"):
         return False
-    tmp = wav_path.with_suffix(".ship.wav")
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-y",
-            "-hide_banner",
-            "-loglevel",
-            "error",
-            "-i",
-            str(wav_path),
-            "-ac",
-            "1",
-            "-ar",
-            str(SHIP_SR),
-            str(tmp),
-        ],
-        check=True,
-    )
-    tmp.replace(wav_path)
+    shipped = False
+    for sr in SHIP_RATES:
+        tmp = wav_path.with_suffix(f".ship-{sr}.wav")
+        subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-i",
+                str(wav_path),
+                "-ac",
+                "2",
+                "-ar",
+                str(sr),
+                str(tmp),
+            ],
+            check=True,
+        )
+        if tmp.stat().st_size <= MAX_BYTES:
+            tmp.replace(wav_path)
+            shipped = True
+            break
+        tmp.unlink(missing_ok=True)
+    if not shipped:
+        raise RuntimeError(f"Could not ship {wav_path} under {MAX_BYTES} bytes (stereo)")
     return True
+
+
+def shipped_sample_rate(wav_path: Path) -> int:
+    with wave.open(str(wav_path), "rb") as wf:
+        return wf.getframerate()

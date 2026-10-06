@@ -29,10 +29,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.03,
-    "truePeak": -1.4,
+    "lufs": -14.3,
+    "truePeak": -5.4,
     "durationSec": 3.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -10.2,
+    "lufsShortTermMax": -16.4
   },
   "assets": {
     "wav": "/assets/drop-impact-heavy/out.wav",

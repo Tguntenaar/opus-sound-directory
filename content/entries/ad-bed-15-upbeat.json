@@ -34,10 +34,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.02,
-    "truePeak": -1.3,
+    "lufs": -13.8,
+    "truePeak": -6.6,
     "durationSec": 15.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -10.1,
+    "lufsShortTermMax": -12.4
   },
   "assets": {
     "wav": "/assets/ad-bed-15-upbeat/out.wav",

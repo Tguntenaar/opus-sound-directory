@@ -1,7 +1,7 @@
 {
   "id": "chaos-calm-03",
   "slug": "chaos-calm-03",
-  "title": "Notification storm → breath",
+  "title": "Notification storm \u2192 breath",
   "category": "chaos-calm",
   "tags": [
     "podcast",
@@ -34,10 +34,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.01,
-    "truePeak": -1.3,
+    "lufs": -13.7,
+    "truePeak": -7.4,
     "durationSec": 10.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -10.2,
+    "lufsShortTermMax": -11.7
   },
   "assets": {
     "wav": "/assets/chaos-calm-03/out.wav",
@@ -47,10 +49,9 @@
   },
   "notes": "Storm (0-4 s): Poisson-timed notifications accelerating from ~7/s to ~30/s, made of two-tone additive glass chimes, tri-tone triangle alerts (major, diminished and quartal shapes), pitch-swept bubble pops, 165 Hz phone-vibrate buzzes with a rattle, and SVF 'sent' swooshes, in clashing keys over a mono low throb that doubles from 8ths to 16ths. At f120 the storm bus closes with a 3 ms raised-cosine fade ending on the cue sample. The breath (4-10 s) is one inhale/exhale envelope (peak 7 s) on decorrelated noise through narrow resonators at D3, A3, D4, F#4, A4, D5 and A5, plus an SVF 'mouth' band-pass that opens and closes with the breath, a faint air band and a soft mono D2 sine. Everything under ~200 Hz is kept mono.",
   "mood": [
-    "tense",
     "energetic",
-    "calm",
-    "airy"
+    "dark",
+    "calm"
   ],
   "tempo": "medium"
 }

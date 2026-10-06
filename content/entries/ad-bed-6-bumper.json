@@ -36,10 +36,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.0,
-    "truePeak": -1.3,
+    "lufs": -13.8,
+    "truePeak": -7.4,
     "durationSec": 6.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -10.8,
+    "lufsShortTermMax": -12.9
   },
   "assets": {
     "wav": "/assets/ad-bed-6-bumper/out.wav",
@@ -49,9 +51,9 @@
   },
   "notes": "Gritty bass hook is one phase-continuous additive saw (partials faded out before 7 kHz, so its glide never aliases) through a TPT SVF low-pass with per-note filter envelopes and 4x-oversampled tanh drive; brass stabs are three detuned additive saws with a delayed harmonic bloom, a pitch scoop and (on the hit) a 3-semitone fall-off. Only the kick and bass sit below 120 Hz, mono.\nArc: frame-0 cold-open hit (kick, crash, F#m brass, first bass note), two bars of breakbeat drums with i-VI-VII stabs about 3 dB under it, a half bar of octave-pumping bass, then a triplet snare fill over a noise riser, a swelling E chord and a one-octave bass glide. Everything chokes into a 40 ms air gap and the big hit lands exactly on frame 150, the loudest moment, with a short room tail to silence.\nMastered with a 4x-oversampled look-ahead gain limiter iterated to -14 LUFS / -1.3 dBTP; residual DC removed with a sub-1 Hz Hann-shaped offset; TPDF-dithered to 16-bit.",
   "mood": [
-    "punchy",
+    "upbeat",
     "energetic",
-    "bold"
+    "bright"
   ],
   "tempo": "fast"
 }

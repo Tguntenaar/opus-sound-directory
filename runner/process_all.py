@@ -23,7 +23,11 @@ def main() -> None:
     args = parser.parse_args()
     preserve = args.preserve_model_id or args.pipeline_only
     failed = []
+    exclude = {"ui-success-chime"}
     for entry_path in sorted((ROOT / "content" / "entries").glob("*.json")):
+        entry_id = entry_path.stem
+        if entry_id in exclude:
+            continue
         try:
             run_entry(
                 entry_path,

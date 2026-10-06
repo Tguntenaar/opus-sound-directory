@@ -120,14 +120,17 @@ def master_stereo(
 ) -> np.ndarray:
     st = normalize_lufs_stereo(stereo, target_lufs)
     ceiling = 10 ** (true_peak_db / 20.0)
-    for _ in range(2):
-        st = soft_clip(st, 1.08)
+    for _ in range(8):
+        st = soft_clip(st, 1.05)
         peak = float(np.max(np.abs(st)))
         if peak > ceiling and peak > 0:
             st = st * (ceiling / peak)
-        loud = integrated_lufs_stereo(st)
-        if abs(loud - target_lufs) > 0.35:
+        loud = integrated_lufs_stereo(st.astype(np.float64))
+        if abs(loud - target_lufs) > 0.45:
             st = normalize_lufs_stereo(st, target_lufs)
+    peak = float(np.max(np.abs(st)))
+    if peak > ceiling and peak > 0:
+        st = st * (ceiling / peak)
     return st.astype(np.float32)
 
 

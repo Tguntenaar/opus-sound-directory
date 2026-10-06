@@ -32,10 +32,12 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.03,
-    "truePeak": -1.3,
+    "lufs": -13.7,
+    "truePeak": -5.6,
     "durationSec": 8.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "lufsMomentaryMax": -7.9,
+    "lufsShortTermMax": -10.7
   },
   "assets": {
     "wav": "/assets/riser-tension-8s/out.wav",
