@@ -1,9 +1,5 @@
-"""Synthesis code for ad-bed-6-bumper. Run: python generate.py (writes out.wav)."""
+"""Self-contained synthesis runtime (embedded in each public/assets/*/generate.py)."""
 from __future__ import annotations
-
-from pathlib import Path
-
-import numpy as np
 
 import math
 import wave
@@ -268,39 +264,3 @@ def write_wav(path: Path, stereo_audio: np.ndarray) -> None:
         wf.setsampwidth(2)
         wf.setframerate(SAMPLE_RATE)
         wf.writeframes(pcm.tobytes())
-
-
-E3, B3, D4, A3 = 164.81, 246.94, 293.66, 220.0
-
-def _n(duration: float) -> int:
-    return int(SAMPLE_RATE * duration)
-
-def _add(mono: np.ndarray, pos: int, snippet: np.ndarray, gain: float = 1.0) -> None:
-    end = min(len(mono), pos + len(snippet))
-    if pos >= end:
-        return
-    mono[pos:end] += snippet[: end - pos] * gain
-
-def synth_ad_bed_6_bumper(duration: float, seed: int) -> np.ndarray:
-    bpm = 140
-    beat = int(SAMPLE_RATE * 60 / bpm)
-    n = _n(duration)
-    mono = np.zeros(n, dtype=np.float32)
-    for i in range(0, n, beat):
-        _add(mono, i, kick(0.12, seed=seed + i), 0.8)
-        if i % (beat * 2) == beat:
-            _add(mono, i, clap(0.08, seed=seed), 0.5)
-    hook = pluck(523.25, 0.25, seed=seed)
-    _add(mono, 0, hook, 0.7)
-    mono += bass(98.0, duration) * 0.4
-    return stereo(master_chain(mono))
-
-
-def generate(seed: int = 42) -> np.ndarray:
-    return synth_ad_bed_6_bumper(6, seed)
-
-
-if __name__ == "__main__":
-    out = Path(__file__).resolve().parent / "out.wav"
-    write_wav(out, generate())
-    print(f"Wrote {out}")

@@ -11,7 +11,9 @@ Each **entry** is a JSON file in `content/entries/` plus assets under `public/as
 - Generated Python
 - Spectrogram
 - LUFS / true peak / length
-- Model ID and run date
+- **Mood / tempo** chips (`mood[]`, optional `tempo`)
+- **Model attribution** (`modelId` — today `local-synth` for numpy runner; `targetModelId` for planned Opus agent runs)
+- Run date
 
 Audio is **synthesised** (numpy/scipy) for precise, royalty-free, video-timed beds and SFX — not realistic instruments or vocals. Use your ears for final taste.
 
@@ -70,6 +72,25 @@ Workers static assets are limited to **5 MiB per file**; long beds may need R2 o
 
 Stack: **Next.js via [vinext](https://github.com/nicolo-ribaudo/vinext)** on Cloudflare Workers, Tailwind CSS.
 
+### SEO, sharing, and crawl
+
+- **Open Graph / Twitter** — `app/layout.tsx` + `lib/site-metadata.ts` (default image `public/og-default.png`, 1200×630). Entry pages use each asset’s **spectrogram** as `og:image` via `generateMetadata` in `app/e/[slug]/page.tsx`.
+- **`/sitemap.xml`** — `app/sitemap.ts` (home, `/sponsor`, all `/e/[slug]`).
+- **`/robots.txt`** — `app/robots.ts` (allow all, `Sitemap:` absolute URL).
+
+Set the public origin before build/deploy so canonical and social URLs are correct:
+
+```bash
+export SITE_URL="https://opus-sound-directory.<your-subdomain>.workers.dev"
+# After custom domain: SITE_URL="https://opussound.directory"
+npm run build && npm run deploy
+```
+
+Regenerate the default share image after branding changes: `python3 scripts/generate-og-default.py`.
+
+### Cloudflare Web Analytics (optional, dashboard only)
+
+No beacon is wired in this repo. To enable: Cloudflare dashboard → **Workers & Pages** → your Worker → **Metrics** / **Web Analytics** (or zone **Analytics** → **Web Analytics** when using a custom domain). No code change required for basic page views.
 
 ### Copy / download stats (Workers KV)
 
@@ -86,6 +107,31 @@ Prompt copies and audio downloads are counted per entry via **`STATS_KV`** in `c
 3. If deploy errors on KV, create a namespace manually (**Workers KV** → **Create**), copy its ID, and set `STATS_KV: bindings.kv({ id: "…" })` in `cloudflare.config.ts`.
 
 Local `npm run dev` uses an in-memory fallback when KV is unavailable; production needs the binding.
+
+### Sponsor leads (`/sponsor`)
+
+Public interest form at **`/sponsor`** (header/footer **Sponsors**). Leads are stored in **`SPONSOR_KV`** (`sponsor:lead:{uuid}` plus index key `sponsor:index`).
+
+- **POST `/api/sponsor`** — JSON body with company/contact/email/website/packages/budget/message (optional `logoUrl`). Returns `{ ok: true }`. Honeypot field `companyFax` must stay empty.
+- **GET `/api/sponsor`** — disabled (`{ enabled: false, leads: [] }`) until you set Worker secret **`SPONSOR_ADMIN_TOKEN`**. Then pass `Authorization: Bearer <token>` or header `X-Sponsor-Admin-Token` to list recent leads.
+
+**KV namespace (`SPONSOR_KV`):** On first deploy, `bindings.kv()` in `cloudflare.config.ts` usually provisions a namespace per binding name. If deploy fails, create one in the dashboard (**Workers KV** → **Create**), then pin it:
+
+```ts
+SPONSOR_KV: bindings.kv({ id: "<namespace-id>" }),
+```
+
+(`STATS_KV` is separate — sponsor data does not share the stats namespace.)
+
+**Optional email alert** after each lead (MVP works without it):
+
+1. Enable [Email Sending](https://developers.cloudflare.com/email-service/) on your domain (`wrangler email sending enable yourdomain.com`).
+2. `cloudflare.config.ts` already declares **`SPONSOR_SEND_EMAIL`** (`bindings.sendEmail()`).
+3. Set Worker variable **`SPONSOR_MAIL_FROM`** to a verified sender on that domain (e.g. `sponsors@yourdomain.com`). Optional **`SPONSOR_MAIL_TO`** overrides the default `thomas@guntenaar.org`.
+
+```bash
+curl -s -H "Authorization: Bearer $SPONSOR_ADMIN_TOKEN" https://your-worker.example/api/sponsor | jq
+```
 
 ### Cloudflare / R2 (later)
 
@@ -116,22 +162,44 @@ python3 runner/seed_day_one.py
 
 ## Runner (`runner/`)
 
+Each entry has a **distinct** synthesiser in `runner/synth/entry_synth.py`. The runner writes:
+
+- `public/assets/<id>/out.wav` (+ `out.mp3` when ffmpeg is installed)
+- `public/assets/<id>/spectrogram.png`
+- `public/assets/<id>/generate.py` — **executable** code that reproduces the WAV (embeds `runner/templates/synth_runtime.py` + entry function)
+
+Metrics in the JSON are measured from the shipped file (`verify.py` + ffmpeg `ebur128` when available). Beds longer than ~30 s at 48 kHz stereo may be auto-downsampled to **32 kHz mono** to stay under the Workers **5 MiB** per-file limit (`runner/ship_wav.py`); `timing.sampleRate` / `timing.samples` in JSON match the shipped WAV.
+
 | Script | Purpose |
 |--------|---------|
-| `run.py` | Generate + verify one entry |
-| `seed_day_one.py` | Create 16 MVP entries and assets |
-| `mock_generate.py` | Placeholder synthesis when no Claude API |
-| `verify.py` | Length, LUFS/peak (ffmpeg `ebur128` if installed), spectrogram |
-| `lib/audio_lib.py` | Shared drums/synth/reverb/limiter API sketch |
+| `run.py` | Synthesise, verify, update JSON metrics, export `generate.py`, stamp `modelId` / mood |
+| `entry_meta.py` | Per-entry `mood` / `tempo`; `local-synth` + `targetModelId` (`claude-opus-4-20250514`) |
+| `synth/entry_synth.py` | Per-entry sound design (16 ids) |
+| `verify.py` | Length, LUFS/peak, spectrogram |
+| `code_writer.py` | Export self-contained `generate.py` |
+| `ship_wav.py` | Optional downsample for Workers asset limits |
 
 ### CLI
+
+```bash
+pip install -r runner/requirements.txt   # numpy, matplotlib; ffmpeg optional but recommended
+
+# One entry
+python3 runner/run.py content/entries/chaos-calm-01.json
+
+# All 16
+for f in content/entries/*.json; do python3 runner/run.py "$f"; done
+
+# Re-render from published code only
+python3 public/assets/chaos-calm-01/generate.py
+```
 
 ```bash
 python3 runner/run.py content/entries/chaos-calm-01.json --mock
 python3 runner/run.py content/entries/chaos-calm-01.json --mock --best-of 3
 ```
 
-- **`--mock`** (default): numpy placeholder WAV, updates `metrics` in JSON.
+- **`--mock`** (default): runs the per-entry numpy synthesiser, sets **`modelId`: `local-synth`** (honest — not an API call), **`targetModelId`: `claude-opus-4-20250514`**, mood/tempo from `entry_meta.py`, and updates `metrics` in JSON.
 - **`--agent`**: reserved for real generation (not wired in MVP). To integrate later:
   - **Claude Code CLI**: `claude -p "$(cat prompt.txt)"` with a project rule to write `generate.py` and run verification.
   - **Agent SDK**: implement `agent_generate()` in `run.py` to call your agent with the entry prompt + seed, then run the same `verify.py` pipeline.

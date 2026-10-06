@@ -112,7 +112,7 @@ export function SponsorInterestForm() {
         className="rounded-xl border border-violet-500/30 bg-violet-500/10 p-8 text-center"
         role="status"
       >
-        <p className="text-lg font-medium text-zinc-50">Thanks — we'll reply within 1 business day.</p>
+        <p className="text-lg font-medium text-zinc-50">Thanks — we&apos;ll reply within 1 business day.</p>
         <p className="mt-2 text-sm text-zinc-400">
           We&apos;ll reach out at the email you provided with next steps and availability.
         </p>

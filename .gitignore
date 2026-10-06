@@ -1,12 +1,11 @@
 node_modules
+__pycache__/
+*.pyc
 .env*
 .next
 next-env.d.ts
 /dist/
 .vinext/
 .cloudflare/
-
-__pycache__/
-*.pyc
-.venv/
-venv/
+*.zip
+artifacts/

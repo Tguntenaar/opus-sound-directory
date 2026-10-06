@@ -13,7 +13,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from run import run_entry
 
 ENTRIES_DIR = ROOT / "content" / "entries"
-MODEL_ID = "claude-opus-5-5"
+from entry_meta import LOCAL_SYNTH_MODEL_ID, TARGET_OPUS_MODEL_ID, apply_entry_meta
+
+MODEL_ID = LOCAL_SYNTH_MODEL_ID
+TARGET_MODEL_ID = TARGET_OPUS_MODEL_ID
 GENERATED_AT = "2026-10-05"
 
 
@@ -324,6 +327,8 @@ def entry_json(spec: dict) -> dict:
         "tags": spec["tags"],
         "prompt": spec["prompt"],
         "modelId": MODEL_ID,
+        "targetModelId": TARGET_MODEL_ID,
+        "mood": [],
         "generatedAt": GENERATED_AT,
         "seed": 42,
         "timing": {
