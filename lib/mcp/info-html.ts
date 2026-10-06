@@ -19,10 +19,46 @@ export function mcpInfoHtml(): string {
   <title>MCP · ${SITE_NAME}</title>
   <style>
     body { font-family: ui-sans-serif, system-ui, sans-serif; background: #09090b; color: #e4e4e7; margin: 0; padding: 2rem 1rem; }
-    .card { max-width: 32rem; margin: 0 auto; border: 1px solid #27272a; border-radius: 0.75rem; padding: 1.5rem; background: #18181b; }
+    .page { max-width: 32rem; margin: 0 auto; }
+    .home {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0 0 1rem;
+      padding: 0.45rem 0.8rem;
+      border: 1px solid #27272a;
+      border-radius: 0.5rem;
+      background: #18181b;
+      color: #e4e4e7;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .home:hover { background: #27272a; color: #fafafa; border-color: #3f3f46; }
+    .home:focus-visible { outline: 2px solid rgb(139 92 246 / 0.6); outline-offset: 2px; }
+    .card { border: 1px solid #27272a; border-radius: 0.75rem; padding: 1.5rem; background: #18181b; overflow: hidden; min-width: 0; }
     h1 { font-size: 1.5rem; margin: 0 0 0.5rem; }
     p { color: #a1a1aa; font-size: 0.875rem; line-height: 1.5; }
-    code, pre { font-family: ui-monospace, monospace; font-size: 0.75rem; }
+    code { font-family: ui-monospace, monospace; font-size: 0.75rem; }
+    /* Page-local: /mcp is standalone HTML, not CodeViewer. Box must size to content. */
+    pre {
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      margin: 0.75rem 0 0;
+      padding: 0.75rem 1rem;
+      overflow-x: auto;
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 0.5rem;
+      line-height: 1.5;
+      color: #d4d4d8;
+      font-family: ui-monospace, monospace;
+      font-size: 0.75rem;
+      white-space: pre;
+    }
     .endpoint { color: #c4b5fd; word-break: break-all; }
     section { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid #27272a; }
     button { background: #3f3f46; color: #fafafa; border: 0; border-radius: 0.375rem; padding: 0.35rem 0.65rem; cursor: pointer; font-size: 0.75rem; }
@@ -31,19 +67,22 @@ export function mcpInfoHtml(): string {
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>MCP server</h1>
-    <p>Public streamable HTTP endpoint for ${SITE_NAME}. Submissions are screened and AI-reviewed; safe entries auto-publish as community sounds.</p>
-    <p>${MCP_SUBMIT_LICENSE_NOTE.replace(/</g, "&lt;")}</p>
-    <p class="endpoint"><code>${endpoint}</code></p>
-    <section>
-      <div class="row"><strong>Cursor (.mcp.json)</strong><button type="button" onclick="copy('c1')">Copy</button></div>
-      <pre id="c1">${cursorJson.replace(/</g, "&lt;")}</pre>
-    </section>
-    <section>
-      <div class="row"><strong>Claude Code</strong><button type="button" onclick="copy('c2')">Copy</button></div>
-      <pre id="c2">${claudeCli.replace(/</g, "&lt;")}</pre>
-    </section>
+  <div class="page">
+    <a class="home" href="/">← Opus Sounds Directory</a>
+    <div class="card">
+      <h1>MCP server</h1>
+      <p>Public streamable HTTP endpoint for ${SITE_NAME}. Submissions are screened and AI-reviewed; safe entries auto-publish as community sounds.</p>
+      <p>${MCP_SUBMIT_LICENSE_NOTE.replace(/</g, "&lt;")}</p>
+      <p class="endpoint"><code>${endpoint}</code></p>
+      <section>
+        <div class="row"><strong>Cursor (.mcp.json)</strong><button type="button" onclick="copy('c1')">Copy</button></div>
+        <pre id="c1">${cursorJson.replace(/</g, "&lt;")}</pre>
+      </section>
+      <section>
+        <div class="row"><strong>Claude Code</strong><button type="button" onclick="copy('c2')">Copy</button></div>
+        <pre id="c2">${claudeCli.replace(/</g, "&lt;")}</pre>
+      </section>
+    </div>
   </div>
   <script>
     function copy(id) {

@@ -5,8 +5,8 @@ import { BrandMark } from "@/components/brand-mark";
 
 export function SiteHeader() {
   return (
-    <header className="border-b border-zinc-800/60">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 px-4 py-5">
+    <header className="overflow-visible border-b border-zinc-800/60">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 overflow-visible px-4 py-5">
         <Link
           href="/"
           className="group inline-flex items-center gap-2.5 text-sm font-medium tracking-tight text-zinc-100 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
@@ -14,8 +14,8 @@ export function SiteHeader() {
           <BrandMark size={20} interactive />
           Opus Sounds Directory
         </Link>
-        <nav className="flex items-center gap-1 text-sm" aria-label="Main">
-          <IconTooltip label="Browse sounds">
+        <nav className="flex items-center gap-1 overflow-visible text-sm" aria-label="Main">
+          <IconTooltip label="Browse sounds" side="bottom">
             <Link
               href="/"
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-900/80 hover:text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
@@ -24,7 +24,7 @@ export function SiteHeader() {
               <LayoutGrid className="h-4 w-4" aria-hidden />
             </Link>
           </IconTooltip>
-          <IconTooltip label="MCP server">
+          <IconTooltip label="MCP server" side="bottom">
             <Link
               href="/mcp"
               prefetch={false}
@@ -34,7 +34,7 @@ export function SiteHeader() {
               <Plug className="h-4 w-4" aria-hidden />
             </Link>
           </IconTooltip>
-          <IconTooltip label="About">
+          <IconTooltip label="About" side="bottom">
             <Link
               href="/about"
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-900/80 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
