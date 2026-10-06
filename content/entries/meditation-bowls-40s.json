@@ -1,0 +1,54 @@
+{
+  "id": "meditation-bowls-40s",
+  "slug": "meditation-bowls-40s",
+  "title": "Singing bowls meditation",
+  "category": "ambient",
+  "tags": [
+    "40s",
+    "singing bowl",
+    "drone",
+    "meditation"
+  ],
+  "prompt": "A 40-second singing-bowl meditation centred on F and C, with no beat. A large F bowl (F3) is struck with a soft mallet on frame 0. Each of its inharmonic modes (1, 2.71, 5.15, 8.17 and 11.7 times the fundamental) is a slightly split doublet, so it beats slowly and turns gently in the stereo field. The same bowl is then rubbed around the rim: a singing F drone with a slow rotation shimmer and soft friction grain. The drone swells and settles on a 10-second breathing cycle (inhale to the peak, exhale to the trough), with a soft re-strike on the second breath. On frame 600 (20.0 s), at the bottom of an exhale, a smaller and higher C bowl (C5, a twelfth above the F) is struck. Its rim is rubbed too, and a brighter layer of slowly drifting high partials opens around it. A soft echo strike of the C bowl follows at 30 s. The last breaths exhale, the rubbing stops and the bowls fade into silence by the end. A long, soft room reverb surrounds everything, and nothing sits below 120 Hz.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 400616,
+  "timing": {
+    "fps": 30,
+    "durationSec": 40.0,
+    "samples": 1920000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "first bowl"
+    },
+    {
+      "frame": 600,
+      "label": "second bowl"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -1.84,
+    "durationSec": 40.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/meditation-bowls-40s/out.wav",
+    "mp3": "/assets/meditation-bowls-40s/out.mp3",
+    "spectrogram": "/assets/meditation-bowls-40s/spectrogram.png",
+    "code": "/assets/meditation-bowls-40s/generate.py"
+  },
+  "notes": "Singing-bowl meditation: struck F3 and C5 bowls built from inharmonic mode doublets (ratios ~1, 2.7, 5.1, 8.2, 11.7; splits 0.55-5.5 Hz, so every mode beats slowly and moves in stereo), plus rim-rubbed drones with a rotating AM shimmer and narrow-band friction grain. Drones swell on a 10 s breathing curve whose troughs fall on 0/10/20/30 s, so the C5 strike on frame 600 lands at the bottom of an exhale. A drifting high-partial shimmer opens after f600, then a long fade to silence from 33.5 s. Nothing below 130 Hz (8th-order HP); side high-passed at 320 Hz so the F3 fundamental stays mono.",
+  "mood": [
+    "calm",
+    "slow"
+  ],
+  "tempo": "slow"
+}
