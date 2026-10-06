@@ -42,9 +42,15 @@ export async function POST(request: Request) {
     );
   }
 
-  const entry = await saveSubmitEntry(result.data);
+  const entry = await saveSubmitEntry(result.data, "web");
   await touchSubmitRateLimit(fingerprint);
-  scheduleBackground(notifySubmitEntry(entry));
+  const { runSubmissionPipeline } = await import("@/lib/submit-pipeline");
+  scheduleBackground(runSubmissionPipeline(entry.id));
 
-  return NextResponse.json({ ok: true, id: entry.id });
+  return NextResponse.json({
+    ok: true,
+    id: entry.id,
+    submissionId: entry.id,
+    status: entry.status,
+  });
 }

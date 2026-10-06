@@ -5,17 +5,14 @@
   "category": "ui-sounds",
   "tags": [
     "ui",
-    "0.4s",
-    "error",
-    "felt",
-    "wood",
-    "minor third"
+    "0.4s"
   ],
-  "prompt": "A gentle 0.4-second \"nope\" for a UI error, with a C minor feel. Two soft felt-on-wood taps fall a minor third: Eb4 on frame 0, then C4 about 105 ms later, a little softer, with a quiet C3 body underneath it. Each tap is a muted wooden bar with felt-mallet harmonics and a soft knock. Its pitch sags by a few cents as it rings, so the pair reads as a shrug rather than an alarm. Everything sits under a gentle low-pass near 1.8 kHz with a small, dark room, and nothing is bright or sharp, so it stays pleasant on the hundredth repeat. The second tap fades out to silence well before the end, and the low end stays centred.",
-  "modelId": "claude-opus-5-5",
+  "prompt": "Make a 0.4 s UI error sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 19200 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: low muted thud + short dissonant interval, non-alarming, frame 0.\nMaster: \u221217 LUFS integrated (short UI SFX), true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
+  "modelId": "local-synth",
   "generatedAt": "2026-10-06",
-  "seed": 4004,
+  "seed": 42,
   "timing": {
+    "bpm": 120,
     "fps": 30,
     "durationSec": 0.4,
     "samples": 19200,
@@ -24,16 +21,17 @@
   "cues": [
     {
       "frame": 0,
-      "label": "nope tap"
+      "label": "tap"
     }
   ],
   "master": {
-    "targetLufs": -17.0,
+    "targetLufs": -17,
     "truePeakDbTp": -1
   },
   "metrics": {
     "lufs": -17.0,
-    "truePeak": -6.49,
+    "truePeak": -11.4,
+    "lufsMomentaryMax": -17.0,
     "durationSec": 0.4,
     "passedChecks": true
   },
@@ -43,11 +41,12 @@
     "spectrogram": "/assets/ui-error-soft/spectrogram.png",
     "code": "/assets/ui-error-soft/generate.py"
   },
-  "notes": "Two felt-mallet wooden-bar taps falling a minor third (Eb4 on frame 0, C4 at 105 ms with a quiet C3 body), each with a few cents of pitch sag and a low-passed knock. Whole mix sits under a 1.8 kHz + 4.5 kHz low-pass with a small dark 0.22 s room, mono below ~400 Hz; peaks only -6.5 dBTP so the limiter never engages. 25 ms RMS arc: -13 -16 -19 -23 | -14 -15 -17 -20 ... -38 -> silence.",
+  "notes": "Runner-verified local numpy/scipy synthesis. Mastering: pyloudnorm stereo LUFS + true-peak limit (ffmpeg ebur128 verification).",
   "mood": [
     "sad",
     "calm",
     "dark"
   ],
-  "tempo": "slow"
+  "tempo": "slow",
+  "targetModelId": "claude-opus-5-5"
 }

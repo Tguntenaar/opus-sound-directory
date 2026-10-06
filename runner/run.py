@@ -66,6 +66,10 @@ def run_entry(
                 raise FileNotFoundError(f"pipeline-only: missing {wav_path}")
         elif mock:
             entry["seed"] = attempt_seed
+            duration_sec = float(timing.get("durationSec", 3))
+            entry["timing"]["sampleRate"] = SAMPLE_RATE
+            entry["timing"]["samples"] = int(duration_sec * SAMPLE_RATE)
+            expected_samples = entry["timing"]["samples"]
             audio = synthesise_for_entry(entry)
             write_wav(wav_path, audio)
             write_generate_py(code_path, entry)
@@ -97,6 +101,13 @@ def run_entry(
         "truePeak": best_metrics["truePeak"],
         "durationSec": best_metrics["durationSec"],
         "passedChecks": best_metrics["passedChecks"],
+        **(
+            {
+                k: best_metrics[k]
+                for k in ("lufsMomentaryMax", "lufsShortTermMax")
+                if best_metrics.get(k) is not None
+            }
+        ),
     }
     entry["assets"] = {
         "wav": f"/assets/{entry_id}/out.wav",

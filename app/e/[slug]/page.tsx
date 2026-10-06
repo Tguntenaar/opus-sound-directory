@@ -2,10 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getAllEntries, getEntryBySlug } from "@/lib/entries";
-import { canonicalForPath, entryShareDescription } from "@/lib/site-metadata";
+import { getAllEntriesMerged, getEntryBySlugMerged } from "@/lib/entries";
+import { isCommunityEntry } from "@/lib/community-types";
+import { canonicalForPath } from "@/lib/site-metadata";
 import { SITE_NAME } from "@/lib/site-url";
 import { CATEGORIES } from "@/lib/categories";
+import {
+  entryMetaDescription,
+  entryPageTitle,
+  entryAudioUrls,
+  relatedEntries,
+  spectrogramAlt,
+} from "@/lib/entry-seo";
 import { AudioPlayer } from "@/components/audio-player";
 import { CopyButton } from "@/components/copy-button";
 import { MetricsPanel } from "@/components/metrics-panel";
@@ -16,66 +24,88 @@ import { MoodChips } from "@/components/mood-chips";
 import { ModelBadge } from "@/components/model-badge";
 import { SpectrogramImage } from "@/components/spectrogram-image";
 import { EntryShareActions } from "@/components/entry-share-actions";
-import { entryAudioObjectJsonLd } from "@/lib/structured-data";
+import { entryAudioObjectJsonLd, breadcrumbListJsonLd } from "@/lib/structured-data";
 import { JsonLd } from "@/components/json-ld";
+import { RelatedEntries } from "@/components/related-entries";
+import { RelatedGuideLink } from "@/components/related-guide-link";
+import { DEFAULT_OG_IMAGE } from "@/lib/site-url";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  return getAllEntries().map((e) => ({ slug: e.slug }));
+  const entries = await getAllEntriesMerged();
+  return entries.map((e) => ({ slug: e.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const entry = getEntryBySlug(slug);
+  const entry = await getEntryBySlugMerged(slug);
   if (!entry) {
     return { title: "Not found" };
   }
-  const description = entryShareDescription(entry);
-  const image = entry.assets.spectrogram;
-  const title = entry.title;
+  const description = entryMetaDescription(entry);
+  const title = entryPageTitle(entry);
+  const image = entry.assets.spectrogram || DEFAULT_OG_IMAGE;
+  const { mp3, canonical } = entryAudioUrls(entry);
   return {
     title,
     description,
     alternates: { canonical: canonicalForPath(`/e/${entry.slug}`) },
     openGraph: {
-      type: "article",
-      title,
+      type: "music.song",
+      title: entry.title,
       description,
       url: `/e/${entry.slug}`,
-      images: [
-        {
-          url: image,
-          alt: `Spectrogram for ${entry.title}`,
-        },
-      ],
+      images: [{ url: image, alt: spectrogramAlt(entry) }],
+      ...(entry.assets.mp3 ? { audio: [{ url: mp3, type: "audio/mpeg" }] } : {}),
     },
     twitter: {
-      card: "summary_large_image",
-      title: `${title} · ${SITE_NAME}`,
+      card: entry.assets.mp3 ? "player" : "summary_large_image",
+      title: `${entry.title} · ${SITE_NAME}`,
       description,
       images: [image],
+      ...(entry.assets.mp3
+        ? {
+            players: [
+              {
+                playerUrl: canonical,
+                streamUrl: mp3,
+                width: 480,
+                height: 200,
+              },
+            ],
+          }
+        : {}),
     },
   };
 }
 
 export default async function EntryPage({ params }: Props) {
   const { slug } = await params;
-  const entry = getEntryBySlug(slug);
+  const entry = await getEntryBySlugMerged(slug);
   if (!entry) notFound();
 
+  const community = isCommunityEntry(entry);
+  const hasAudio = community ? entry.hasRenderedAudio && Boolean(entry.assets.mp3) : true;
+  const all = await getAllEntriesMerged();
   const catLabel = CATEGORIES[entry.category]?.label ?? entry.category;
+  const related = relatedEntries(entry, all);
+  const breadcrumbs = breadcrumbListJsonLd([
+    { name: "Browse", path: "/" },
+    { name: catLabel, path: `/c/${entry.category}` },
+    { name: entry.title, path: `/e/${entry.slug}` },
+  ]);
 
   return (
     <article className="page-enter flex flex-col gap-8">
-      <JsonLd data={entryAudioObjectJsonLd(entry)} />
+      <JsonLd data={[entryAudioObjectJsonLd(entry), breadcrumbs]} />
       <div className="flex flex-col gap-2">
         <Link
-          href="/"
+          href={`/c/${entry.category}`}
           className="inline-flex w-fit items-center gap-1.5 text-sm text-violet-400 transition-colors hover:text-violet-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
         >
           <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
-          Browse
+          {catLabel}
         </Link>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -84,22 +114,51 @@ export default async function EntryPage({ params }: Props) {
           </div>
           <EntryShareActions slug={entry.slug} title={entry.title} />
         </div>
-        <div className="mt-3 max-w-md">
-          <ModelBadge entry={entry} prominent />
+        <RelatedGuideLink category={entry.category} />
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <div className="max-w-md">
+            <ModelBadge entry={entry} prominent />
+          </div>
         </div>
+        {community?.author?.name && (
+          <p className="text-sm text-zinc-500">
+            Credit:{" "}
+            {community.author.url ? (
+              <a
+                href={community.author.url}
+                className="text-violet-400 hover:text-violet-300"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {community.author.name}
+              </a>
+            ) : (
+              community.author.name
+            )}
+          </p>
+        )}
         <div className="mt-3">
           <MoodChips entry={entry} />
         </div>
         <UsageBadges entryId={entry.id} className="mt-3" />
       </div>
 
-      <AudioPlayer audioId={entry.id} src={entry.assets.mp3} title={entry.title} />
-      <DownloadLinks
-        entryId={entry.id}
-        wav={entry.assets.wav}
-        mp3={entry.assets.mp3}
-        title={entry.title}
-      />
+      {hasAudio ? (
+        <>
+          <AudioPlayer audioId={entry.id} src={entry.assets.mp3} title={entry.title} />
+          <DownloadLinks
+            entryId={entry.id}
+            wav={entry.assets.wav}
+            mp3={entry.assets.mp3}
+            title={entry.title}
+          />
+        </>
+      ) : (
+        <p className="rounded-xl border border-zinc-800 bg-zinc-900/40 px-4 py-3 text-sm text-zinc-400">
+          Prompt + code (not yet rendered) — run the synthesis script locally or wait for a maintainer
+          render. Use the code section below.
+        </p>
+      )}
 
       <section className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -119,13 +178,17 @@ export default async function EntryPage({ params }: Props) {
         <MetricsPanel entry={entry} />
       </section>
 
-      <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium text-zinc-100">Spectrogram</h2>
-        <SpectrogramImage
-          src={entry.assets.spectrogram}
-          alt={`Spectrogram for ${entry.title}`}
-        />
-      </section>
+      {entry.assets.spectrogram ? (
+        <section className="flex flex-col gap-3">
+          <h2 className="text-lg font-medium text-zinc-100">Spectrogram</h2>
+          <SpectrogramImage
+            src={entry.assets.spectrogram}
+            alt={spectrogramAlt(entry)}
+            width={1200}
+            height={400}
+          />
+        </section>
+      ) : null}
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-medium text-zinc-100">Generated code</h2>
@@ -135,8 +198,7 @@ export default async function EntryPage({ params }: Props) {
       <section className="flex flex-col gap-2 text-sm text-zinc-500">
         <h2 className="text-lg font-medium text-zinc-100">Timing & cues</h2>
         <p>
-          {entry.timing.bpm != null && `${entry.timing.bpm} BPM · `}
-          {entry.timing.fps} fps · seed {entry.seed}
+          {entry.timing.bpm} BPM · {entry.timing.fps} fps · seed {entry.seed}
         </p>
         <ul className="list-inside list-disc text-zinc-400">
           {entry.cues.map((c) => (
@@ -147,6 +209,8 @@ export default async function EntryPage({ params }: Props) {
         </ul>
         {entry.notes && <p className="text-zinc-600">{entry.notes}</p>}
       </section>
+
+      <RelatedEntries entries={related} category={entry.category} />
     </article>
   );
 }

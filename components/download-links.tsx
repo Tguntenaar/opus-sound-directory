@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Check, Download } from "lucide-react";
 import { useStats } from "@/components/stats-provider";
 import { IconButton } from "@/components/icon-button";
+import { Cc0Badge } from "@/components/cc0-badge";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -56,6 +57,7 @@ export function DownloadLinks({ entryId, wav, mp3, title }: Props) {
         )}
       </IconButton>
       <span className="text-xs text-zinc-600" aria-hidden>WAV · MP3</span>
+      <Cc0Badge />
     </div>
   );
 }

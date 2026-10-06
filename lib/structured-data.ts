@@ -3,6 +3,8 @@ import type { SoundEntry } from "@/lib/entries-types";
 import { modelAttribution } from "@/lib/model-display";
 import { getSiteUrl, SITE_NAME, DEFAULT_SITE_DESCRIPTION } from "@/lib/site-url";
 import { entryShareDescription } from "@/lib/site-metadata";
+import { CC0_LICENSE_URL } from "@/lib/licenses";
+import { OWNER_SAME_AS } from "@/lib/owner-profiles";
 
 export function iso8601Duration(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds <= 0) return "PT0S";
@@ -56,6 +58,7 @@ export function entryAudioObjectJsonLd(entry: SoundEntry) {
     encodingFormat: "audio/mpeg",
     duration: iso8601Duration(dur),
     url,
+    license: CC0_LICENSE_URL,
     creator: recordingCreator(entry),
     ...(entry.modelId !== "local-synth"
       ? { generator: { "@type": "SoftwareApplication", name: entry.modelId } }
@@ -132,6 +135,12 @@ export function organizationJsonLd() {
     name: SITE_NAME,
     url: siteUrl,
     description: DEFAULT_SITE_DESCRIPTION,
+    sameAs: [...OWNER_SAME_AS],
+    founder: {
+      "@type": "Person",
+      name: "Thomas Guntenaar",
+      sameAs: [...OWNER_SAME_AS],
+    },
   };
 }
 
@@ -151,6 +160,38 @@ export function blogPostingJsonLd(post: BlogPost) {
     author: organizationJsonLd(),
     publisher: organizationJsonLd(),
     image: absoluteUrl("/og-default.png"),
+  };
+}
+
+export function breadcrumbListJsonLd(
+  items: { name: string; path: string }[],
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: absoluteUrl(item.path),
+    })),
+  };
+}
+
+export function categoryFaqPageJsonLd(
+  category: string,
+  faq: { q: string; a: string }[],
+) {
+  const url = absoluteUrl(`/c/${category}`);
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    url,
+    mainEntity: faq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
   };
 }
 

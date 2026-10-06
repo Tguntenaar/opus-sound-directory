@@ -26,7 +26,7 @@ def maybe_downsample_for_workers(wav_path: Path) -> bool:
             "-i",
             str(wav_path),
             "-ac",
-            "1",
+            "2",
             "-ar",
             str(SHIP_SR),
             str(tmp),

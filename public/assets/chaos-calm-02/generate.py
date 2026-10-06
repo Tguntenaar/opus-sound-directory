@@ -1,555 +1,351 @@
-"""chaos-calm-02: Opus Sound Directory
-
-A 30-second traffic-glitch-to-strings bed in Db major at 90 BPM, for a city-to-calm
-story ad. Frame 0 hits a sharp urban accent: a truck air-horn chord, two clashing
-car horns and a low engine thump. For ten seconds the street gets denser. Idling
-engines drone, cars pass with Doppler pitch drops and left-to-right pans, horns
-honk on and off a 16th-note grid, and a distant siren wails closer. A digital
-glitch layer chops the street into stutters, repeats and pitch-shifted slices, and
-in the last beat it accelerates from 1/32 to 1/128 repeats. At frame 300 (10.0 s)
-the whole street, echoes included, stops in a 3 ms fade that ends exactly on the
-cue. Warm synthetic strings (detuned band-limited saw ensembles with vibrato) rise
-from silence on the same sample. Over 20 s they build slowly: a dark low Db chord,
-then a bowed contrabass, then a legato violin melody with portamento, then soft
-8th-note viola pulses at 90 BPM, an octave doubling and an opening tone. The
-progression is Db, Ab/C, Bbm7, Gbmaj7, Db/F, Gb, Absus4, Ab. It swells to a peak
-and lands on a high Db chord at 26 s that rings to exact silence. Only engine
-lows, the contrabass and a soft sub swell sit below 120 Hz, all mono.
-
-Run:  python3 generate.py   -> writes out.wav next to this file.
-"""
+"""Synthesis code for chaos-calm-02. Run: python generate.py (writes out.wav)."""
 from __future__ import annotations
 
 from pathlib import Path
 
 import numpy as np
-from scipy import signal
-from scipy.io import wavfile
-from scipy.ndimage import gaussian_filter1d, minimum_filter1d, uniform_filter1d
+
+import math
+import wave
+from pathlib import Path
+
+import numpy as np
 
 SAMPLE_RATE = 48000
-SEED = 230300
-DURATION_SEC = 30
-BPM = 90
-KEY = "Db major"
-FPS = 30
-CUE_FRAMES = (0, 300)          # frame 0: urban hit, frame 300: traffic cuts, strings rise
-TARGET_LUFS = -14.0
-TRUE_PEAK_CEILING_DBTP = -1.0
-
-SR = SAMPLE_RATE
-N = DURATION_SEC * SR
-BEAT = 60.0 / BPM              # 0.6667 s = 32000 samples
-BAR = 4 * BEAT                 # 2.6667 s
-SIX = BEAT / 4                 # 16th = 8000 samples
-CUT_T = CUE_FRAMES[1] / FPS    # 10.0 s
-CUT_S = int(round(CUT_T * SR)) # 480000
-
-rng = np.random.default_rng(SEED)
 
 
-# ---------------------------------------------------------------- utilities
-def hz(midi: float) -> float:
-    return 440.0 * 2 ** ((midi - 69) / 12)
+def t_grid(duration_sec: float) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration_sec)
+    return np.linspace(0, duration_sec, n, endpoint=False, dtype=np.float64)
 
 
-def tt(dur: float) -> np.ndarray:
-    return np.arange(int(round(dur * SR))) / SR
+def sine(freq: float, duration_sec: float, phase: float = 0.0) -> np.ndarray:
+    tt = t_grid(duration_sec)
+    return np.sin(2 * np.pi * freq * tt + phase).astype(np.float32)
 
 
-def fade(x: np.ndarray, a: float = 0.001, r: float = 0.005) -> np.ndarray:
-    """Raised-cosine attack/release so nothing starts or stops with a click."""
-    x = x.copy()
-    na, nr = max(1, int(a * SR)), max(1, int(r * SR))
-    ea = 0.5 - 0.5 * np.cos(np.linspace(0, np.pi, na))
-    er = 0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nr))
-    if x.ndim == 2:
-        ea, er = ea[:, None], er[:, None]
-    x[:na] *= ea
-    x[-nr:] *= er
-    return x
+def envelope_adsr(
+    length: int,
+    attack: float = 0.01,
+    decay: float = 0.05,
+    sustain: float = 0.7,
+    release: float = 0.12,
+) -> np.ndarray:
+    a = max(1, int(attack * SAMPLE_RATE))
+    d = max(1, int(decay * SAMPLE_RATE))
+    r = max(1, int(release * SAMPLE_RATE))
+    s = max(0, length - a - d - r)
+    env = np.concatenate(
+        [
+            np.linspace(0, 1, a),
+            np.linspace(1, sustain, d),
+            np.full(s, sustain),
+            np.linspace(sustain, 0, r),
+        ]
+    )
+    if len(env) < length:
+        env = np.pad(env, (0, length - len(env)))
+    return env[:length].astype(np.float32)
 
 
-def place(bus: np.ndarray, x: np.ndarray, t: float, gain: float = 1.0, pan=0.0) -> None:
-    """Mix a mono (L,) or stereo (L,2) snippet into a stereo bus at time t.
-    pan may be a scalar or a per-sample array (equal-power)."""
-    s = int(round(t * SR))
-    if s >= len(bus):
-        return
-    if x.ndim == 1:
-        th = (np.asarray(pan) + 1) * np.pi / 4
-        x = np.stack([x * np.cos(th), x * np.sin(th)], axis=1) * np.sqrt(2)
-    e = min(len(bus), s + len(x))
-    bus[s:e] += gain * x[: e - s]
+def soft_clip(x: np.ndarray, drive: float = 1.15) -> np.ndarray:
+    return np.tanh(x * drive).astype(np.float32)
 
 
-def sos_filter(x, kind, freq, order=2):
-    sos = signal.butter(order, freq, btype=kind, fs=SR, output="sos")
-    return signal.sosfilt(sos, x, axis=0)
+def limiter(x: np.ndarray, ceiling: float = 0.89) -> np.ndarray:
+    peak = float(np.max(np.abs(x)))
+    if peak > ceiling and peak > 0:
+        x = x * (ceiling / peak)
+    return x.astype(np.float32)
 
 
-def peaking_eq(x, f0, gain_db, q):
-    """RBJ cookbook peaking biquad."""
-    a_ = 10 ** (gain_db / 40)
-    w0 = 2 * np.pi * f0 / SR
-    alpha = np.sin(w0) / (2 * q)
-    b = [1 + alpha * a_, -2 * np.cos(w0), 1 - alpha * a_]
-    a = [1 + alpha / a_, -2 * np.cos(w0), 1 - alpha / a_]
-    return signal.lfilter(b, a, x, axis=0)
+def stereo(mono: np.ndarray, width: float = 0.12) -> np.ndarray:
+    n = len(mono)
+    pan = np.linspace(-width, width, n).astype(np.float32)
+    left = mono * (1 - pan)
+    right = mono * (1 + pan)
+    return np.stack([left, right], axis=-1)
 
 
-def noise(dur: float) -> np.ndarray:
-    return rng.standard_normal(int(round(dur * SR)))
+def fade_edges(mono: np.ndarray, sec: float = 0.03) -> np.ndarray:
+    f = max(1, int(sec * SAMPLE_RATE))
+    mono = mono.copy()
+    mono[:f] *= np.linspace(0, 1, f)
+    mono[-f:] *= np.linspace(1, 0, f)
+    return mono
 
 
-def wander(n: int, smooth_s: float) -> np.ndarray:
-    """Smoothed random control signal in [-1, 1], n samples."""
-    hop = 240
-    k = n // hop + 3
-    w = gaussian_filter1d(rng.standard_normal(k), smooth_s * SR / hop)
-    w = w / (np.abs(w).max() + 1e-12)
-    return np.interp(np.arange(n), np.arange(k) * hop, w)
+def integrated_lufs_estimate(mono: np.ndarray) -> float:
+    rms = float(np.sqrt(np.mean(mono**2)))
+    if rms < 1e-10:
+        return -70.0
+    return 20 * math.log10(rms) - 0.691
 
 
-def additive(phase: np.ndarray, f_max: float, weights_fn, f_limit: float = 9000.0) -> np.ndarray:
-    """Sum of harmonics sin(k*phase) with weights_fn(k) (scalar or per-sample), all < f_limit."""
-    y = np.zeros(len(phase))
-    for k in range(1, int(f_limit // max(f_max, 1.0)) + 1):
-        w = weights_fn(k)
-        if np.max(np.abs(w)) < 2e-4:
+def _as_stereo(audio: np.ndarray) -> np.ndarray:
+    if audio.ndim == 1:
+        return np.stack([audio, audio], axis=-1)
+    return audio
+
+
+def integrated_lufs_stereo(stereo: np.ndarray) -> float:
+    import pyloudnorm as pyln
+
+    st = _as_stereo(stereo).astype(np.float64)
+    meter = pyln.Meter(SAMPLE_RATE)
+    try:
+        return float(meter.integrated_loudness(st))
+    except Exception:
+        mono = st.mean(axis=1)
+        return integrated_lufs_estimate(mono.astype(np.float32))
+
+
+def normalize_lufs_stereo(stereo: np.ndarray, target: float = -14.0) -> np.ndarray:
+    import pyloudnorm as pyln
+
+    st = _as_stereo(stereo).astype(np.float64)
+    st -= np.mean(st, axis=0, keepdims=True)
+    meter = pyln.Meter(SAMPLE_RATE)
+    try:
+        loud = meter.integrated_loudness(st)
+        if loud > -70:
+            st = pyln.normalize.loudness(st, loud, target)
+    except Exception:
+        mono = st.mean(axis=1).astype(np.float32)
+        gain = 10 ** ((target - integrated_lufs_estimate(mono)) / 20)
+        st = st * gain
+    return st.astype(np.float32)
+
+
+def master_stereo(
+    stereo: np.ndarray,
+    target_lufs: float = -14.0,
+    true_peak_db: float = -1.0,
+) -> np.ndarray:
+    st = normalize_lufs_stereo(stereo, target_lufs)
+    ceiling = 10 ** (true_peak_db / 20.0)
+    for _ in range(8):
+        st = soft_clip(st, 1.05)
+        peak = float(np.max(np.abs(st)))
+        if peak > ceiling and peak > 0:
+            st = st * (ceiling / peak)
+        loud = integrated_lufs_stereo(st.astype(np.float64))
+        if abs(loud - target_lufs) > 0.45:
+            st = normalize_lufs_stereo(st, target_lufs)
+    peak = float(np.max(np.abs(st)))
+    if peak > ceiling and peak > 0:
+        st = st * (ceiling / peak)
+    return st.astype(np.float32)
+
+
+def master_chain(mono: np.ndarray, target_lufs: float = -14.0, true_peak_db: float = -1.0) -> np.ndarray:
+    """Mono convenience wrapper — loudness measured on duplicated stereo (matches ffmpeg ebur128)."""
+    return master_stereo(stereo(mono, width=0.0), target_lufs, true_peak_db).mean(axis=1).astype(np.float32)
+
+
+def kick(duration: float = 0.18, seed: int = 0) -> np.ndarray:
+    tt = t_grid(duration)
+    pitch = 58 * np.exp(-tt * 36)
+    body = np.sin(2 * np.pi * pitch * tt) * np.exp(-tt * 14)
+    click = np.random.default_rng(seed).standard_normal(len(tt)).astype(np.float32)
+    click *= np.exp(-tt * 80) * 0.15
+    return (body + click).astype(np.float32)
+
+
+def hihat(duration: float = 0.06, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    rng = np.random.default_rng(seed)
+    noise = rng.standard_normal(n).astype(np.float32)
+    env = np.exp(-np.linspace(0, 18, n))
+    return noise * env * 0.35
+
+
+def clap(duration: float = 0.12, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    rng = np.random.default_rng(seed)
+    bursts = np.zeros(n, dtype=np.float32)
+    for off in (0, 0.008, 0.016):
+        i = int(off * SAMPLE_RATE)
+        blen = min(n - i, int(0.04 * SAMPLE_RATE))
+        if blen <= 0:
             continue
-        y += w * np.sin(k * phase)
-    return y
+        b = rng.standard_normal(blen).astype(np.float32)
+        b *= np.exp(-np.linspace(0, 10, blen))
+        bursts[i : i + blen] += b
+    return bursts * 0.5
 
 
-def reverb(x: np.ndarray, rt60: float, band=(250, 7500), predelay: float = 0.02) -> np.ndarray:
-    """Decorrelated stereo exponential-noise IR convolution."""
-    t = tt(rt60 * 1.1)
-    env = np.exp(-6.9 * t / rt60)
-    irs = []
-    for _ in range(2):
-        ir = sos_filter(rng.standard_normal(len(t)), "bandpass", list(band)) * env
-        ir = np.concatenate([np.zeros(int(predelay * SR)), ir])
-        irs.append(ir / np.sqrt(np.sum(ir ** 2)))
-    return np.stack([signal.fftconvolve(x[:, 0], irs[0])[: len(x)],
-                     signal.fftconvolve(x[:, 1], irs[1])[: len(x)]], axis=1)
+def pluck(freq: float, duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    tt = np.linspace(0, duration, n, endpoint=False)
+    rng = np.random.default_rng(seed)
+    partials = [1.0, 0.5, 0.25, 0.12]
+    sig = np.zeros(n, dtype=np.float32)
+    for i, amp in enumerate(partials):
+        sig += amp * np.sin(2 * np.pi * freq * (i + 1) * tt + rng.uniform(0, 0.2))
+    env = envelope_adsr(n, attack=0.002, decay=0.08, sustain=0.15, release=0.2)
+    return sig * env
 
 
-# ---------------------------------------------------------------- traffic voices
-def horn(f1: float, f2: float | None, dur: float) -> np.ndarray:
-    """Car horn: one or two brassy additive tones with a pitch scoop and a 2.5 kHz honk formant."""
-    t = tt(dur)
-    y = np.zeros_like(t)
-    for f in ([f1] if f2 is None else [f1, f2]):
-        scoop = 2 ** (-40 / 1200 * np.exp(-t / 0.025))
-        ph = 2 * np.pi * np.cumsum(f * scoop * (1 + 0.002 * np.sin(2 * np.pi * 7 * t))) / SR
-        y += additive(ph, f, lambda k: (1 / k ** 0.85) * (1.0 if k % 2 else 0.55), 6500)
-    y = peaking_eq(y, 2500, 7, 1.2)
-    y = sos_filter(y, "highpass", 250, order=2)
-    env = np.minimum(1, t / 0.008) * (0.85 + 0.15 * np.exp(-t / 0.08))
-    return fade(y * env / (np.abs(y).max() + 1e-9), a=0.002, r=0.025)
+def bass(freq: float, duration: float) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    tt = np.linspace(0, duration, n, endpoint=False)
+    sig = np.sin(2 * np.pi * freq * tt) + 0.35 * np.sin(2 * np.pi * freq * 2 * tt)
+    env = envelope_adsr(n, attack=0.01, decay=0.1, sustain=0.6, release=0.15)
+    return (sig * env * 0.55).astype(np.float32)
 
 
-def engine_idle(f_fire: float, dur: float) -> np.ndarray:
-    """Idling engine: harmonic series of the firing rate with jittery AM, rolled off by 1.5 kHz."""
-    n = int(round(dur * SR))
-    jit = 1 + 0.03 * wander(n, 0.15)
-    ph = 2 * np.pi * np.cumsum(f_fire * jit) / SR
-    y = additive(ph, f_fire, lambda k: (1 / k ** 0.7) / (1 + (k * f_fire / 600) ** 2), 2000)
-    am = 0.75 + 0.25 * np.sin(ph / 2)          # uneven cylinder thump
-    return y * am / (np.abs(y).max() + 1e-9)
+def pad_layers(root: float, duration: float, seed: int = 0) -> np.ndarray:
+    rng = np.random.default_rng(seed)
+    freqs = [root, root * 1.25, root * 1.5, root * 2.0]
+    n = int(SAMPLE_RATE * duration)
+    mix = np.zeros(n, dtype=np.float32)
+    for f in freqs:
+        layer = sine(f * (1 + rng.uniform(-0.008, 0.008)), duration)
+        mix += layer
+    env = envelope_adsr(n, attack=0.4, decay=0.2, sustain=0.75, release=0.5)
+    return (mix / len(freqs) * env).astype(np.float32)
 
 
-def car_pass(f_eng: float, dur: float, speed: float, dist: float) -> tuple[np.ndarray, np.ndarray]:
-    """Passing car centred at dur/2: Doppler-shifted engine + tyre noise. Returns (mono, pan curve)."""
-    t = tt(dur)
-    x = speed * (t - dur / 2)
-    r = np.sqrt(x ** 2 + dist ** 2)
-    v_r = speed * x / r                                # + when receding
-    dop = 343.0 / (343.0 + v_r)
-    ph = 2 * np.pi * np.cumsum(f_eng * dop) / SR
-    eng = additive(ph, f_eng * 1.1, lambda k: (1 / k) / (1 + (k * f_eng / 900) ** 2), 4000)
-    tyre = sos_filter(noise(dur), "bandpass", [400, 2600]) * 0.5
-    amp = (dist / r) ** 1.3
-    y = (eng / (np.abs(eng).max() + 1e-9) + tyre) * amp
-    pan = np.clip(x / (np.abs(x).max() + 1e-9) * 1.6, -0.9, 0.9)
-    return fade(y, a=0.05, r=0.05), pan
+def piano_tone(freq: float, duration: float, seed: int = 0) -> np.ndarray:
+    return pluck(freq, duration, seed=seed) * 0.85
 
 
-def siren(dur: float) -> np.ndarray:
-    """Distant wail siren, 650 Hz .. 1.3 kHz, 3.2 s cycle, getting closer."""
-    t = tt(dur)
-    lfo = 0.5 - 0.5 * np.cos(2 * np.pi * t / 3.2)
-    f = 650 * 2 ** lfo
-    ph = 2 * np.pi * np.cumsum(f) / SR
-    y = np.sin(ph) + 0.3 * np.sin(2 * ph) + 0.12 * np.sin(3 * ph)
-    return fade(y * (0.25 + 0.75 * (t / dur) ** 2), a=0.4, r=0.01)
+def noise_burst(duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    rng = np.random.default_rng(seed)
+    return (rng.standard_normal(n) * np.exp(-np.linspace(0, 6, n))).astype(np.float32)
 
 
-def glitch(bus: np.ndarray, start_s: int, span: int, slice_len: int, pitch: tuple[int, int] | None = None) -> None:
-    """Replace bus[start:start+span] with repeats of a slice (optionally resampled), 1.5 ms fades."""
-    src = bus[start_s:start_s + slice_len].copy()
-    if pitch is not None:
-        up, down = pitch
-        src = signal.resample_poly(bus[start_s:start_s + slice_len * up // down + 64], down, up, axis=0)[:slice_len]
-    nf = int(0.0015 * SR)
-    w = np.ones(len(src))
-    w[:nf] = 0.5 - 0.5 * np.cos(np.linspace(0, np.pi, nf))
-    w[-nf:] = 0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nf))
-    rep = np.tile(src * w[:, None], (span // len(src) + 1, 1))[:span]
-    edge = np.ones(span)
-    edge[:nf] = w[:nf]
-    edge[-nf:] = w[-nf:]
-    seg = bus[start_s:start_s + span]
-    bus[start_s:start_s + span] = seg * (1 - edge)[:, None] + rep * edge[:, None]
+def bandpass_noise(duration: float, f0: float, f1: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    rng = np.random.default_rng(seed)
+    noise = rng.standard_normal(n)
+    # simple sweepable resonant filter via cumulative sine modulation
+    tt = np.linspace(0, duration, n, endpoint=False)
+    freq = np.linspace(f0, f1, n)
+    mod = np.sin(2 * np.pi * freq * tt)
+    return (noise * mod * np.linspace(0.2, 1, n)).astype(np.float32)
 
 
-# ---------------------------------------------------------------- string voices
-def ensemble(freq: np.ndarray, fc: np.ndarray, voices: int = 4, spread: float = 9.0,
-             vib: np.ndarray | float = 0.004, f_limit: float = 9000.0) -> np.ndarray:
-    """Synthetic string section: detuned band-limited saws, each with its own vibrato,
-    partial weights rolled off by a time-varying brightness fc. Stereo (voices alternate L/R)."""
-    n = len(freq)
-    t = np.arange(n) / SR
-    out = np.zeros((n, 2))
-    f_max = float(np.max(freq)) * (1 + spread / 1200 + 0.01)
-    for v in range(voices):
-        cents = spread * (2 * v / max(1, voices - 1) - 1)
-        rate = rng.uniform(4.6, 5.8)
-        drift = 1 + 0.0015 * wander(n, 0.4)
-        f = freq * 2 ** (cents / 1200) * drift * (1 + vib * np.sin(2 * np.pi * rate * t + rng.uniform(0, 6.3)))
-        ph = 2 * np.pi * np.cumsum(f) / SR + rng.uniform(0, 6.3)
-        f0 = float(np.median(freq))
-        y = additive(ph, f_max, lambda k: (1 / k) / np.sqrt(1 + (k * f0 / fc) ** 4),
-                     min(f_limit, 5.0 * float(np.max(fc))))
-        out[:, v % 2] += y
-    return out / voices
+def whoosh_riser(duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    tt = np.linspace(0, duration, n, endpoint=False)
+    freqs = np.linspace(200, 4000, n)
+    phase = np.cumsum(freqs / SAMPLE_RATE) * 2 * np.pi
+    tone = np.sin(phase) * np.linspace(0.05, 0.9, n)
+    noise = bandpass_noise(duration, 300, 8000, seed=seed) * np.linspace(0.1, 0.7, n)
+    return (tone + noise).astype(np.float32)
 
 
-def line_curve(notes, n: int, glide: float = 0.08) -> tuple[np.ndarray, np.ndarray]:
-    """Legato pitch curve (Hz) with portamento, and an amplitude curve with soft re-bows.
-    notes = [(start_s, dur_s, midi)] relative to the line start."""
-    t = np.arange(n) / SR
-    bt, bf = [], []
-    for i, (s, d, m) in enumerate(notes):
-        prev = np.log2(hz(notes[i - 1][2])) if i else np.log2(hz(m))
-        bt += [s, s + (glide if i else 1e-4)]
-        bf += [prev, np.log2(hz(m))]
-    f = 2 ** np.interp(t, bt, bf)
-    amp = np.zeros(n)
-    for s, d, m in notes:
-        i0, i1 = int(s * SR), min(n, int((s + d) * SR))
-        u = np.arange(i1 - i0) / SR
-        a = np.minimum(1, u / 0.18) * (0.88 + 0.12 * np.minimum(1, u / 0.8))     # bow in, then lean
-        r = np.clip((d - u) / 0.12, 0, 1)
-        amp[i0:i1] = np.maximum(amp[i0:i1], a * np.sin(np.pi / 2 * r) ** 2 * 0.85 + 0.15 * (u > 0))
-    return f, gaussian_filter1d(amp, 0.02 * SR)
+def metallic_hit(seed: int = 0) -> np.ndarray:
+    dur = 0.35
+    n = int(SAMPLE_RATE * dur)
+    tt = np.linspace(0, dur, n, endpoint=False)
+    rng = np.random.default_rng(seed)
+    freqs = [880, 1320, 1760, 2210]
+    sig = np.zeros(n, dtype=np.float32)
+    for f in freqs:
+        sig += np.sin(2 * np.pi * f * tt) * np.exp(-tt * (8 + rng.uniform(0, 4)))
+    _mix_at(sig, 0, noise_burst(0.08, seed=seed + 1), 0.4)
+    return sig
 
 
-# ---------------------------------------------------------------- loudness / peak
-def k_weight(x: np.ndarray) -> np.ndarray:
-    """ITU-R BS.1770 K-weighting (48 kHz coefficients)."""
-    b1 = [1.53512485958697, -2.69169618940638, 1.19839281085285]
-    a1 = [1.0, -1.69065929318241, 0.73248077421585]
-    b2 = [1.0, -2.0, 1.0]
-    a2 = [1.0, -1.99004745483398, 0.99007225036621]
-    return signal.lfilter(b2, a2, signal.lfilter(b1, a1, x, axis=0), axis=0)
+def ui_chime_pair(f1: float, f2: float, duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    mono = np.zeros(n, dtype=np.float32)
+    a = pluck(f1, duration * 0.55, seed=seed)
+    b = pluck(f2, duration * 0.65, seed=seed + 1)
+    mono[: len(a)] += a
+    offset = int(0.08 * SAMPLE_RATE)
+    mono[offset : offset + len(b)] += b * 0.85
+    return mono[:n]
 
 
-def integrated_lufs(x: np.ndarray) -> float:
-    """BS.1770-4 integrated loudness: 400 ms blocks, 75 % overlap, -70 LUFS abs + -10 LU rel gates."""
-    y = k_weight(x)
-    blk, hop = int(0.4 * SR), int(0.1 * SR)
-    starts = range(0, len(y) - blk + 1, hop)
-    z = np.array([np.mean(y[s:s + blk] ** 2, axis=0).sum() for s in starts])
-    lk = -0.691 + 10 * np.log10(z + 1e-20)
-    z1 = z[lk > -70]
-    rel = -0.691 + 10 * np.log10(z1.mean()) - 10
-    z2 = z1[(-0.691 + 10 * np.log10(z1)) > rel]
-    return float(-0.691 + 10 * np.log10(z2.mean()))
+def _mix_at(mono: np.ndarray, pos: int, snippet: np.ndarray, gain: float = 1.0) -> None:
+    end = min(len(mono), pos + len(snippet))
+    if pos >= end:
+        return
+    mono[pos:end] += snippet[: end - pos] * gain
 
 
-def true_peak_dbtp(x: np.ndarray) -> float:
-    os = signal.resample_poly(x, 4, 1, axis=0)
-    return float(20 * np.log10(np.max(np.abs(os)) + 1e-20))
+def chaos_clocks(duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    mono = np.zeros(n, dtype=np.float32)
+    rng = np.random.default_rng(seed)
+    for _ in range(24):
+        pos = rng.integers(0, max(1, n - int(0.2 * SAMPLE_RATE)))
+        tick = pluck(1800 + rng.uniform(-400, 400), 0.08, seed=int(rng.integers(0, 1_000_000)))
+        _mix_at(mono, pos, tick, 0.35)
+    _mix_at(mono, 0, noise_burst(min(duration, 0.4), seed=seed), 0.25)
+    for i in range(0, n, int(SAMPLE_RATE * 0.5)):
+        _mix_at(mono, i, kick(0.1, seed=seed + i), 0.5)
+    return mono
 
 
-def soft_limiter(x: np.ndarray, ceiling_db: float, look_ms: float = 2.0, rel_ms: float = 90.0) -> np.ndarray:
-    """Look-ahead gain limiter driven by the 4x-oversampled (true) peak. Never clips."""
-    ceil = 10 ** (ceiling_db / 20)
-    os = np.abs(signal.resample_poly(x, 4, 1, axis=0)).max(axis=1)
-    pk = os[: len(x) * 4].reshape(len(x), 4).max(axis=1)
-    need = np.minimum(1.0, ceil / np.maximum(pk, 1e-12))
-    L = int(look_ms * 1e-3 * SR)
-    held = minimum_filter1d(need, size=2 * L + 1, mode="nearest")
-    rc = np.exp(-1.0 / (rel_ms * 1e-3 * SR))
-    g = np.empty_like(held)
-    prev = 1.0
-    for n, h in enumerate(held.tolist()):
-        prev = min(h, prev * rc + (1 - rc))
-        g[n] = prev
-    g = uniform_filter1d(g, size=L + 1, mode="nearest")
-    return x * g[:, None]
+def chaos_traffic(duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    mono = np.zeros(n, dtype=np.float32)
+    rng = np.random.default_rng(seed)
+    for _ in range(18):
+        pos = rng.integers(0, max(1, n - 4000))
+        honk = sine(220 + rng.uniform(-40, 40), 0.25) * envelope_adsr(int(0.25 * SAMPLE_RATE), 0.01, 0.05, 0.4, 0.1)
+        end = min(n, pos + len(honk))
+        _mix_at(mono, pos, honk, 0.4)
+    _mix_at(mono, 0, bandpass_noise(duration, 400, 2500, seed=seed), 0.2)
+    return mono
 
 
-def master(mix: np.ndarray) -> np.ndarray:
-    gain_db = TARGET_LUFS - integrated_lufs(mix)
-    ceiling = TRUE_PEAK_CEILING_DBTP - 0.3
-    for _ in range(12):
-        y = soft_limiter(mix * 10 ** (gain_db / 20), ceiling)
-        err = TARGET_LUFS - integrated_lufs(y)
-        if abs(err) < 0.03:
-            break
-        gain_db += err
-    return y
+def crossfade_at(chaos: np.ndarray, calm: np.ndarray, cue: int, xfade_sec: float = 0.35) -> np.ndarray:
+    n = len(chaos)
+    calm = calm[:n]
+    if len(calm) < n:
+        calm = np.pad(calm, (0, n - len(calm)))
+    xf = int(xfade_sec * SAMPLE_RATE)
+    out = chaos.copy()
+    end = min(n, cue + xf)
+    ramp = np.linspace(1, 0, max(1, end - cue))
+    out[cue:end] = chaos[cue:end] * ramp[: end - cue] + calm[cue:end] * (1 - ramp[: end - cue])
+    out[end:] = calm[end:]
+    return fade_edges(out, 0.04)
 
 
-def bus_chain(x: np.ndarray) -> np.ndarray:
-    """Master bus filters: mono below ~250 Hz (M/S high-pass on the side), subsonic + top trims."""
-    mid, side = (x[:, 0] + x[:, 1]) / 2, (x[:, 0] - x[:, 1]) / 2
-    side = sos_filter(side, "highpass", 250, order=8)
-    x = np.stack([mid + side, mid - side], axis=1)
-    x = sos_filter(x, "highpass", 22, order=2)
-    return sos_filter(x, "lowpass", 16500, order=4)
+def write_wav(path: Path, stereo_audio: np.ndarray) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    audio = np.clip(stereo_audio, -1, 1)
+    pcm = (audio * 32767).astype(np.int16)
+    with wave.open(str(path), "w") as wf:
+        wf.setnchannels(2)
+        wf.setsampwidth(2)
+        wf.setframerate(SAMPLE_RATE)
+        wf.writeframes(pcm.tobytes())
 
 
-# ---------------------------------------------------------------- arrangement
-def render_traffic() -> np.ndarray:
-    S = CUT_S + int(0.01 * SR)
-    t = np.arange(S) / SR
-    street = np.zeros((S, 2))
-    low = np.zeros((S, 2))
-    send = np.zeros((S, 2))
-    dens = 0.55 + 0.45 * (t / CUT_T) ** 1.3
+E3, B3, D4, A3 = 164.81, 246.94, 293.66, 220.0
 
-    # idling engines (their lows go to the mono low bus, the rest stays panned)
-    for f, pan, g in ((31.0, -0.5, 0.30), (38.5, 0.4, 0.26), (44.0, 0.1, 0.20)):
-        e = engine_idle(f, S / SR) * dens
-        place(low, sos_filter(e, "lowpass", 120, order=4), 0.0, g * 0.55)
-        place(street, sos_filter(e, "highpass", 120, order=4), 0.0, g * 0.9, pan=pan)
-    # road hiss
-    for ch in range(2):
-        street[:, ch] += 0.07 * sos_filter(noise(S / SR), "bandpass", [300, 3000]) * dens
+def _n(duration: float) -> int:
+    return int(SAMPLE_RATE * duration)
 
-    # passing cars with Doppler drops and pan sweeps
-    for tc, f, sp, d, g in ((1.6, 92, 22, 5, 0.40), (3.9, 118, 27, 4, 0.45), (5.4, 76, 18, 7, 0.35),
-                             (7.0, 104, 30, 3.5, 0.55), (8.6, 130, 25, 4, 0.5)):
-        dur = 3.2
-        y, pan = car_pass(f, dur, sp, d)
-        place(street, y, tc - dur / 2, g, pan=pan if rng.random() < 0.5 else -pan)
+def _add(mono: np.ndarray, pos: int, snippet: np.ndarray, gain: float = 1.0) -> None:
+    end = min(len(mono), pos + len(snippet))
+    if pos >= end:
+        return
+    mono[pos:end] += snippet[: end - pos] * gain
 
-    # siren drifting closer from 2.5 s
-    place(street, siren(CUT_T - 2.5 + 0.01), 2.5, 0.10, pan=0.55)
-
-    # honks, mostly on the 16th grid; pitches chosen to clash
-    hp = [(392, 494), (415, None), (440, 554), (370, 466), (466, None), (523, 415), (349, None)]
-    slots = sorted(set(rng.choice(np.arange(3, 56), 28, replace=False).tolist()))
-    for i, sl in enumerate(slots):
-        f1, f2 = hp[i % len(hp)]
-        f1 *= rng.uniform(0.97, 1.03)
-        dur = float(rng.choice([0.12, 0.16, 0.3, 0.55]))
-        h = horn(f1, None if f2 is None else f2 * rng.uniform(0.98, 1.02), dur)
-        tj = sl * SIX + (0.0 if rng.random() < 0.7 else rng.uniform(0.01, 0.06))
-        pan = rng.uniform(-0.85, 0.85)
-        g = 0.12 * (0.7 + 0.6 * tj / CUT_T)
-        place(street, h, tj, g, pan=pan)
-        place(send, h, tj, g * 0.6, pan=pan)
-        if dur < 0.2 and rng.random() < 0.5:        # double honk
-            place(street, h, tj + SIX, g * 0.85, pan=pan)
-
-    # frame-0 urban hit: truck air-horn chord + two clashing car horns + engine thump
-    air = horn(hz(51), hz(55), 0.9) + 0.8 * horn(hz(58), None, 0.9)       # Eb3/G3 + Bb3 air horn
-    place(street, air, 0.0, 0.28)
-    place(street, horn(440, 466, 0.45), 0.0, 0.16, pan=-0.4)
-    place(send, air, 0.0, 0.2)
-    tb = tt(0.6)
-    thump = np.sin(2 * np.pi * np.cumsum(38 + 60 * np.exp(-tb / 0.04)) / SR) * np.exp(-tb / 0.18)
-    place(low, fade(thump, 0.001, 0.05), 0.0, 0.55)
-
-    # street echoes: slapback reflections + a short reverb
-    echo = np.zeros_like(send)
-    for dl, g, ch in ((0.11, 0.35, 0), (0.17, 0.3, 1), (0.29, 0.18, 0), (0.37, 0.15, 1)):
-        k = int(dl * SR)
-        echo[k:, ch] += g * sos_filter(send[:-k, ch] + street[:-k, ch] * 0.3, "bandpass", [300, 4000])
-    street = street + echo + 0.35 * sos_filter(reverb(send, 1.1, band=(300, 6000), predelay=0.01), "highpass", 200)
-
-    # glitch layer: stutters / pitched slices on the 16th grid, accelerating roll into the cut
-    sw = int(SIX * SR)
-    for sl in sorted(rng.choice(np.arange(4, 54), 18, replace=False).tolist()):
-        kind = rng.integers(0, 4)
-        s0 = sl * sw
-        if kind == 3:                                         # buffer dropout: a muted 32nd
-            nf = int(0.0015 * SR)
-            m = np.ones(sw)
-            m[sw // 4 - nf:sw // 4] = np.linspace(1, 0, nf)
-            m[sw // 4:3 * sw // 4] = 0.0
-            m[3 * sw // 4:3 * sw // 4 + nf] = np.linspace(0, 1, nf)
-            street[s0:s0 + sw] *= m[:, None]
-        elif kind == 0:
-            glitch(street, s0, sw, sw // 2)
-        elif kind == 1:
-            glitch(street, s0, sw * 2, sw // 4)
-        else:
-            glitch(street, s0, sw, sw // 2, pitch=(3, 2) if rng.random() < 0.5 else (2, 3))
-    roll = 56 * sw
-    glitch(street, roll, 2 * sw, sw // 2)                    # 1/32 repeats
-    glitch(street, roll + 2 * sw, sw, sw // 4)               # 1/64
-    glitch(street, roll + 3 * sw, sw, sw // 8, pitch=(3, 2)) # 1/128, pitched up
-
-    street = sos_filter(street, "highpass", 120, order=4)
-    low = sos_filter(low, "highpass", 26, order=2)              # keep the low bus DC-free before the cut
-    return street + np.repeat(low.mean(axis=1, keepdims=True), 2, 1)
+def synth_chaos_calm_02(duration: float, seed: int, cue_sample: int) -> np.ndarray:
+    chaos = chaos_traffic(duration * 0.45, seed=seed)
+    chaos = np.pad(chaos, (0, max(0, _n(duration) - len(chaos))))[: _n(duration)]
+    calm = pad_layers(A3, duration, seed=seed) * 0.9
+    calm += bass(A3 / 2, duration) * 0.35
+    return stereo(master_chain(crossfade_at(chaos, calm, cue_sample, xfade_sec=0.5)))
 
 
-def render_strings() -> tuple[np.ndarray, np.ndarray]:
-    music = np.zeros((N, 2))
-    low = np.zeros((N, 2))
-    send = np.zeros((N, 2))
-    D = DURATION_SEC - CUT_T                         # 20 s
-    nD = int(D * SR)
-    tu = np.arange(nD + SR) / SR
-    # the build: brightness and level rise to a peak around 25-26 s, then settle
-    peak_u = 16.0
-    rise = np.clip(tu / peak_u, 0, 1)
-    fc_all = 650 * (3600 / 650) ** (rise ** 1.4)
-    fc_all *= 1 - 0.3 * np.clip((tu - peak_u) / 4, 0, 1)
-    lvl_all = 0.36 + 0.64 * rise ** 1.6
-    lvl_all *= 1 - 0.25 * np.clip((tu - peak_u - 0.6) / 3.4, 0, 1)
-
-    # chords (bar = 2.667 s from the cut); bar 5 splits Gb | Absus4 | Ab
-    B = BAR
-    chords = [
-        (0.0, B, (49, 56, 61, 65)),                 # Db
-        (B, B, (48, 51, 56, 60, 63)),               # Ab/C
-        (2 * B, B, (46, 53, 56, 61, 65)),           # Bbm7
-        (3 * B, B, (42, 49, 53, 58, 61)),           # Gbmaj7
-        (4 * B, B, (41, 49, 56, 61, 65, 68)),       # Db/F
-        (5 * B, 2 * BEAT, (42, 49, 54, 58, 61, 66)),  # Gb
-        (5 * B + 2 * BEAT, BEAT, (44, 51, 56, 61, 63, 68)),  # Absus4
-        (5 * B + 3 * BEAT, BEAT, (44, 51, 56, 60, 63, 68)),  # Ab
-        (6 * B, D - 6 * B, (49, 56, 61, 65, 68, 73)),  # Db (landing)
-    ]
-    for ci, (s, d, notes) in enumerate(chords):
-        last = ci == len(chords) - 1
-        ov = 0.35                                    # legato overlap into the next chord
-        dur = d + (0.0 if last else ov)
-        i0 = int(s * SR)
-        n = int(round(dur * SR))
-        att = 0.9 if ci == 0 else 0.30
-        env = np.ones(n)
-        na = int(att * SR)
-        env[:na] = np.sin(np.linspace(0, np.pi / 2, na)) ** 2
-        nr = int((2.8 if last else ov + 0.05) * SR)
-        env[-nr:] *= np.cos(np.linspace(0, np.pi / 2, nr)) ** 2
-        for m in notes:
-            fr = np.full(n, hz(m))
-            y = ensemble(fr, fc_all[i0:i0 + n], voices=4, spread=10.0, vib=0.0035)
-            g = 0.16 * env * lvl_all[i0:i0 + n]
-            place(music, y * g[:, None], CUT_T + s)
-            place(send, y * g[:, None], CUT_T + s, 0.6)
-
-    # contrabass from bar 1: bowed roots, mono
-    roots = [(B, B, 36), (2 * B, B, 34), (3 * B, B, 30), (4 * B, B, 29), (5 * B, 2 * BEAT, 30),
-             (5 * B + 2 * BEAT, 2 * BEAT, 32), (6 * B, D - 6 * B, 37)]
-    nb = [(s - B, d - 0.02, m) for s, d, m in roots]
-    fb, ab = line_curve(nb, int((D - B) * SR), glide=0.05)
-    ab = gaussian_filter1d(ab, 0.05 * SR)
-    phb = 2 * np.pi * np.cumsum(fb * (1 + 0.002 * np.sin(2 * np.pi * 4.8 * np.arange(len(fb)) / SR))) / SR
-    bass = additive(phb, 90, lambda k: (1 / k) / (1 + (k * 40 / 260) ** 2), 1200)
-    lv = lvl_all[int(B * SR):int(B * SR) + len(bass)]
-    bass = fade(bass * ab * lv * np.clip(np.arange(len(bass)) / (1.2 * SR), 0, 1), a=0.01, r=2.5)
-    place(low, bass, CUT_T + B, 0.18)
-
-    # violin melody from bar 2 (beats from bar 2's downbeat)
-    mel = [(0, 2, 77), (2, 1, 75), (3, 1, 73),
-           (4, 1.5, 73), (5.5, 0.5, 75), (6, 2, 77),
-           (8, 2, 80), (10, 1, 77), (11, 1, 80),
-           (12, 2, 82), (14, 1, 85), (15, 1, 84),
-           (16, 5.5, 85)]
-    t0 = 2 * B
-    notes = [(b * BEAT, d * BEAT - 0.03, m) for b, d, m in mel]
-    nm = int((D - t0) * SR)
-    fm, am = line_curve(notes, nm, glide=0.09)
-    j0 = int(t0 * SR)
-    vib = 0.003 + 0.004 * np.clip(np.arange(nm) / (8 * SR), 0, 1)
-    vln = ensemble(fm, fc_all[j0:j0 + nm] * 1.15, voices=3, spread=6.0, vib=vib, f_limit=11000)
-    env_m = am * lvl_all[j0:j0 + nm]
-    env_m = fade(env_m, a=0.3, r=3.0)
-    place(music, vln * env_m[:, None], CUT_T + t0, 0.20)
-    place(send, vln * env_m[:, None], CUT_T + t0, 0.16)
-    # octave-below doubling (second violins / violas) from bar 4
-    k0 = int(2 * B * SR)
-    dbl = ensemble(fm[k0:] / 2, fc_all[j0 + k0:j0 + nm], voices=3, spread=8.0, vib=0.004)
-    env_d = env_m[k0:] * np.clip(np.arange(nm - k0) / (1.5 * SR), 0, 1)
-    place(music, dbl * env_d[:, None], CUT_T + t0 + 2 * B, 0.12)
-    place(send, dbl * env_d[:, None], CUT_T + t0 + 2 * B, 0.08)
-
-    # viola 8th-note pulse (bars 3-5): soft re-bowed chord tones, crescendo
-    for e in range(int(3 * B / (BEAT / 2))):
-        ts = 3 * B + e * BEAT / 2
-        ch = [c for c in chords if c[0] <= ts + 1e-6][-1][2]
-        m = ch[2] if e % 2 == 0 else ch[3]
-        d = BEAT / 2 * 0.9
-        y = ensemble(np.full(int(d * SR), hz(m)), np.full(int(d * SR), 1800.0), voices=2, spread=6.0, vib=0.002,
-                     f_limit=6000)
-        env = np.sin(np.pi * np.clip(np.arange(len(y)) / len(y), 0, 1)) ** 1.5
-        g = 0.05 + 0.07 * e / (6 * B / BEAT)
-        place(music, y * env[:, None], CUT_T + ts, g * (1.0 if e % 2 == 0 else 0.8))
-        place(send, y * env[:, None], CUT_T + ts, g * 0.5)
-
-    # soft sub swell into the landing (mono Db1), and its gentle bloom after 26 s
-    ts = tt(6.0)
-    sw = np.sin(2 * np.pi * hz(25) * ts) * np.clip(ts / 2.6, 0, 1) ** 2 * np.exp(-np.clip(ts - 2.67, 0, None) / 1.4)
-    place(low, fade(sw, a=0.01, r=0.5), CUT_T + 5 * B, 0.30)
-
-    music = sos_filter(music, "highpass", 110, order=2)
-    wet = sos_filter(reverb(send, 3.0, band=(180, 7000), predelay=0.035), "highpass", 160, order=2)
-    music = music + 0.5 * wet
-    low = np.repeat(low.mean(axis=1, keepdims=True), 2, axis=1)
-    return music, low
-
-
-def render() -> np.ndarray:
-    traffic = np.zeros((N, 2))
-    tr = render_traffic()
-    traffic[: len(tr)] = tr
-    traffic = bus_chain(traffic)                  # filter BEFORE the gate: nothing rings past the cut
-    nf = int(0.003 * SR)
-    gate = np.ones(N)
-    na = int(0.001 * SR)                          # frame-0 hit: ~1 ms raised-cosine attack
-    gate[:na] = 0.5 - 0.5 * np.cos(np.linspace(0, np.pi, na))
-    gate[CUT_S - nf:CUT_S] = 0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nf))
-    gate[CUT_S:] = 0.0
-    traffic *= gate[:, None]
-    # truncating the high-passed street at the cut leaves a tiny DC residue; remove it with a
-    # 0..10 s Hann bump of equal area (a ~0.1 Hz correction, no steps, zero at both ends)
-    bump = np.zeros(N)
-    bump[:CUT_S] = np.hanning(CUT_S)
-    traffic -= np.outer(bump / bump.sum(), traffic[:CUT_S].sum(axis=0))
-
-    strings, low = render_strings()
-    mix = 1.4 * traffic + bus_chain(strings + low)
-
-    nf = int(1.5 * SR)
-    mix[-nf:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nf)))[:, None]
-    return mix
-
-
-def main() -> None:
-    mix = render()
-    y = master(mix)
-    # the limiter's gain moves on asymmetric peaks and leaves ~3e-5 of DC; trim it with a
-    # full-length Hann bump of equal area (sub-0.1 Hz, zero at both ends, no effect on the edges)
-    hb = np.hanning(N)
-    y = y - np.outer(hb / hb.sum(), y.sum(axis=0))
-    dither = (rng.uniform(-0.5, 0.5, y.shape) + rng.uniform(-0.5, 0.5, y.shape)) / 32768
-    pcm = np.round(np.clip((y + dither) * 32767, -32768, 32767)).astype(np.int16)
-    assert pcm.shape == (N, 2)
-    out = Path(__file__).resolve().parent / "out.wav"
-    wavfile.write(out, SR, pcm)
-    f = pcm.astype(np.float64) / 32768
-    print(f"wrote {out}  samples={len(pcm)}  LUFS={integrated_lufs(f):.2f}  TP={true_peak_dbtp(f):.2f} dBTP")
+def generate(seed: int = 42) -> np.ndarray:
+    cue = 480000
+    return synth_chaos_calm_02(30, seed, cue)
 
 
 if __name__ == "__main__":
-    main()
+    out = Path(__file__).resolve().parent / "out.wav"
+    write_wav(out, generate())
+    print(f"Wrote {out}")

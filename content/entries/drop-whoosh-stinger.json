@@ -7,30 +7,30 @@
     "transition",
     "2s"
   ],
-  "prompt": "A light, fast 2-second edit-transition stinger that goes from atonal air to a clean A. A flanged band-pass noise whoosh flies across the stereo field from hard left towards the right, like something passing the camera. Its filter climbs from 250 Hz to about 7 kHz, its comb notches sweep upward and its far side darkens, so it reads as a doppler pass-by. A thin layer of high air thickens it in the last third of a second. The whoosh takes a 25 ms breath and then lands a tight, punchy impact exactly on frame 30 (1.0 s). The impact is a short mono kick dropping to A1, a snappy noise crack and a bright, fast-decaying A power-chord stab, with a quick splash. A short 0.7 s room tail fades to silence by 2 s. The kick is the only content below 120 Hz.",
-  "modelId": "claude-opus-5-5",
+  "prompt": "Make a 2 s whoosh stinger sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 96000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: band-pass noise sweep up into metallic hit at frame 30.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
+  "modelId": "local-synth",
   "generatedAt": "2026-10-06",
-  "seed": 503030,
+  "seed": 42,
   "timing": {
     "bpm": 120,
     "fps": 30,
-    "durationSec": 2.0,
+    "durationSec": 2,
     "samples": 96000,
     "sampleRate": 48000
   },
   "cues": [
     {
       "frame": 30,
-      "label": "impact"
+      "label": "hit"
     }
   ],
   "master": {
-    "targetLufs": -14.0,
+    "targetLufs": -14,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.03,
-    "truePeak": -1.4,
+    "lufs": -14.0,
+    "truePeak": -8.8,
     "durationSec": 2.0,
     "passedChecks": true
   },
@@ -40,10 +40,11 @@
     "spectrogram": "/assets/drop-whoosh-stinger/spectrogram.png",
     "code": "/assets/drop-whoosh-stinger/generate.py"
   },
-  "notes": "Flanged band-pass noise whoosh (TPT SVF 250 Hz -> 7 kHz, comb notches rising, accelerating L->R pan with the far side darkened) takes a 25 ms breath and lands on frame 30. Impact: tight mono kick dropping to A1, snappy noise crack and a bright fast-decaying A power-chord stab with a short 0.7 s room tail. Kick is the only content below 120 Hz; limiter followed by a 20 Hz DC block.",
+  "notes": "Runner-verified local numpy/scipy synthesis. Mastering: pyloudnorm stereo LUFS + true-peak limit (ffmpeg ebur128 verification).",
   "mood": [
     "energetic",
     "bright"
   ],
-  "tempo": "fast"
+  "tempo": "fast",
+  "targetModelId": "claude-opus-5-5"
 }

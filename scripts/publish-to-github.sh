@@ -16,7 +16,7 @@ if gh repo view "$REPO" &>/dev/null; then
   gh repo edit "$REPO" --visibility public --accept-visibility-change-consequences 2>/dev/null || \
     gh repo edit "$REPO" --visibility public
 else
-  gh repo create "$REPO" --public --description "Opus Sound Directory — synthesised audio catalog (vinext / Cloudflare Workers)"
+  gh repo create "$REPO" --public --description "Opus Sounds Directory — synthesised audio catalog (vinext / Cloudflare Workers)"
 fi
 
 if git remote get-url github &>/dev/null; then

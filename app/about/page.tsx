@@ -1,7 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import {
+  BookOpen,
+  FileCode2,
+  GitBranch,
+  HeartHandshake,
+  LayoutGrid,
+  Music2,
+  Scale,
+  Wrench,
+} from "lucide-react";
 import { canonicalForPath } from "@/lib/site-metadata";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
+import { LICENSE_MIT_URL, LICENSE_SOUNDS_URL, REPO_GITHUB } from "@/lib/licenses";
+import { BrandMark } from "@/components/brand-mark";
+import { IconTooltip } from "@/components/icon-tooltip";
+import { OwnerProfileLinks } from "@/components/owner-profile-links";
+import { cn } from "@/lib/utils";
 
 const title = "About";
 
@@ -13,56 +28,148 @@ export const metadata: Metadata = {
     url: "/about",
     images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
   },
+  twitter: {
+    title: `${title} · ${SITE_NAME}`,
+    images: [DEFAULT_OG_IMAGE],
+  },
 };
+
+const rows = [
+  {
+    icon: Music2,
+    text: "WAV & MP3 previews, the prompt, Python synth code, and loudness metrics per entry.",
+  },
+  {
+    icon: Wrench,
+    text: "Synthesised in Python with verification (length, LUFS/peak) and fixed seeds for reproducibility.",
+  },
+] as const;
+
+const links = [
+  { href: "/", label: "Browse", icon: LayoutGrid },
+  { href: "/submit", label: "Submit", icon: FileCode2 },
+  { href: "/sponsor", label: "Sponsor", icon: HeartHandshake },
+  {
+    href: REPO_GITHUB,
+    label: "Source on GitHub",
+    icon: GitBranch,
+    external: true,
+  },
+  { href: "/blog", label: "Blog", icon: BookOpen },
+] as const;
 
 export default function AboutPage() {
   return (
-    <div className="prose prose-invert max-w-2xl prose-headings:text-zinc-100 prose-p:text-zinc-400">
-      <h1 className="text-3xl font-semibold">About this directory</h1>
-      <p>
-        Opus Sound Directory catalogues synthesised audio built for video: ad beds, transitions, UI
-        ticks, logo stings, and ambient layers — with the{" "}
-        <strong className="text-zinc-200">Claude Opus prompts and Python code</strong> behind each
-        entry. Listings live as JSON in git with assets under{" "}
-        <code className="text-zinc-300">public/assets/</code>.
-      </p>
-      <p>
-        Each entry ships the prompt, Python synthesis code, waveform, spectrogram, and loudness
-        metrics. Audio here is <strong className="text-zinc-200">synthesised</strong> — precise and
-        royalty-free for video — but not a stand-in for real instruments, vocals, or a final mix. Your
-        ear still wins.
-      </p>
-      <h2 className="text-xl font-medium text-zinc-100">What you are hearing</h2>
-      <p>
-        Everything is <strong className="text-zinc-200">synthesised in Python</strong> (numpy/scipy)
-        from written prompts — no sample packs, no artist references. That means timing and loudness
-        can be nailed to frames, and the results are royalty-free for rough cuts and prototypes.
-      </p>
-      <p>
-        It also means timbres are artificial: not realistic drums, vocals, or boutique mix glue. Prompts
-        and metrics help you reproduce and iterate; a human still has to judge taste and final level in
-        context.
-      </p>
-      <h2 className="text-xl font-medium text-zinc-100">How entries are made</h2>
-      <ol className="list-decimal pl-5 text-zinc-400">
-        <li>Write a numeric prompt (duration, sample count, BPM, cue frames, master targets).</li>
-        <li>Run the Python runner (mock or future Claude agent mode).</li>
-        <li>Verify length, LUFS/peak, spectrogram; commit JSON + assets.</li>
-      </ol>
-      <p>
-        Use the{" "}
-        <Link href="/submit" className="text-violet-400 hover:text-violet-300">submit form</Link> or
-        open a PR on{" "}
-        <a
-          href="https://github.com/Tguntenaar/opus-sound-directory"
-          className="text-violet-400 hover:text-violet-300"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="page-enter mx-auto flex max-w-xl justify-center px-1 sm:max-w-2xl">
+      <div
+        className={cn(
+          "about-card sound-card w-full max-w-[36rem] rounded-lg border border-zinc-800/80 bg-zinc-900/20 p-8 sm:p-10",
+          "transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out",
+          "hover:-translate-y-0.5 hover:border-zinc-600/90 hover:bg-zinc-900/45 hover:shadow-[0_8px_30px_-12px_rgb(0_0_0/0.55)]",
+          "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
+        )}
+        style={{ animationDelay: "0ms" }}
+      >
+        <div
+          className="about-card-section flex flex-col items-center gap-3 text-center"
+          style={{ animationDelay: "45ms" }}
         >
-          GitHub
-        </a>{" "}
-        to add entries.
-      </p>
+          <BrandMark size={48} />
+          <h1 className="text-lg font-medium tracking-tight text-zinc-50">{SITE_NAME}</h1>
+        </div>
+
+        <p
+          className="about-card-section mt-6 text-center text-sm leading-relaxed text-balance text-zinc-400"
+          style={{ animationDelay: "90ms" }}
+        >
+          Opus Sounds Directory helps creators and developers add sound to AI-made videos. It offers
+          royalty-free effects and music beds cut to common video lengths. Every sound comes with the
+          prompt, code and loudness numbers behind it, so you can use it as is or have an AI model
+          make your own version.
+        </p>
+
+        <ul className="mt-8 flex flex-col gap-4" aria-label="Highlights">
+          <li
+            className="about-card-section flex items-start gap-3 text-sm text-zinc-400"
+            style={{ animationDelay: "135ms" }}
+          >
+            <IconTooltip label="Code MIT · Sounds CC0">
+              <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-zinc-800/80 bg-zinc-950/50 text-violet-400/90">
+                <Scale className="h-4 w-4" aria-hidden />
+              </span>
+            </IconTooltip>
+            <span className="leading-relaxed">
+              <a
+                href={LICENSE_MIT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-300 underline-offset-2 hover:text-violet-200 hover:underline"
+              >
+                Code MIT
+              </a>
+              {" · "}
+              <a
+                href={LICENSE_SOUNDS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-300 underline-offset-2 hover:text-violet-200 hover:underline"
+              >
+                Sounds CC0
+              </a>
+              , free for any use, no credit needed
+            </span>
+          </li>
+          {rows.map((row, index) => (
+            <li
+              key={row.text.slice(0, 24)}
+              className="about-card-section flex items-start gap-3 text-sm text-zinc-400"
+              style={{ animationDelay: `${180 + index * 45}ms` }}
+            >
+              <IconTooltip label={row.text}>
+                <span className="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-zinc-800/80 bg-zinc-950/50 text-violet-400/90">
+                  <row.icon className="h-4 w-4" aria-hidden />
+                </span>
+              </IconTooltip>
+              <span className="leading-relaxed">{row.text}</span>
+            </li>
+          ))}
+        </ul>
+
+        <nav
+          className="about-card-section mt-10 flex flex-wrap items-center justify-center gap-2 border-t border-zinc-800/60 pt-8"
+          aria-label="Site links"
+          style={{ animationDelay: "270ms" }}
+        >
+          {links.map((item) => {
+            const Icon = item.icon;
+            const className =
+              "inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-900/80 hover:text-zinc-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60";
+            if ("external" in item && item.external) {
+              return (
+                <IconTooltip key={item.href} label={item.label}>
+                  <a
+                    href={item.href}
+                    className={className}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={item.label}
+                  >
+                    <Icon className="h-4 w-4" aria-hidden />
+                  </a>
+                </IconTooltip>
+              );
+            }
+            return (
+              <IconTooltip key={item.href} label={item.label}>
+                <Link href={item.href} className={className} aria-label={item.label}>
+                  <Icon className="h-4 w-4" aria-hidden />
+                </Link>
+              </IconTooltip>
+            );
+          })}
+          <OwnerProfileLinks />
+        </nav>
+      </div>
     </div>
   );
 }

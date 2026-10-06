@@ -1,23 +1,23 @@
 {
   "id": "chaos-calm-02",
   "slug": "chaos-calm-02",
-  "title": "Traffic glitch → warm strings",
+  "title": "Traffic glitch \u2192 warm strings",
   "category": "chaos-calm",
   "tags": [
     "youtube",
     "30s",
     "90bpm"
   ],
-  "prompt": "A 30-second traffic-glitch-to-strings bed in Db major at 90 BPM, for a city-to-calm story ad. Frame 0 hits a sharp urban accent: a truck air-horn chord, two clashing car horns and a low engine thump. For ten seconds the street gets denser. Idling engines drone, cars pass with Doppler pitch drops and left-to-right pans, horns honk on and off a 16th-note grid, and a distant siren wails closer. A digital glitch layer chops the street into stutters, repeats and pitch-shifted slices, and in the last beat it accelerates from 1/32 to 1/128 repeats. At frame 300 (10.0 s) the whole street, echoes included, stops in a 3 ms fade that ends exactly on the cue. Warm synthetic strings (detuned band-limited saw ensembles with vibrato) rise from silence on the same sample. Over 20 s they build slowly: a dark low Db chord, then a bowed contrabass, then a legato violin melody with portamento, then soft 8th-note viola pulses at 90 BPM, an octave doubling and an opening tone. The progression is Db, Ab/C, Bbm7, Gbmaj7, Db/F, Gb, Absus4, Ab. It swells to a peak and lands on a high Db chord at 26 s that rings to exact silence. Only engine lows, the contrabass and a soft sub swell sit below 120 Hz, all mono.",
-  "modelId": "claude-opus-5-5",
+  "prompt": "Make a 30 s music bed for a TikTok ad at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 1440000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nTiming: 90 BPM (1 beat = 20 frames). Cues: frame 0 = urban hit; frame 300 = traffic cuts, strings swell; last beat = soft ending that fades to exactly 0.\nSound: [chaos: honks, sirens, stuttering hi-hats, bit-crushed noise] \u2192 [calm: slow legato strings, soft sub, gentle pulse at 90 BPM], key A minor.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nYou can't listen, so verify: measure loudness and peak with ffmpeg ebur128, check the exact length, confirm the energy change lands on each cue frame, check the notes fit the chords, render a spectrogram and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "local-synth",
   "generatedAt": "2026-10-06",
-  "seed": 230300,
+  "seed": 42,
   "timing": {
     "bpm": 90,
     "fps": 30,
-    "durationSec": 30.0,
-    "samples": 1440000,
-    "sampleRate": 48000
+    "durationSec": 30,
+    "samples": 960000,
+    "sampleRate": 32000
   },
   "cues": [
     {
@@ -26,16 +26,16 @@
     },
     {
       "frame": 300,
-      "label": "traffic cuts to strings"
+      "label": "traffic cuts, strings swell"
     }
   ],
   "master": {
-    "targetLufs": -14.0,
+    "targetLufs": -14,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.01,
-    "truePeak": -1.3,
+    "lufs": -14.1,
+    "truePeak": -9.5,
     "durationSec": 30.0,
     "passedChecks": true
   },
@@ -45,12 +45,13 @@
     "spectrogram": "/assets/chaos-calm-02/spectrogram.png",
     "code": "/assets/chaos-calm-02/generate.py"
   },
-  "notes": "Traffic chaos (idling engines with mono lows, Doppler car passes with pan sweeps, clashing additive car horns on a 16th grid, distant wail siren, slapback street echoes) is chopped by a glitch layer (stutters, pitched slices, 32nd dropouts) that accelerates from 1/32 to 1/128 repeats into the cut. The bus is filtered, then gated with a 3 ms fade ending on frame 300. Warm synthetic strings (detuned additive saw ensembles, per-voice vibrato, brightness opening from 650 Hz to 3.6 kHz) build over 20 s through Db, Ab/C, Bbm7, Gbmaj7, Db/F, Gb, Absus4, Ab, Db. Layers enter one by one (contrabass, legato violin line with portamento, viola 8th pulse, octave doubling, sub swell) up to about -10 LUFS short-term, then ring out to exact silence. A sub-0.1 Hz Hann-bump DC trim follows the limiter.",
+  "notes": "Runner-verified local numpy/scipy synthesis. Mastering: pyloudnorm stereo LUFS + true-peak limit (ffmpeg ebur128 verification). WAV shipped as 32 kHz stereo for Workers 5 MiB asset limit.",
   "mood": [
     "energetic",
     "dark",
     "sad",
     "calm"
   ],
-  "tempo": "medium"
+  "tempo": "medium",
+  "targetModelId": "claude-opus-5-5"
 }

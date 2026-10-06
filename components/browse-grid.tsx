@@ -15,6 +15,11 @@ import { IconButton } from "@/components/icon-button";
 
 type Props = {
   entries: SoundEntry[];
+  /** Lock grid to one category (category landing pages). */
+  lockedCategory?: string;
+  /** Sync ?category= on the home page without full navigation. */
+  syncCategoryToUrl?: boolean;
+  initialCategory?: string;
 };
 
 function moodsInCatalog(entries: SoundEntry[]): string[] {
@@ -25,15 +30,45 @@ function moodsInCatalog(entries: SoundEntry[]): string[] {
   return Object.keys(MOOD_FACETS).filter((k) => set.has(k));
 }
 
-export function BrowseGrid({ entries }: Props) {
+export function BrowseGrid({
+  entries,
+  lockedCategory,
+  syncCategoryToUrl,
+  initialCategory = "all",
+}: Props) {
   const { stats } = useStats();
-  const [category, setCategory] = useState<string>("all");
+  const [category, setCategory] = useState<string>(
+    lockedCategory ?? initialCategory ?? "all",
+  );
   const [mood, setMood] = useState<string>("all");
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortMode>("popular");
   const gridRef = useRef<HTMLDivElement>(null);
 
-  const featured = useMemo(() => getFeaturedEntry(entries), [entries]);
+  useEffect(() => {
+    if (lockedCategory) {
+      setCategory(lockedCategory);
+      return;
+    }
+    if (initialCategory) setCategory(initialCategory);
+  }, [lockedCategory, initialCategory]);
+
+  const setCategoryWithUrl = useCallback(
+    (next: string) => {
+      setCategory(next);
+      if (syncCategoryToUrl && !lockedCategory) {
+        const path =
+          next === "all" ? "/" : `/?category=${encodeURIComponent(next)}`;
+        window.history.pushState(null, "", path);
+      }
+    },
+    [syncCategoryToUrl, lockedCategory],
+  );
+
+  const featured = useMemo(() => {
+    if (lockedCategory) return undefined;
+    return getFeaturedEntry(entries);
+  }, [entries, lockedCategory]);
   const moodOptions = useMemo(() => moodsInCatalog(entries), [entries]);
 
   const categoryPills: PillOption[] = useMemo(() => {
@@ -138,12 +173,15 @@ export function BrowseGrid({ entries }: Props) {
               Filters
             </span>
           </div>
-          <FilterPillGroup
-            aria-label="Category"
-            options={categoryPills}
-            value={category}
-            onChange={setCategory}
-          />
+          {!lockedCategory && (
+            <FilterPillGroup
+              aria-label="Category"
+              options={categoryPills}
+              value={category}
+              onChange={setCategoryWithUrl}
+              hrefForValue={(v) => (v === "all" ? "/" : `/c/${v}`)}
+            />
+          )}
           {moodOptions.length > 0 && (
             <FilterPillGroup
               aria-label="Mood"

@@ -1,309 +1,353 @@
-"""drop-whoosh-stinger: Opus Sound Directory
-
-A light, fast 2-second edit-transition stinger that goes from atonal air to a
-clean A. A flanged band-pass noise whoosh flies across the stereo field from
-hard left towards the right, like something passing the camera. Its filter
-climbs from 250 Hz to about 7 kHz, its comb notches sweep upward and its far
-side darkens, so it reads as a doppler pass-by. A thin layer of high air
-thickens it in the last third of a second. The whoosh takes a 25 ms breath and
-then lands a tight, punchy impact exactly on frame 30 (1.0 s). The impact is a
-short mono kick dropping to A1, a snappy noise crack and a bright, fast-decaying
-A power-chord stab, with a quick splash. A short 0.7 s room tail fades to
-silence by 2 s. The kick is the only content below 120 Hz.
-
-Run:  python3 generate.py   -> writes out.wav next to this file.
-"""
+"""Synthesis code for drop-whoosh-stinger. Run: python generate.py (writes out.wav)."""
 from __future__ import annotations
 
 from pathlib import Path
 
 import numpy as np
-from scipy import signal
-from scipy.io import wavfile
-from scipy.ndimage import minimum_filter1d, uniform_filter1d
+
+import math
+import wave
+from pathlib import Path
+
+import numpy as np
 
 SAMPLE_RATE = 48000
-SEED = 503030
-DURATION_SEC = 2
-BPM = 120
-KEY = "atonal -> A"
-FPS = 30
-CUE_FRAMES = (30,)             # frame 30 (1.0 s): the impact
-TARGET_LUFS = -14.0
-TRUE_PEAK_CEILING_DBTP = -1.0
-
-SR = SAMPLE_RATE
-N = DURATION_SEC * SR
-HIT_T = CUE_FRAMES[0] / FPS    # 1.0 s = sample 48000
-
-rng = np.random.default_rng(SEED)
 
 
-# ---------------------------------------------------------------- utilities
-def hz(midi: float) -> float:
-    return 440.0 * 2 ** ((midi - 69) / 12)
+def t_grid(duration_sec: float) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration_sec)
+    return np.linspace(0, duration_sec, n, endpoint=False, dtype=np.float64)
 
 
-def tt(dur: float) -> np.ndarray:
-    return np.arange(int(round(dur * SR))) / SR
+def sine(freq: float, duration_sec: float, phase: float = 0.0) -> np.ndarray:
+    tt = t_grid(duration_sec)
+    return np.sin(2 * np.pi * freq * tt + phase).astype(np.float32)
 
 
-def fade(x: np.ndarray, a: float = 0.001, r: float = 0.005) -> np.ndarray:
-    """Raised-cosine attack/release so nothing starts or stops with a click."""
-    x = x.copy()
-    na, nr = max(1, int(a * SR)), max(1, int(r * SR))
-    x[:na] *= (0.5 - 0.5 * np.cos(np.linspace(0, np.pi, na))).reshape((-1,) + (1,) * (x.ndim - 1))
-    x[-nr:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nr))).reshape((-1,) + (1,) * (x.ndim - 1))
-    return x
+def envelope_adsr(
+    length: int,
+    attack: float = 0.01,
+    decay: float = 0.05,
+    sustain: float = 0.7,
+    release: float = 0.12,
+) -> np.ndarray:
+    a = max(1, int(attack * SAMPLE_RATE))
+    d = max(1, int(decay * SAMPLE_RATE))
+    r = max(1, int(release * SAMPLE_RATE))
+    s = max(0, length - a - d - r)
+    env = np.concatenate(
+        [
+            np.linspace(0, 1, a),
+            np.linspace(1, sustain, d),
+            np.full(s, sustain),
+            np.linspace(sustain, 0, r),
+        ]
+    )
+    if len(env) < length:
+        env = np.pad(env, (0, length - len(env)))
+    return env[:length].astype(np.float32)
 
 
-def place(bus: np.ndarray, x: np.ndarray, t: float, gain: float = 1.0, pan: float = 0.0) -> None:
-    """Mix a mono (L,) or stereo (L,2) snippet into a stereo bus at time t (equal-power pan)."""
-    s = int(round(t * SR))
-    if x.ndim == 1:
-        th = (pan + 1) * np.pi / 4
-        x = np.stack([x * np.cos(th), x * np.sin(th)], axis=1) * np.sqrt(2)
-    e = min(len(bus), s + len(x))
-    bus[s:e] += gain * x[: e - s]
+def soft_clip(x: np.ndarray, drive: float = 1.15) -> np.ndarray:
+    return np.tanh(x * drive).astype(np.float32)
 
 
-def sos_filter(x, kind, freq, order=2):
-    sos = signal.butter(order, freq, btype=kind, fs=SR, output="sos")
-    return signal.sosfilt(sos, x, axis=0)
+def limiter(x: np.ndarray, ceiling: float = 0.89) -> np.ndarray:
+    peak = float(np.max(np.abs(x)))
+    if peak > ceiling and peak > 0:
+        x = x * (ceiling / peak)
+    return x.astype(np.float32)
 
 
-def noise(dur: float) -> np.ndarray:
-    return rng.standard_normal(int(round(dur * SR)))
+def stereo(mono: np.ndarray, width: float = 0.12) -> np.ndarray:
+    n = len(mono)
+    pan = np.linspace(-width, width, n).astype(np.float32)
+    left = mono * (1 - pan)
+    right = mono * (1 + pan)
+    return np.stack([left, right], axis=-1)
 
 
-def svf(x: np.ndarray, fc: np.ndarray, q: np.ndarray | float, mode: str = "bp") -> np.ndarray:
-    """Zavalishin TPT state-variable filter with per-sample cutoff and Q (for sweeps)."""
-    g = np.tan(np.pi * np.clip(fc, 20, 0.45 * SR) / SR)
-    k = 1.0 / np.broadcast_to(np.asarray(q, dtype=float), g.shape)
-    a1 = 1.0 / (1.0 + g * (g + k))
-    a2 = g * a1
-    a3 = g * a2
-    bp = np.empty(len(x))
-    lp = np.empty(len(x))
-    ic1 = ic2 = 0.0
-    for n, (xn, b1, b2, b3) in enumerate(zip(x.tolist(), a1.tolist(), a2.tolist(), a3.tolist())):
-        v3 = xn - ic2
-        v1 = b1 * ic1 + b2 * v3
-        v2 = ic2 + b2 * ic1 + b3 * v3
-        ic1 = 2 * v1 - ic1
-        ic2 = 2 * v2 - ic2
-        bp[n] = v1
-        lp[n] = v2
-    return bp * k if mode == "bp" else lp     # bp normalised to unity peak gain
+def fade_edges(mono: np.ndarray, sec: float = 0.03) -> np.ndarray:
+    f = max(1, int(sec * SAMPLE_RATE))
+    mono = mono.copy()
+    mono[:f] *= np.linspace(0, 1, f)
+    mono[-f:] *= np.linspace(1, 0, f)
+    return mono
 
 
-def frac_delay(x: np.ndarray, d: np.ndarray) -> np.ndarray:
-    """Read x at (n - d[n]) with linear interpolation (d in samples, smooth)."""
-    n = np.arange(len(x), dtype=float)
-    return np.interp(n - d, n, x, left=0.0)
+def integrated_lufs_estimate(mono: np.ndarray) -> float:
+    rms = float(np.sqrt(np.mean(mono**2)))
+    if rms < 1e-10:
+        return -70.0
+    return 20 * math.log10(rms) - 0.691
 
 
-def reverb(x: np.ndarray, rt60: float, predelay: float, band=(300, 9000)) -> np.ndarray:
-    """Decorrelated stereo exponential-noise IR convolution."""
-    t = tt(rt60 * 1.1)
-    env = np.exp(-6.9 * t / rt60)
-    irs = []
-    for _ in range(2):
-        ir = sos_filter(rng.standard_normal(len(t)), "bandpass", list(band)) * env
-        ir = np.concatenate([np.zeros(int(predelay * SR)), ir])
-        irs.append(ir / np.sqrt(np.sum(ir ** 2)))
-    return np.stack([signal.fftconvolve(x[:, 0], irs[0])[: len(x)],
-                     signal.fftconvolve(x[:, 1], irs[1])[: len(x)]], axis=1)
+def _as_stereo(audio: np.ndarray) -> np.ndarray:
+    if audio.ndim == 1:
+        return np.stack([audio, audio], axis=-1)
+    return audio
 
 
-# ---------------------------------------------------------------- voices
-def whoosh(dur: float) -> np.ndarray:
-    """Flanged band-pass noise pass-by: rising centre, rising comb notches,
-    accelerating left-to-right pan, far channel darker (doppler/air-absorption cue)."""
-    t = tt(dur)
-    u = t / dur
-    fc = 250 * (7000 / 250) ** (u ** 1.7)
-    q = 1.1 + 2.4 * u ** 2
-    # pan position: slow drift on the left, then whips across late (accelerating)
-    pos = -0.9 + 1.55 * u ** 3.2
-    th = (np.clip(pos, -1, 1) + 1) * np.pi / 4
-    # amplitude: swells hard into the hit; 25 ms breath before it
-    amp = (0.06 + 0.94 * u ** 2.0) * (1 - np.exp(-t / 0.08))
-    breath = 0.025
-    out = np.zeros((len(t), 2))
-    for ch in range(2):
-        src = noise(dur)
-        b = svf(src, fc * (1.0 if ch == 0 else 1.035), q)
-        # flanger: delay sweeps 3.2 ms -> 0.25 ms so the notches rise with the filter
-        d = (3.2e-3 * (0.25 / 3.2) ** (u ** 1.3)) * SR * (1.0 if ch == 0 else 1.07)
-        out[:, ch] = 0.6 * b + 0.4 * frac_delay(b, d)
-    # air layer in the last ~0.35 s
-    air_env = np.clip((t - (dur - 0.35)) / 0.35, 0, 1) ** 2
-    air = np.stack([sos_filter(noise(dur), "bandpass", [6000, 13000]) for _ in range(2)], axis=1)
-    out += 0.35 * air * air_env[:, None]
-    out *= amp[:, None]
-    # doppler-ish: the side the source is moving away from is panned down and darkened
-    far_dark = np.stack([sos_filter(out[:, 0], "lowpass", 2500), sos_filter(out[:, 1], "lowpass", 2500)], 1)
-    w_far = np.stack([np.clip(pos, 0, 1), np.clip(-pos, 0, 1)], 1)        # L is "far" once pos > 0
-    out = out * (1 - 0.6 * w_far) + far_dark * 0.6 * w_far
-    out *= np.stack([np.cos(th), np.sin(th)], 1) * np.sqrt(2)
-    # the breath: 25 ms dip right before the hit, ending exactly on the cue sample
-    nb = int(breath * SR)
-    dip = np.ones(len(t))
-    dip[-nb:] = 0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nb))
-    dip[-nb:] = 0.12 + 0.88 * dip[-nb:]
-    out *= dip[:, None]
-    return fade(out, a=0.004, r=0.002)
+def integrated_lufs_stereo(stereo: np.ndarray) -> float:
+    import pyloudnorm as pyln
+
+    st = _as_stereo(stereo).astype(np.float64)
+    meter = pyln.Meter(SAMPLE_RATE)
+    try:
+        return float(meter.integrated_loudness(st))
+    except Exception:
+        mono = st.mean(axis=1)
+        return integrated_lufs_estimate(mono.astype(np.float32))
 
 
-def punch_kick() -> np.ndarray:
-    """Tight kick: 240 Hz -> A1 (55 Hz) sweep, short body."""
-    t = tt(0.32)
-    f = hz(33) + (240 - hz(33)) * np.exp(-t / 0.020)
-    body = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.068)
-    y = np.tanh(1.6 * body) / np.tanh(1.6)
-    return fade(y, a=0.0008, r=0.08)
+def normalize_lufs_stereo(stereo: np.ndarray, target: float = -14.0) -> np.ndarray:
+    import pyloudnorm as pyln
+
+    st = _as_stereo(stereo).astype(np.float64)
+    st -= np.mean(st, axis=0, keepdims=True)
+    meter = pyln.Meter(SAMPLE_RATE)
+    try:
+        loud = meter.integrated_loudness(st)
+        if loud > -70:
+            st = pyln.normalize.loudness(st, loud, target)
+    except Exception:
+        mono = st.mean(axis=1).astype(np.float32)
+        gain = 10 ** ((target - integrated_lufs_estimate(mono)) / 20)
+        st = st * gain
+    return st.astype(np.float32)
 
 
-def crack() -> np.ndarray:
-    t = tt(0.12)
-    y = sos_filter(noise(0.12), "bandpass", [1400, 9000], order=2)
-    env = np.exp(-t / 0.011) + 0.25 * np.exp(-t / 0.035)
-    return fade(y * env * 0.9, a=0.0006, r=0.01)
+def master_stereo(
+    stereo: np.ndarray,
+    target_lufs: float = -14.0,
+    true_peak_db: float = -1.0,
+) -> np.ndarray:
+    st = normalize_lufs_stereo(stereo, target_lufs)
+    ceiling = 10 ** (true_peak_db / 20.0)
+    for _ in range(8):
+        st = soft_clip(st, 1.05)
+        peak = float(np.max(np.abs(st)))
+        if peak > ceiling and peak > 0:
+            st = st * (ceiling / peak)
+        loud = integrated_lufs_stereo(st.astype(np.float64))
+        if abs(loud - target_lufs) > 0.45:
+            st = normalize_lufs_stereo(st, target_lufs)
+    peak = float(np.max(np.abs(st)))
+    if peak > ceiling and peak > 0:
+        st = st * (ceiling / peak)
+    return st.astype(np.float32)
 
 
-def stab(midi: float, dur: float, detune: float) -> np.ndarray:
-    """Bright band-limited saw stab whose upper partials decay fastest."""
-    t = tt(dur)
-    f = hz(midi) * 2 ** (detune / 1200)
-    y = np.zeros_like(t)
-    for k in range(1, int(15500 // f) + 1):
-        env = np.exp(-t * (9 + 2.2 * (k - 1)))
-        y += (1 / k) * env * np.sin(2 * np.pi * k * f * t + rng.uniform(0, 2 * np.pi))
-    return fade(y * 0.5, a=0.0008, r=0.03)
+def master_chain(mono: np.ndarray, target_lufs: float = -14.0, true_peak_db: float = -1.0) -> np.ndarray:
+    """Mono convenience wrapper — loudness measured on duplicated stereo (matches ffmpeg ebur128)."""
+    return master_stereo(stereo(mono, width=0.0), target_lufs, true_peak_db).mean(axis=1).astype(np.float32)
 
 
-def splash(dur: float) -> np.ndarray:
-    t = tt(dur)
-    env = np.exp(-t / 0.16)
-    return np.stack([fade(sos_filter(noise(dur), "bandpass", [2500, 11000]) * env, 0.0006, 0.05)
-                     for _ in range(2)], axis=1)
+def kick(duration: float = 0.18, seed: int = 0) -> np.ndarray:
+    tt = t_grid(duration)
+    pitch = 58 * np.exp(-tt * 36)
+    body = np.sin(2 * np.pi * pitch * tt) * np.exp(-tt * 14)
+    click = np.random.default_rng(seed).standard_normal(len(tt)).astype(np.float32)
+    click *= np.exp(-tt * 80) * 0.15
+    return (body + click).astype(np.float32)
 
 
-# ---------------------------------------------------------------- loudness / peak
-def k_weight(x: np.ndarray) -> np.ndarray:
-    """ITU-R BS.1770 K-weighting (48 kHz coefficients)."""
-    b1 = [1.53512485958697, -2.69169618940638, 1.19839281085285]
-    a1 = [1.0, -1.69065929318241, 0.73248077421585]
-    b2 = [1.0, -2.0, 1.0]
-    a2 = [1.0, -1.99004745483398, 0.99007225036621]
-    return signal.lfilter(b2, a2, signal.lfilter(b1, a1, x, axis=0), axis=0)
+def hihat(duration: float = 0.06, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    rng = np.random.default_rng(seed)
+    noise = rng.standard_normal(n).astype(np.float32)
+    env = np.exp(-np.linspace(0, 18, n))
+    return noise * env * 0.35
 
 
-def integrated_lufs(x: np.ndarray) -> float:
-    """BS.1770-4 integrated loudness: 400 ms blocks, 75 % overlap, -70 LUFS abs + -10 LU rel gates."""
-    y = k_weight(x)
-    blk, hop = int(0.4 * SR), int(0.1 * SR)
-    z = np.array([np.mean(y[s:s + blk] ** 2, axis=0).sum() for s in range(0, len(y) - blk + 1, hop)])
-    lk = -0.691 + 10 * np.log10(z + 1e-20)
-    z1 = z[lk > -70]
-    rel = -0.691 + 10 * np.log10(z1.mean()) - 10
-    z2 = z1[(-0.691 + 10 * np.log10(z1)) > rel]
-    return float(-0.691 + 10 * np.log10(z2.mean()))
+def clap(duration: float = 0.12, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    rng = np.random.default_rng(seed)
+    bursts = np.zeros(n, dtype=np.float32)
+    for off in (0, 0.008, 0.016):
+        i = int(off * SAMPLE_RATE)
+        blen = min(n - i, int(0.04 * SAMPLE_RATE))
+        if blen <= 0:
+            continue
+        b = rng.standard_normal(blen).astype(np.float32)
+        b *= np.exp(-np.linspace(0, 10, blen))
+        bursts[i : i + blen] += b
+    return bursts * 0.5
 
 
-def true_peak_dbtp(x: np.ndarray) -> float:
-    os = signal.resample_poly(x, 4, 1, axis=0)
-    return float(20 * np.log10(np.max(np.abs(os)) + 1e-20))
+def pluck(freq: float, duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    tt = np.linspace(0, duration, n, endpoint=False)
+    rng = np.random.default_rng(seed)
+    partials = [1.0, 0.5, 0.25, 0.12]
+    sig = np.zeros(n, dtype=np.float32)
+    for i, amp in enumerate(partials):
+        sig += amp * np.sin(2 * np.pi * freq * (i + 1) * tt + rng.uniform(0, 0.2))
+    env = envelope_adsr(n, attack=0.002, decay=0.08, sustain=0.15, release=0.2)
+    return sig * env
 
 
-def soft_limiter(x: np.ndarray, ceiling_db: float, look_ms: float = 1.5, rel_ms: float = 60.0) -> np.ndarray:
-    """Look-ahead gain limiter driven by the 4x-oversampled (true) peak; never clips."""
-    ceil = 10 ** (ceiling_db / 20)
-    os = np.abs(signal.resample_poly(x, 4, 1, axis=0)).max(axis=1)
-    pk = os[: len(x) * 4].reshape(len(x), 4).max(axis=1)
-    need = np.minimum(1.0, ceil / np.maximum(pk, 1e-12))
-    L = int(look_ms * 1e-3 * SR)
-    held = minimum_filter1d(need, size=2 * L + 1, mode="nearest")
-    rc = np.exp(-1.0 / (rel_ms * 1e-3 * SR))
-    g = np.empty_like(held)
-    prev = 1.0
-    for n, h in enumerate(held.tolist()):
-        prev = min(h, prev * rc + (1 - rc))
-        g[n] = prev
-    g = uniform_filter1d(g, size=L + 1, mode="nearest")  # edge-safe (no ramp at file start/end)
-    return x * g[:, None]
+def bass(freq: float, duration: float) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    tt = np.linspace(0, duration, n, endpoint=False)
+    sig = np.sin(2 * np.pi * freq * tt) + 0.35 * np.sin(2 * np.pi * freq * 2 * tt)
+    env = envelope_adsr(n, attack=0.01, decay=0.1, sustain=0.6, release=0.15)
+    return (sig * env * 0.55).astype(np.float32)
 
 
-def master(mix: np.ndarray) -> np.ndarray:
-    gain_db = TARGET_LUFS - integrated_lufs(mix)
-    ceiling = TRUE_PEAK_CEILING_DBTP - 0.4
-    for _ in range(12):
-        y = soft_limiter(mix * 10 ** (gain_db / 20), ceiling)
-        # gain riding on the asymmetric kick lobe leaves a little DC: block it after the limiter
-        y = sos_filter(y, "highpass", 20, order=2)
-        y = soft_limiter(y, ceiling)                 # re-catch the filter's small overshoot
-        err = TARGET_LUFS - integrated_lufs(y)
-        if abs(err) < 0.03:
-            break
-        gain_db += err
-    return y
+def pad_layers(root: float, duration: float, seed: int = 0) -> np.ndarray:
+    rng = np.random.default_rng(seed)
+    freqs = [root, root * 1.25, root * 1.5, root * 2.0]
+    n = int(SAMPLE_RATE * duration)
+    mix = np.zeros(n, dtype=np.float32)
+    for f in freqs:
+        layer = sine(f * (1 + rng.uniform(-0.008, 0.008)), duration)
+        mix += layer
+    env = envelope_adsr(n, attack=0.4, decay=0.2, sustain=0.75, release=0.5)
+    return (mix / len(freqs) * env).astype(np.float32)
 
 
-# ---------------------------------------------------------------- arrangement
-def render() -> np.ndarray:
-    low = np.zeros((N, 2))      # kick: the only content below 120 Hz
-    fx = np.zeros((N, 2))       # whoosh + splash
-    hit = np.zeros((N, 2))      # crack + stab
-    send = np.zeros((N, 2))
-
-    # --- intro/body: the pass-by whoosh, sample 0 -> cue sample
-    w = whoosh(HIT_T)
-    place(fx, w, 0.0, 0.55)
-    place(send, w, 0.0, 0.10)
-
-    # --- payoff: tight impact on frame 30
-    place(low, punch_kick(), HIT_T, 0.8)
-    c = crack()
-    place(hit, c, HIT_T, 0.55, pan=0.15)
-    place(send, np.stack([c, c], 1), HIT_T, 0.25)
-    for i, (m, g) in enumerate(((57, 0.30), (64, 0.24), (69, 0.22), (76, 0.14))):   # A3 E4 A4 E5
-        for side, det in ((-1, -6), (1, 6)):
-            s = stab(m, 0.55, det)
-            place(hit, s, HIT_T, g, pan=0.5 * side)
-            place(send, s, HIT_T, g * 0.35, pan=0.5 * side)
-    sp = splash(0.7)
-    place(fx, sp, HIT_T, 0.22)
-    place(send, sp, HIT_T, 0.10)
-
-    hp = lambda x, f=160: sos_filter(x, "highpass", f, order=4)
-    fx, hit = hp(fx, 200), hp(hit)
-    wet = hp(reverb(send, rt60=0.7, predelay=0.012), 220) * 0.6
-    low = np.repeat(low.mean(axis=1, keepdims=True), 2, axis=1)
-
-    mix = low * 1.0 + fx + hit + wet
-    mid, side = (mix[:, 0] + mix[:, 1]) / 2, (mix[:, 0] - mix[:, 1]) / 2
-    side = sos_filter(side, "highpass", 120, order=4)
-    mix = np.stack([mid + side, mid - side], axis=1)
-    mix = sos_filter(mix, "highpass", 25, order=2)
-    mix = sos_filter(mix, "lowpass", 16500, order=4)
-
-    nf = int(0.25 * SR)
-    mix[-nf:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nf)))[:, None]
-    return mix
+def piano_tone(freq: float, duration: float, seed: int = 0) -> np.ndarray:
+    return pluck(freq, duration, seed=seed) * 0.85
 
 
-def main() -> None:
-    mix = render()
-    y = master(mix)
-    dither = (rng.uniform(-0.5, 0.5, y.shape) + rng.uniform(-0.5, 0.5, y.shape)) / 32768
-    pcm = np.round(np.clip((y + dither) * 32767, -32768, 32767)).astype(np.int16)
-    assert pcm.shape == (N, 2)
-    out = Path(__file__).resolve().parent / "out.wav"
-    wavfile.write(out, SR, pcm)
-    f = pcm.astype(np.float64) / 32768
-    print(f"wrote {out}  samples={len(pcm)}  LUFS={integrated_lufs(f):.2f}  TP={true_peak_dbtp(f):.2f} dBTP")
+def noise_burst(duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    rng = np.random.default_rng(seed)
+    return (rng.standard_normal(n) * np.exp(-np.linspace(0, 6, n))).astype(np.float32)
+
+
+def bandpass_noise(duration: float, f0: float, f1: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    rng = np.random.default_rng(seed)
+    noise = rng.standard_normal(n)
+    # simple sweepable resonant filter via cumulative sine modulation
+    tt = np.linspace(0, duration, n, endpoint=False)
+    freq = np.linspace(f0, f1, n)
+    mod = np.sin(2 * np.pi * freq * tt)
+    return (noise * mod * np.linspace(0.2, 1, n)).astype(np.float32)
+
+
+def whoosh_riser(duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    tt = np.linspace(0, duration, n, endpoint=False)
+    freqs = np.linspace(200, 4000, n)
+    phase = np.cumsum(freqs / SAMPLE_RATE) * 2 * np.pi
+    tone = np.sin(phase) * np.linspace(0.05, 0.9, n)
+    noise = bandpass_noise(duration, 300, 8000, seed=seed) * np.linspace(0.1, 0.7, n)
+    return (tone + noise).astype(np.float32)
+
+
+def metallic_hit(seed: int = 0) -> np.ndarray:
+    dur = 0.35
+    n = int(SAMPLE_RATE * dur)
+    tt = np.linspace(0, dur, n, endpoint=False)
+    rng = np.random.default_rng(seed)
+    freqs = [880, 1320, 1760, 2210]
+    sig = np.zeros(n, dtype=np.float32)
+    for f in freqs:
+        sig += np.sin(2 * np.pi * f * tt) * np.exp(-tt * (8 + rng.uniform(0, 4)))
+    _mix_at(sig, 0, noise_burst(0.08, seed=seed + 1), 0.4)
+    return sig
+
+
+def ui_chime_pair(f1: float, f2: float, duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    mono = np.zeros(n, dtype=np.float32)
+    a = pluck(f1, duration * 0.55, seed=seed)
+    b = pluck(f2, duration * 0.65, seed=seed + 1)
+    mono[: len(a)] += a
+    offset = int(0.08 * SAMPLE_RATE)
+    mono[offset : offset + len(b)] += b * 0.85
+    return mono[:n]
+
+
+def _mix_at(mono: np.ndarray, pos: int, snippet: np.ndarray, gain: float = 1.0) -> None:
+    end = min(len(mono), pos + len(snippet))
+    if pos >= end:
+        return
+    mono[pos:end] += snippet[: end - pos] * gain
+
+
+def chaos_clocks(duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    mono = np.zeros(n, dtype=np.float32)
+    rng = np.random.default_rng(seed)
+    for _ in range(24):
+        pos = rng.integers(0, max(1, n - int(0.2 * SAMPLE_RATE)))
+        tick = pluck(1800 + rng.uniform(-400, 400), 0.08, seed=int(rng.integers(0, 1_000_000)))
+        _mix_at(mono, pos, tick, 0.35)
+    _mix_at(mono, 0, noise_burst(min(duration, 0.4), seed=seed), 0.25)
+    for i in range(0, n, int(SAMPLE_RATE * 0.5)):
+        _mix_at(mono, i, kick(0.1, seed=seed + i), 0.5)
+    return mono
+
+
+def chaos_traffic(duration: float, seed: int = 0) -> np.ndarray:
+    n = int(SAMPLE_RATE * duration)
+    mono = np.zeros(n, dtype=np.float32)
+    rng = np.random.default_rng(seed)
+    for _ in range(18):
+        pos = rng.integers(0, max(1, n - 4000))
+        honk = sine(220 + rng.uniform(-40, 40), 0.25) * envelope_adsr(int(0.25 * SAMPLE_RATE), 0.01, 0.05, 0.4, 0.1)
+        end = min(n, pos + len(honk))
+        _mix_at(mono, pos, honk, 0.4)
+    _mix_at(mono, 0, bandpass_noise(duration, 400, 2500, seed=seed), 0.2)
+    return mono
+
+
+def crossfade_at(chaos: np.ndarray, calm: np.ndarray, cue: int, xfade_sec: float = 0.35) -> np.ndarray:
+    n = len(chaos)
+    calm = calm[:n]
+    if len(calm) < n:
+        calm = np.pad(calm, (0, n - len(calm)))
+    xf = int(xfade_sec * SAMPLE_RATE)
+    out = chaos.copy()
+    end = min(n, cue + xf)
+    ramp = np.linspace(1, 0, max(1, end - cue))
+    out[cue:end] = chaos[cue:end] * ramp[: end - cue] + calm[cue:end] * (1 - ramp[: end - cue])
+    out[end:] = calm[end:]
+    return fade_edges(out, 0.04)
+
+
+def write_wav(path: Path, stereo_audio: np.ndarray) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    audio = np.clip(stereo_audio, -1, 1)
+    pcm = (audio * 32767).astype(np.int16)
+    with wave.open(str(path), "w") as wf:
+        wf.setnchannels(2)
+        wf.setsampwidth(2)
+        wf.setframerate(SAMPLE_RATE)
+        wf.writeframes(pcm.tobytes())
+
+
+E3, B3, D4, A3 = 164.81, 246.94, 293.66, 220.0
+
+def _n(duration: float) -> int:
+    return int(SAMPLE_RATE * duration)
+
+def _add(mono: np.ndarray, pos: int, snippet: np.ndarray, gain: float = 1.0) -> None:
+    end = min(len(mono), pos + len(snippet))
+    if pos >= end:
+        return
+    mono[pos:end] += snippet[: end - pos] * gain
+
+def synth_drop_whoosh_stinger(duration: float, seed: int) -> np.ndarray:
+    n = _n(duration)
+    mono = np.zeros(n, dtype=np.float32)
+    hit_frame = int(1.0 * SAMPLE_RATE)
+    mono[:hit_frame] += whoosh_riser(1.0, seed=seed) * np.linspace(0.2, 1, hit_frame)
+    hit = metallic_hit(seed=seed + 1)
+    _add(mono, hit_frame, hit, 0.8)
+    _add(mono, hit_frame + len(hit), kick(0.25, seed=seed), 0.3)
+    return stereo(master_chain(mono, target_lufs=-12.0))
+
+
+def generate(seed: int = 42) -> np.ndarray:
+    return synth_drop_whoosh_stinger(2, seed)
 
 
 if __name__ == "__main__":
-    main()
+    out = Path(__file__).resolve().parent / "out.wav"
+    write_wav(out, generate())
+    print(f"Wrote {out}")

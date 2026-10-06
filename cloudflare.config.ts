@@ -19,6 +19,8 @@ export default defineConfig({
        * (verified sender). Notifies thomas@guntenaar.org unless SPONSOR_MAIL_TO is set.
        */
       SPONSOR_SEND_EMAIL: bindings.sendEmail(),
+      /** Workers AI — automated submission review (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`). */
+      AI: bindings.ai(),
     },
   }),
 });

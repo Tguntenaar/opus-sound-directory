@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import { BUDGET_RANGES, SPONSOR_PACKAGES, type SponsorPackageId } from "@/lib/sponsor-packages";
 
 type FormState = {
@@ -28,6 +29,8 @@ const initial: FormState = {
 };
 
 export function SponsorInterestForm() {
+  const searchParams = useSearchParams();
+  const refFromUrl = useMemo(() => searchParams.get("ref")?.trim() ?? "", [searchParams]);
   const [form, setForm] = useState<FormState>(initial);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -90,6 +93,7 @@ export function SponsorInterestForm() {
           message: form.message.trim(),
           logoUrl: form.logoUrl.trim() || undefined,
           companyFax: form.companyFax,
+          ref: refFromUrl || undefined,
         }),
       });
       const data = (await res.json()) as { ok?: boolean; error?: string };

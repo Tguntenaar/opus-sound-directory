@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CATEGORY_ORDER, CATEGORIES } from "@/lib/categories";
 import { MOOD_FACETS, type MoodSlug } from "@/lib/mood";
 import { Button } from "@/components/ui/button";
+import { SUBMIT_LICENSE_NOTE } from "@/lib/licenses";
 
 const MOOD_OPTIONS = Object.entries(MOOD_FACETS) as [MoodSlug, string][];
 
@@ -34,6 +35,25 @@ export function SubmitEntryForm() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [submissionId, setSubmissionId] = useState<string | null>(null);
+  const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
+
+  async function pollStatus(id: string) {
+    for (let i = 0; i < 24; i++) {
+      await new Promise((r) => setTimeout(r, 2500));
+      try {
+        const res = await fetch(`/api/submit/status?id=${encodeURIComponent(id)}`);
+        if (!res.ok) continue;
+        const data = (await res.json()) as { status?: string; reviewUrl?: string };
+        if (data.status) setSubmissionStatus(data.status);
+        if (data.status === "live" || data.status === "rejected" || data.status === "pending_review") {
+          break;
+        }
+      } catch {
+        /* retry */
+      }
+    }
+  }
 
   function toggleMood(slug: MoodSlug) {
     setForm((f) => ({
@@ -79,13 +99,25 @@ export function SubmitEntryForm() {
           companyWebsite: form.companyWebsite,
         }),
       });
-      const data = (await res.json()) as { ok?: boolean; error?: string };
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        submissionId?: string;
+        id?: string;
+        status?: string;
+      };
       if (!res.ok || !data.ok) {
         setError(data.error ?? "Submission failed");
         return;
       }
+      const sid = data.submissionId ?? data.id ?? null;
+      setSubmissionId(sid);
+      setSubmissionStatus(data.status ?? "scanning");
       setSuccess(true);
       setForm(initial);
+      if (sid) {
+        void pollStatus(sid);
+      }
     } catch {
       setError("Network error — try again");
     } finally {
@@ -100,8 +132,15 @@ export function SubmitEntryForm() {
         role="status"
       >
         <p className="font-medium text-violet-100">Thanks — we got your submission.</p>
+        {submissionId && (
+          <p className="mt-2 text-zinc-400">
+            Status: <span className="font-mono text-zinc-200">{submissionStatus ?? "scanning"}</span>
+            {submissionId ? ` · id ${submissionId}` : null}
+          </p>
+        )}
         <p className="mt-2 text-zinc-400">
-          We&apos;ll review it and follow up by email. Prefer git? Open a pull request on{" "}
+          Safe submissions auto-publish as community entries after automated screening and AI review.
+          Prefer git? Open a pull request on{" "}
           <a
             href="https://github.com/Tguntenaar/opus-sound-directory"
             className="text-violet-300 underline-offset-2 hover:underline"
@@ -242,6 +281,8 @@ export function SubmitEntryForm() {
           {error}
         </p>
       )}
+
+      <p className="text-xs leading-relaxed text-zinc-600">{SUBMIT_LICENSE_NOTE}</p>
 
       <Button type="submit" disabled={submitting}>
         {submitting ? "Sending…" : "Submit entry"}

@@ -5,15 +5,12 @@
   "category": "logo-stings",
   "tags": [
     "logo",
-    "2.5s",
-    "marimba",
-    "glass bell",
-    "shimmer"
+    "2.5s"
   ],
-  "prompt": "A bright 2.5-second brand sting in D major at 120 BPM: a rising, memorable mallet motif that resolves onto a sparkling tonic hit. A wooden marimba plays D5 on frame 0 (over a soft low D3 bar), then F#5 on the beat, A5 on the off-beat and a C#6 leading tone on beat 4, each note doubled very quietly two octaves up by a glass bell. Exactly on frame 60 (2.0 s) the motif resolves to D6: a full D major marimba chord, a ringing glass-bell triad, a short mono D2 sub under it and a shimmer of tiny high glass pings and air that scatter across the stereo field. Everything then decays fast and lands on true silence by 2.5 s. Nothing but the hit's sub sits below 120 Hz, and the motif carries no drums so the logo stays the star.",
-  "modelId": "claude-opus-5-5",
+  "prompt": "Make a 2.5 s logo sting sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 120000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: major chord bloom + shimmer tail; logo at 0, sparkle at frame 60.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
+  "modelId": "local-synth",
   "generatedAt": "2026-10-06",
-  "seed": 25060,
+  "seed": 42,
   "timing": {
     "bpm": 120,
     "fps": 30,
@@ -24,20 +21,20 @@
   "cues": [
     {
       "frame": 0,
-      "label": "motif"
+      "label": "logo"
     },
     {
       "frame": 60,
-      "label": "resolve + shimmer"
+      "label": "shimmer"
     }
   ],
   "master": {
-    "targetLufs": -14.0,
+    "targetLufs": -14,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.01,
-    "truePeak": -1.3,
+    "lufs": -13.7,
+    "truePeak": -9.1,
     "durationSec": 2.5,
     "passedChecks": true
   },
@@ -47,11 +44,12 @@
     "spectrogram": "/assets/logo-sting-bright/spectrogram.png",
     "code": "/assets/logo-sting-bright/generate.py"
   },
-  "notes": "Rising D5-F#5-A5-C#6 marimba motif (modal bar partials 1:3.99:9.83 + resonator bloom + mallet knock) doubled two octaves up by an inharmonic glass bell, resolving to D6 on frame 60. The hit stacks a D major marimba chord, glass triad, a short mono D2 sub (the only content below 120 Hz) and a shimmer of panned high glass pings plus air, then decays to silence by 2.5 s. Short 0.65 s noise-IR room; no drums, no limiting artefacts (look-ahead true-peak gain limiter).",
+  "notes": "Runner-verified local numpy/scipy synthesis. Mastering: pyloudnorm stereo LUFS + true-peak limit (ffmpeg ebur128 verification).",
   "mood": [
     "happy",
     "bright",
     "upbeat"
   ],
-  "tempo": "fast"
+  "tempo": "fast",
+  "targetModelId": "claude-opus-5-5"
 }
