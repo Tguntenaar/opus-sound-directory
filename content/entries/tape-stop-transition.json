@@ -1,0 +1,54 @@
+{
+  "id": "tape-stop-transition",
+  "slug": "tape-stop-transition",
+  "title": "Tape-stop transition",
+  "category": "drops",
+  "tags": [
+    "1.5s",
+    "120bpm",
+    "tape stop",
+    "transition"
+  ],
+  "prompt": "A 1.5-second D minor funk transition at 120 BPM. It opens on frame 0 with a tight kick, a bright clavinet-style Dm7 stab (struck-string additive tone with a pickup comb, slight stiffness and a wah-ish mid peak), a round synth bass on D2 and an accented hat. A busy sixteenth-note pocket follows: ghost clav chucks, an octave bass pop, ghost snare, a cracking backbeat on beat 2 and a G9 stab on its \"and\". From 0.55 s the whole groove (drums, reverb and all) tape-stops: one variable-rate read head decelerates, so speed and pitch glide down together into a low mechanical groan. It lands dead silent exactly on frame 30 (1.0 s) through a 1 ms fade ending on the cue sample. About 150 ms later a tiny, soft mono thump (the reel settling) blooms and dies away. Below 120 Hz there is only the mono kick, bass and thump.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 1230305,
+  "timing": {
+    "fps": 30,
+    "durationSec": 1.5,
+    "samples": 72000,
+    "sampleRate": 48000,
+    "bpm": 120
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "groove"
+    },
+    {
+      "frame": 30,
+      "label": "stop"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.02,
+    "truePeak": -1.3,
+    "durationSec": 1.5,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/tape-stop-transition/out.wav",
+    "mp3": "/assets/tape-stop-transition/out.mp3",
+    "spectrogram": "/assets/tape-stop-transition/spectrogram.png",
+    "code": "/assets/tape-stop-transition/generate.py"
+  },
+  "notes": "D minor funk pocket (clav-style additive struck-string stabs with pickup comb and inharmonic stretch, round synth bass, tight kick, ghost snares, 16th hats) rendered as a 'tape' and read back by one variable-rate head: speed 1.0 until 0.55 s, then a concave deceleration to 10% (-40 semitones) on frame 30, read from a 4x-oversampled source so the pitch glide is alias-free. The outgoing bus is side-high-passed at 250 Hz and DC-guarded first, then a 1 ms raised-cosine fade ends exactly on the cue sample; digital silence until a tiny mono 62 Hz reel thump at 1.15 s. A Hann-shaped sub-1 Hz offset removes the DC left by truncating the high-pass settling. No flags.",
+  "mood": [
+    "energetic"
+  ],
+  "tempo": "fast"
+}
