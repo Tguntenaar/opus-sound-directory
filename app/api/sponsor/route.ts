@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       },
     }),
   );
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, id: lead.id });
 }
 
 export async function GET(request: Request) {

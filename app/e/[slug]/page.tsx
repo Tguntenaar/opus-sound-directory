@@ -98,7 +98,7 @@ export default async function EntryPage({ params }: Props) {
   ]);
 
   return (
-    <article className="page-enter flex flex-col gap-8">
+    <article className="page-enter flex min-w-0 flex-col gap-8">
       <JsonLd data={[entryAudioObjectJsonLd(entry), breadcrumbs]} />
       <div className="flex flex-col gap-2">
         <Link
@@ -111,7 +111,7 @@ export default async function EntryPage({ params }: Props) {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h1 className="text-3xl font-semibold text-zinc-50">{entry.title}</h1>
-            <p className="mt-1 text-sm text-zinc-500">{catLabel} · {entry.generatedAt}</p>
+            <p className="mt-1 text-sm text-zinc-400">{catLabel} · {entry.generatedAt}</p>
           </div>
           <EntryShareActions slug={entry.slug} title={entry.title} entry={entry} />
         </div>
@@ -177,7 +177,7 @@ export default async function EntryPage({ params }: Props) {
           <CopyButton text={entry.prompt} entryId={entry.id} iconOnly entry={entry} source="detail" />
         </div>
         <pre
-          className="whitespace-pre-wrap rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-sm leading-relaxed text-zinc-300 transition-colors hover:border-zinc-700/90"
+          className="max-w-full min-w-0 overflow-x-auto whitespace-pre-wrap rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-sm leading-relaxed text-zinc-300 transition-colors hover:border-zinc-700/90"
           tabIndex={0}
         >
           {entry.prompt}
@@ -206,7 +206,7 @@ export default async function EntryPage({ params }: Props) {
         <CodeViewer assetPath={entry.assets.code} entryId={entry.id} entry={entry} />
       </section>
 
-      <section className="flex flex-col gap-2 text-sm text-zinc-500">
+      <section className="flex flex-col gap-2 text-sm text-zinc-400">
         <h2 className="text-lg font-medium text-zinc-100">Timing & cues</h2>
         <p>
           {entry.timing.bpm != null ? `${entry.timing.bpm} BPM · ` : ""}
@@ -219,7 +219,7 @@ export default async function EntryPage({ params }: Props) {
             </li>
           ))}
         </ul>
-        {entry.notes && <p className="text-zinc-600">{entry.notes}</p>}
+        {entry.notes && <p className="text-zinc-400">{entry.notes}</p>}
       </section>
 
       <RelatedEntries entries={related} category={entry.category} />

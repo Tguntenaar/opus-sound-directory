@@ -19,7 +19,7 @@ export function IconButton({
   size = "sm",
   ...props
 }: Props) {
-  const dim = size === "sm" ? "h-8 w-8" : "h-9 w-9";
+  const dim = size === "sm" ? "h-10 w-10" : "h-11 w-11";
   return (
     <IconTooltip label={label}>
       <button

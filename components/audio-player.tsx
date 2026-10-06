@@ -125,7 +125,7 @@ export function AudioPlayer({ audioId, src, title, className, entry }: Props) {
           <span className="sr-only">{playing ? "Pause" : "Play"}</span>
         </Button>
         {playing && <EqualizerBars active className="h-4" />}
-        <span className="text-xs text-zinc-600" title="Keyboard shortcut">
+        <span className="text-xs text-zinc-400" title="Keyboard shortcut">
           Space
         </span>
       </div>

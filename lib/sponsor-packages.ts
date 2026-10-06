@@ -46,11 +46,12 @@ export const SPONSOR_PACKAGES: SponsorPackage[] = [
   },
   {
     id: "newsletter-social",
-    name: "Newsletter & X shout",
-    tagline: "Paid mention when our audience updates go out (inventory as available).",
+    name: "X shout (+ newsletter when list exists)",
+    tagline:
+      "Paid mention on X when inventory is available. Newsletter line only after we have a list.",
     bullets: [
-      "Featured partner line in directory newsletter drops",
       "Coordinated X post when a pack or category launches",
+      "Newsletter partner line ships once the list exists — not a live drop today",
       "Bundled with homepage or category slots when booked together",
     ],
   },

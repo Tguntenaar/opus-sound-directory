@@ -59,7 +59,7 @@ export function FilterPillGroup({
   }, [measure]);
 
   const chip =
-    "relative z-[1] rounded-full px-3 py-1 text-xs transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60";
+    "relative z-[1] inline-flex min-h-10 items-center rounded-full px-3.5 py-2 text-xs transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60";
   const chipIdle = "text-zinc-500 hover:text-zinc-300";
   const chipActive = "text-violet-100";
 

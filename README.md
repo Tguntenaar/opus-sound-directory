@@ -146,7 +146,7 @@ Local `npm run dev` uses an in-memory fallback when KV is unavailable; productio
 
 Public interest form at **`/sponsor`** (header/footer **Sponsors**). Leads are stored in **`SPONSOR_KV`** (`sponsor:lead:{uuid}` plus index key `sponsor:index`).
 
-- **POST `/api/sponsor`** — JSON body with company/contact/email/website/packages/budget/message (optional `logoUrl`). Returns `{ ok: true }`. Honeypot field `companyFax` must stay empty.
+- **POST `/api/sponsor`** — JSON body with company/contact/email/website/packages/budget/message (optional `logoUrl`). Returns `{ ok: true, id }` (`id` is the lead id for tracing; honeypot replies stay `{ ok: true }`). Honeypot field `companyFax` must stay empty.
 - **GET `/api/sponsor`** — disabled (`{ enabled: false, leads: [] }`) until you set Worker secret **`SPONSOR_ADMIN_TOKEN`**. Then pass `Authorization: Bearer <token>` or header `X-Sponsor-Admin-Token` to list recent leads.
 
 **KV namespace (`SPONSOR_KV`):** On first deploy, `bindings.kv()` in `cloudflare.config.ts` usually provisions a namespace per binding name. If deploy fails, create one in the dashboard (**Workers KV** → **Create**), then pin it:

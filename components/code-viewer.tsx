@@ -33,7 +33,7 @@ export function CodeViewer({
   const canCopy = code.length > 0 && !code.startsWith("Loading") && !code.startsWith("# Unable");
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex min-w-0 w-full flex-col gap-2">
       {canCopy && (
         <div className="flex justify-end">
           <CopyButton
@@ -47,10 +47,10 @@ export function CodeViewer({
         </div>
       )}
       <pre
-        className="max-h-[28rem] overflow-auto rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-xs leading-relaxed text-zinc-300 transition-colors hover:border-zinc-700/90"
+        className="max-h-[28rem] w-full max-w-full min-w-0 overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-xs leading-relaxed text-zinc-300 transition-colors hover:border-zinc-700/90"
         tabIndex={0}
       >
-        <code>{code}</code>
+        <code className="block min-w-0">{code}</code>
       </pre>
     </div>
   );

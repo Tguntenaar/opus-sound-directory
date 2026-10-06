@@ -144,7 +144,7 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
           type="button"
           onClick={playPreview}
           className={cn(
-            "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition-[border-color,background-color,transform] duration-200 active:scale-95",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-[border-color,background-color,transform] duration-200 active:scale-95",
             playing
               ? "border-violet-500/50 bg-violet-500/10 text-violet-200"
               : "border-zinc-700 text-zinc-300 hover:border-violet-500/50 hover:bg-zinc-900/80 hover:text-violet-300",

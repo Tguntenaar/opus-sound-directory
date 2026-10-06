@@ -57,7 +57,7 @@ export function MetricsPanel({ entry }: { entry: SoundEntry }) {
     <dl className="grid gap-3 sm:grid-cols-2">
       {rows.map((row) => (
         <div key={row.label} className="rounded-lg border border-zinc-800 bg-zinc-950/50 px-3 py-2">
-          <dt className="text-xs text-zinc-500">{row.label}</dt>
+          <dt className="text-xs text-zinc-400">{row.label}</dt>
           <dd className="mt-0.5 text-sm font-medium text-zinc-100">{row.value}</dd>
         </div>
       ))}

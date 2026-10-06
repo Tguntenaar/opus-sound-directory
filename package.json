@@ -49,7 +49,7 @@
     "start": "vite preview",
     "deploy": "vinext-cloudflare deploy",
     "generate:icons": "node scripts/generate-brand-icons.mjs",
-    "test": "node --experimental-strip-types --test lib/mcp/search.test.ts lib/mcp/should-serve-info-page.test.ts lib/stats-display.test.ts",
+    "test": "node --experimental-strip-types --test lib/mcp/search.test.ts lib/mcp/should-serve-info-page.test.ts lib/stats-display.test.ts lib/sponsors.test.ts lib/sponsor-notify.test.ts lib/sponsor-packages.test.ts",
     "test:e2e": "playwright test"
   }
 }

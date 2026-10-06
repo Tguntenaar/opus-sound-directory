@@ -59,7 +59,7 @@ export function BlogEntryEmbed({ entry }: { entry: SoundEntry }) {
       <button
         type="button"
         onClick={onPlay}
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-[color,border-color,transform] duration-200 hover:border-violet-500/50 hover:text-violet-300 active:scale-95 motion-reduce:active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
+        className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-zinc-700 text-zinc-300 transition-[color,border-color,transform] duration-200 hover:border-violet-500/50 hover:text-violet-300 active:scale-95 motion-reduce:active:scale-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
         aria-label={playing ? `Pause ${entry.title}` : `Play ${entry.title}`}
       >
         <PlayPauseIcon playing={playing} className="h-3.5 w-3.5" />

@@ -42,7 +42,9 @@ KV copy/download counters are unchanged; these events are additive.
 
 | Event | Properties | Notes |
 |-------|------------|--------|
-| `sponsor_cta_click` | `placement` (`featured_slot` \| `blog` \| `blog-index`), `slug` (post slug when `placement=blog`), `sponsored` | Blog card / index CTAs |
+| `sponsor_cta_click` | `placement` (`featured_slot` \| `blog` \| `blog-index`), `slug` (post slug when `placement=blog`), `sponsored` | Unsold-slot / blog CTAs to `/sponsor` |
+| `sponsor_impression` | `placement` (`home` \| `category`), optional `category` | Paid home/category slot, once ≥50% visible for ~1s |
+| `sponsor_click` | `placement` (`home` \| `category`), optional `category` | Paid outbound click (`rel=sponsored`). No company name. |
 | `sponsor_form_submit` | `package_count`, `budget_range`, optional `ref` | No email or company name; `ref` from `?ref=` on `/sponsor` |
 | `submit_form_submit` | `submission_id`, `source`, `category`, `mood_count` | No email or code |
 | `submit_status_live` | `submission_id`, `community_slug` (server), `source` | When a submission goes live |

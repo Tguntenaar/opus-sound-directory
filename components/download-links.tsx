@@ -66,7 +66,7 @@ export function DownloadLinks({ entryId, wav, mp3, title, entry }: Props) {
           <Download className="h-4 w-4" aria-hidden />
         )}
       </IconButton>
-      <span className="text-xs text-zinc-600" aria-hidden>WAV · MP3</span>
+      <span className="text-xs text-zinc-400" aria-hidden>WAV · MP3</span>
       <Cc0Badge />
     </div>
   );

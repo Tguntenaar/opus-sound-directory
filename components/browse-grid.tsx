@@ -9,6 +9,7 @@ import { EntryCard } from "@/components/entry-card";
 import { FilterPillGroup, type PillOption } from "@/components/filter-pill-group";
 import { FeaturedSlot } from "@/components/featured-slot";
 import { getFeaturedEntry } from "@/lib/featured";
+import { getHomeSponsor } from "@/lib/sponsors";
 import { matchesSearch, sortEntries, type SortMode } from "@/lib/browse-sort";
 import { useStats } from "@/components/stats-provider";
 import { IconButton } from "@/components/icon-button";
@@ -69,10 +70,11 @@ export function BrowseGrid({
     [syncCategoryToUrl, lockedCategory, category],
   );
 
+  const homeSponsor = lockedCategory ? null : getHomeSponsor();
   const featured = useMemo(() => {
-    if (lockedCategory) return undefined;
-    return getFeaturedEntry(entries);
-  }, [entries, lockedCategory]);
+    if (lockedCategory || homeSponsor) return undefined;
+    return getFeaturedEntry(entries) ?? undefined;
+  }, [entries, lockedCategory, homeSponsor]);
   const moodOptions = useMemo(() => moodsInCatalog(entries), [entries]);
 
   const categoryPills: PillOption[] = useMemo(() => {
@@ -161,7 +163,11 @@ export function BrowseGrid({
 
   return (
     <div className="flex flex-col gap-8">
-      {featured && <FeaturedSlot entry={featured} />}
+      <FeaturedSlot
+        entry={featured}
+        placement={lockedCategory ? "category" : "home"}
+        category={lockedCategory}
+      />
 
       <div
         className="sticky top-0 z-30 -mx-4 border-b border-zinc-800/70 bg-zinc-950/90 px-4 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-zinc-950/75"

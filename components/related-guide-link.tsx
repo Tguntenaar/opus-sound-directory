@@ -14,11 +14,11 @@ export function RelatedGuideLink({
   const guide = getRelatedGuideForEntry(entryId, category);
   if (!guide) return null;
   return (
-    <p className="text-xs text-zinc-600">
+    <p className="text-xs text-zinc-400">
       Related guide:{" "}
       <Link
         href={`/blog/${guide.slug}`}
-        className="text-violet-400/90 underline-offset-2 hover:text-violet-300 hover:underline"
+        className="text-violet-400 underline-offset-2 hover:text-violet-300 hover:underline"
         onClick={() =>
           captureEvent("blog_related_guide_click", {
             category,

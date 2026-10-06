@@ -1,6 +1,7 @@
 import type { SponsorLead } from "@/lib/sponsor-types";
 import { BUDGET_RANGES, SPONSOR_PACKAGES } from "@/lib/sponsor-packages";
 import { SITE_NAME } from "@/lib/site-url";
+import { sponsorNotifySkipReason } from "@/lib/sponsor-notify-skip";
 
 const DEFAULT_NOTIFY_TO = "thomas@guntenaar.org";
 
@@ -46,6 +47,11 @@ function budgetLabel(value: string): string {
 export async function notifySponsorLead(lead: SponsorLead): Promise<void> {
   try {
     const env = await readMailEnv();
+    const skip = sponsorNotifySkipReason(env);
+    if (skip) {
+      console.warn("sponsor notify skipped", { leadId: lead.id, reason: skip });
+      return;
+    }
     const sender = env.SPONSOR_SEND_EMAIL;
     const from = env.SPONSOR_MAIL_FROM?.trim();
     if (!sender || !from) return;

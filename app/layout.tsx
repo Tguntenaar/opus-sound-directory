@@ -32,13 +32,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <main className="page-enter mx-auto max-w-6xl px-4 py-12 sm:py-16">{children}</main>
           <footer className="border-t border-zinc-900/80 py-8">
             <nav
-              className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-3 px-4 text-xs text-zinc-600"
+              className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-3 px-4 text-xs text-zinc-400"
               aria-label="Footer"
             >
               <IconTooltip label="Submit a sound">
                 <a
                   href="/submit"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-zinc-900/60 hover:text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-zinc-900/60 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
                   aria-label="Submit a sound"
                 >
                   <FileUp className="h-4 w-4" aria-hidden />
@@ -47,7 +47,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <IconTooltip label="Sponsor">
                 <a
                   href="/sponsor"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-zinc-900/60 hover:text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-zinc-900/60 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
                   aria-label="Sponsor"
                 >
                   <HeartHandshake className="h-4 w-4" aria-hidden />
@@ -56,7 +56,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <IconTooltip label="About">
                 <a
                   href="/about"
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-zinc-900/60 hover:text-zinc-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-zinc-900/60 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
                   aria-label="About"
                 >
                   <Info className="h-4 w-4" aria-hidden />
