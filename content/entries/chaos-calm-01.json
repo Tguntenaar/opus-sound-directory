@@ -35,7 +35,7 @@
   },
   "metrics": {
     "lufs": -14.01,
-    "truePeak": -1.29,
+    "truePeak": -1.3,
     "durationSec": 15.0,
     "passedChecks": true
   },
