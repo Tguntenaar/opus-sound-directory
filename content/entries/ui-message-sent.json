@@ -1,0 +1,50 @@
+{
+  "id": "ui-message-sent",
+  "slug": "ui-message-sent",
+  "title": "Message sent",
+  "category": "ui-sounds",
+  "tags": [
+    "ui",
+    "0.6s",
+    "send",
+    "swish"
+  ],
+  "prompt": "A quick, optimistic 0.6-second \"message sent\" in G. It opens on frame 0 with a soft puff of air that swells into an upward swish. Two decorrelated noise bands sweep from about 600 Hz to 9 kHz and glide from slightly left to slightly right, and a faint breathy D5-to-G6 whistle rides inside them to give the motion a pitch direction. At 140 ms the swish resolves into a light glassy pluck: a G6 with a quieter D7 fifth above and a soft G5 body. Its partials follow glass-like inharmonic ratios, with a tiny bright tink on the attack and a short, airy room. Nothing heavy sits below 150 Hz and the stereo width lives only above 650 Hz. The pluck rings out in about a third of a second and the file ends in silence, so it is gone before the next thing happens.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 3303,
+  "timing": {
+    "fps": 30,
+    "durationSec": 0.6,
+    "samples": 28800,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "send"
+    }
+  ],
+  "master": {
+    "targetLufs": -17.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -17.0,
+    "truePeak": -2.81,
+    "durationSec": 0.6,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/ui-message-sent/out.wav",
+    "mp3": "/assets/ui-message-sent/out.mp3",
+    "spectrogram": "/assets/ui-message-sent/spectrogram.png",
+    "code": "/assets/ui-message-sent/generate.py"
+  },
+  "notes": "Swish: two decorrelated TPT-SVF noise bands sweeping 600 Hz to 9 kHz with a left-to-right drift and a faint D5-to-G6 whistle, from a soft air puff on frame 0. It resolves at 140 ms into a glassy G6/D7/G5 pluck (inharmonic 1/2.32/4.25/6.63 partials, tiny tink) with a short airy room. Mid high-passed at 140 Hz and side at 650 Hz, so the low end stays light and mono.",
+  "mood": [
+    "bright",
+    "upbeat"
+  ],
+  "tempo": "fast"
+}
