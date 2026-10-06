@@ -1,0 +1,61 @@
+{
+  "id": "synthwave-drive-20s",
+  "slug": "synthwave-drive-20s",
+  "title": "Synthwave night drive",
+  "category": "ad-beds",
+  "tags": [
+    "20s",
+    "100bpm",
+    "synthwave",
+    "80s",
+    "gated snare"
+  ],
+  "prompt": "A 20-second 80s night-drive cue in A minor at 100 BPM, moving i-VI-III-VII (Am, F, C, G). Frame 0 is a triplet pickup: a big gated-reverb snare with a tom, a lower tom on the next triplet, and the first downbeat at 0.4 s. The verse drives on an octave-bouncing band-limited saw bass in sixteenths, a lush detuned juno-style pad that slowly opens, a ping-pong 25 % pulse arpeggio, kick and eighth hats. Gated snares join in bar 3, a noise riser sweeps up through bar 4, and a gated tom fill drops into a short breath of near-silence. On frame 300 (10.0 s) the chorus lands with a crash, four-on-the-floor kick, sixteenth hats and a pulse-width-modulated lead hook with portamento, vibrato, delay and hall. Bar 8 stops short after a tom fill. On frame 570 (19.0 s) a final hit lands: kick, gated snare, crash, a wide Am saw stab, A1 bass and a high A on the lead. It rings into a one-second hall tail that fades to silence. Below 120 Hz there is only the mono kick and bass.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 9100570,
+  "timing": {
+    "fps": 30,
+    "durationSec": 20.0,
+    "samples": 960000,
+    "sampleRate": 48000,
+    "bpm": 100
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "start"
+    },
+    {
+      "frame": 300,
+      "label": "lead hook"
+    },
+    {
+      "frame": 570,
+      "label": "end hit"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.03,
+    "truePeak": -1.3,
+    "durationSec": 20.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/synthwave-drive-20s/out.wav",
+    "mp3": "/assets/synthwave-drive-20s/out.mp3",
+    "spectrogram": "/assets/synthwave-drive-20s/spectrogram.png",
+    "code": "/assets/synthwave-drive-20s/generate.py"
+  },
+  "notes": "A minor i-VI-III-VII at 100 BPM, grid anchored so bar 5 (the chorus) lands on frame 300; frame 0 is a two-triplet gated snare/tom pickup into the 0.4 s downbeat. Wavetable-read band-limited saws (harmonics capped per voice at 12-15 kHz): juno-style four-voice detuned pad crossfading dark->bright tables, additive octave-bouncing sixteenth saw bass with a plucked low-pass envelope (mono), 25 % pulse arp with ping-pong delay, and a PWM lead built as the difference of two band-limited saws (exactly band-limited pulse) with portamento and delayed vibrato. Gated snare = dense plate gated ~210 ms after each hit. Breath of near-silence before f300 and stop-time before f570 give clean +18 / +29 dB onsets; side channel high-passed at 250 Hz. No flags.",
+  "mood": [
+    "energetic",
+    "dark",
+    "upbeat"
+  ],
+  "tempo": "medium"
+}
