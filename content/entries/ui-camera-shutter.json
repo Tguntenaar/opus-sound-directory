@@ -1,0 +1,49 @@
+{
+  "id": "ui-camera-shutter",
+  "slug": "ui-camera-shutter",
+  "title": "Camera shutter",
+  "category": "ui-sounds",
+  "tags": [
+    "ui",
+    "0.5s",
+    "shutter",
+    "mechanical"
+  ],
+  "prompt": "A 0.5-second synthesised DSLR shutter, crisp and mechanical with no musical tone. On frame 0 the mirror flips up with a hard clack: a sharp grit transient over damped, inharmonic metal-and-polymer body modes, a small mono thud and a tiny mirror bounce 6 ms later. The focal-plane curtains then run as a short whirr: two quick, grainy swipes of band-passed noise, chopped by an irregular gear ratchet whose filter sweeps upward as each curtain crosses the frame. At 125 ms the mirror drops back with a second clack, a little lower and heavier than the first. A tiny return spring then rattles: six to seven quick metallic ticks that bounce closer together and quieter, each ringing for only a few milliseconds so no pitch forms. A small, close room keeps it tight. Everything has settled by about 0.33 s, and the last 60 ms fade to silence.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 50502,
+  "timing": {
+    "fps": 30,
+    "durationSec": 0.5,
+    "samples": 24000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "shutter"
+    }
+  ],
+  "master": {
+    "targetLufs": -17.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -17.03,
+    "truePeak": -1.3,
+    "durationSec": 0.5,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/ui-camera-shutter/out.wav",
+    "mp3": "/assets/ui-camera-shutter/out.mp3",
+    "spectrogram": "/assets/ui-camera-shutter/spectrogram.png",
+    "code": "/assets/ui-camera-shutter/generate.py"
+  },
+  "notes": "Mirror-up clack on frame 0 (band-passed grit over damped inharmonic body modes 1.2/2.7/4.3/6.9 kHz, 4x-oversampled tanh to round the coincident peak, mirror bounce at +6 ms, mono 175 Hz thud), two grainy curtain swipes (SVF band-pass sweeping up, chopped by a jittered ~1.1-1.6 kHz gear ratchet so no pitch forms) at 24 and 68 ms, a lower mirror-down clack at 125 ms, then a 7-tick return-spring rattle bouncing closer and quieter. Close 0.14 s room, 90 Hz high-pass, 11 kHz low-pass, side HP 300 Hz; ~2.4 dB peak limiting on the first clack only. 5 ms RMS arc: -9 clack, -15 curtain 1, -14 curtain 2, -10 mirror-down, -21..-34 spring ticks, settled below -57 by 0.25 s.",
+  "mood": [
+    "bright"
+  ],
+  "tempo": "fast"
+}
