@@ -1,6 +1,5 @@
 import type { SponsorLead } from "@/lib/sponsor-types";
 import { BUDGET_RANGES, SPONSOR_PACKAGES } from "@/lib/sponsor-packages";
-import { SITE_NAME } from "@/lib/site-url";
 
 const DEFAULT_NOTIFY_TO = "thomas@guntenaar.org";
 
@@ -61,7 +60,6 @@ export async function notifySponsorLead(lead: SponsorLead): Promise<void> {
       `Email: ${lead.email}`,
       `Packages: ${packageLabels(lead.packages)}`,
       `Budget: ${budgetLabel(lead.budgetRange)}`,
-      lead.ref ? `Ref: ${lead.ref}` : null,
       lead.logoUrl ? `Logo: ${lead.logoUrl}` : null,
       ``,
       lead.message,
@@ -74,7 +72,7 @@ export async function notifySponsorLead(lead: SponsorLead): Promise<void> {
     const html = `<pre style="font-family:ui-monospace,monospace;font-size:13px">${text.replace(/</g, "&lt;")}</pre>`;
 
     await sender.send({
-      from: { email: from, name: SITE_NAME },
+      from: { email: from, name: "Opus Sound Directory" },
       to: [{ email: to }],
       replyTo: { email: lead.email, name: lead.contactName },
       subject,

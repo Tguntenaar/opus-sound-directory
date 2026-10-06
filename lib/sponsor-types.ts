@@ -11,7 +11,6 @@ export type SponsorLead = {
   budgetRange: string;
   message: string;
   logoUrl?: string;
-  ref?: string;
 };
 
 export type SponsorLeadInput = Omit<SponsorLead, "id" | "createdAt">;

@@ -6,18 +6,19 @@
   "tags": [
     "ad",
     "60s",
-    "92bpm"
+    "92bpm",
+    "story"
   ],
-  "prompt": "Make a 60 s narrative ad bed sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 2880000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: slow build: sparse piano-like tones, add pulse at frame 900, fuller harmony for CTA at frame 1500; D major.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
-  "modelId": "local-synth",
+  "prompt": "A 60-second story-arc ad bed at 92 BPM that turns from A minor to C major. It opens at frame 0 on a soft low boom and a hollow reed-like chord. A quiet triplet pulse then ticks through Am, Fmaj7, Dm7 and Em7, while a breathy ocarina-style lead sings a slow melody and a sine bass and heartbeat kick slip in underneath. At frame 900 (30 s) the build starts with a kick, boom and soft crash. A triplet bass pushes Am-F-C-G, shakers, toms and a rim backbeat thicken, a brassy swell pad opens its filter, and a band-pass noise riser climbs. A seven-hit triplet tom fill and a short breath of silence then drop onto the emotional peak at frame 1500 (50 s): a big kick, taiko-like boom, crash, and a full C major chord with an octave-doubled pulse and the lead at its highest note. The peak moves C to F and resolves at 55.2 s onto a rolled C major chord that rings out to silence. Only the mono kick, boom, toms and bass sit below 120 Hz.",
+  "modelId": "claude-opus-5-5",
   "generatedAt": "2026-10-06",
-  "seed": 42,
+  "seed": 92060,
   "timing": {
     "bpm": 92,
     "fps": 30,
-    "durationSec": 60,
-    "samples": 1920000,
-    "sampleRate": 32000
+    "durationSec": 60.0,
+    "samples": 2880000,
+    "sampleRate": 48000
   },
   "cues": [
     {
@@ -26,20 +27,20 @@
     },
     {
       "frame": 900,
-      "label": "turn"
+      "label": "build"
     },
     {
       "frame": 1500,
-      "label": "cta"
+      "label": "emotional peak"
     }
   ],
   "master": {
-    "targetLufs": -14,
+    "targetLufs": -14.0,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -13.9,
-    "truePeak": -9.4,
+    "lufs": -14.03,
+    "truePeak": -1.3,
     "durationSec": 60.0,
     "passedChecks": true
   },
@@ -49,13 +50,12 @@
     "spectrogram": "/assets/ad-bed-60-story/spectrogram.png",
     "code": "/assets/ad-bed-60-story/generate.py"
   },
-  "notes": "Runner-verified local numpy/scipy synthesis. Mastering: pyloudnorm stereo LUFS + true-peak limit (ffmpeg ebur128 verification). WAV shipped as 32 kHz stereo for Workers 5 MiB asset limit.",
+  "notes": "Triplet reed-pulse ostinato, breathy ocarina lead, triangle pad and brassy filter-swell pad over a mono sine bass, heartbeat kick, toms and shakers; Am-F-Dm-Em intro, Am-F-C-G build, C-F peak resolving to a rolled C major. Build hit f900 lands after a half-beat dropout; a 7-hit triplet tom fill plus a 217 ms breath sets up the peak at f1500. Side channel high-passed at 260 Hz so the low end stays mono.",
   "mood": [
-    "slow",
-    "sad",
     "calm",
-    "dark"
+    "sad",
+    "bright",
+    "happy"
   ],
-  "tempo": "slow",
-  "targetModelId": "claude-opus-5-5"
+  "tempo": "medium"
 }

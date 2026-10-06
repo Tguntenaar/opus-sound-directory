@@ -11,17 +11,9 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   "aria-label": string;
-  /** Optional SEO href; plain click still calls onChange (instant filter). Cmd/Ctrl+click follows link. */
-  hrefForValue?: (value: string) => string | undefined;
 };
 
-export function FilterPillGroup({
-  options,
-  value,
-  onChange,
-  "aria-label": ariaLabel,
-  hrefForValue,
-}: Props) {
+export function FilterPillGroup({ options, value, onChange, "aria-label": ariaLabel }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const reduced = usePrefersReducedMotion();
   const [indicator, setIndicator] = useState({ left: 0, width: 0, top: 0, height: 0, ready: false });
@@ -84,37 +76,17 @@ export function FilterPillGroup({
       )}
       {options.map((opt) => {
         const active = opt.value === value;
-        const href = hrefForValue?.(opt.value);
-        const className = cn(
-          chip,
-          active ? chipActive : chipIdle,
-          reduced && active && "bg-violet-500/15 text-violet-200",
-        );
-        if (href) {
-          return (
-            <a
-              key={opt.value}
-              href={href}
-              data-pill-value={opt.value}
-              onClick={(e) => {
-                if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
-                e.preventDefault();
-                onChange(opt.value);
-              }}
-              className={className}
-              aria-current={active ? "true" : undefined}
-            >
-              {opt.label}
-            </a>
-          );
-        }
         return (
           <button
             key={opt.value}
             type="button"
             data-pill-value={opt.value}
             onClick={() => onChange(opt.value)}
-            className={className}
+            className={cn(
+              chip,
+              active ? chipActive : chipIdle,
+              reduced && active && "bg-violet-500/15 text-violet-200",
+            )}
             aria-pressed={active}
           >
             {opt.label}

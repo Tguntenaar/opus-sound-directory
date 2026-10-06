@@ -25,8 +25,8 @@ export default function SubmitPage() {
     <div className="mx-auto max-w-lg">
       <h1 className="text-3xl font-semibold text-zinc-50">Submit an entry</h1>
       <p className="mt-2 text-sm text-zinc-500">
-        Share a prompt and optional synthesis code. Submissions are screened, AI-reviewed, and safe
-        entries publish immediately as community sounds. For full control, you can also{" "}
+        Share a prompt and optional synthesis code. We store submissions securely and email the
+        maintainers. For full control, you can also{" "}
         <Link
           href="https://github.com/Tguntenaar/opus-sound-directory"
           className="text-violet-400 hover:text-violet-300"

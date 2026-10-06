@@ -17,7 +17,6 @@ export type SponsorFormPayload = {
   logoUrl?: string;
   /** Honeypot — must be empty */
   companyFax?: string;
-  ref?: string;
 };
 
 export function validateSponsorPayload(body: unknown): {
@@ -39,7 +38,6 @@ export function validateSponsorPayload(body: unknown): {
   const website = trimStr(b.website, 500);
   const message = trimStr(b.message, 4000);
   const logoUrl = b.logoUrl ? trimStr(b.logoUrl, 500) : undefined;
-  const ref = b.ref ? trimStr(b.ref, 120) : undefined;
   const budgetRange = trimStr(b.budgetRange, 40);
 
   if (!companyName) return { ok: false, error: "Company name is required" };
@@ -90,7 +88,6 @@ export function validateSponsorPayload(body: unknown): {
       budgetRange,
       message,
       logoUrl: logoUrl || undefined,
-      ref: ref || undefined,
     },
   };
 }

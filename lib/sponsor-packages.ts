@@ -37,7 +37,7 @@ export const SPONSOR_PACKAGES: SponsorPackage[] = [
   {
     id: "model-pack",
     name: "Model pack",
-    tagline: "Sponsor a batch of synthesised sounds built from your brief.",
+    tagline: "Sponsor a batch of Opus-generated sounds with your brief.",
     bullets: [
       "We publish 8–16 entries under your creative direction",
       "Full prompts, code, and metrics on the directory",

@@ -1,4 +1,3 @@
-import type { Viewport } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { StatsProvider } from "@/components/stats-provider";
@@ -8,16 +7,8 @@ import { rootWebSiteJsonLd, organizationJsonLd } from "@/lib/structured-data";
 import { JsonLd } from "@/components/json-ld";
 import { FileUp, HeartHandshake, Info } from "lucide-react";
 import { IconTooltip } from "@/components/icon-tooltip";
-import { OwnerProfileLinks } from "@/components/owner-profile-links";
 
 export const metadata = rootSiteMetadata();
-
-export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f4f5" },
-    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
-  ],
-};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -60,10 +51,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   <Info className="h-4 w-4" aria-hidden />
                 </a>
               </IconTooltip>
-              <span className="text-zinc-800" aria-hidden>
-                ·
-              </span>
-              <OwnerProfileLinks variant="footer" />
             </nav>
           </footer>
         </StatsProvider>

@@ -16,4 +16,4 @@ draft: true
 
 This post exists so the markdown sync pipeline can be tested without publishing content.
 
-[Success chime](/e/ui-success-chime)
+[Success chime](/entries/ui-success-chime)

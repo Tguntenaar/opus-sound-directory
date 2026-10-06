@@ -1,41 +1,41 @@
 {
   "id": "chaos-calm-01",
   "slug": "chaos-calm-01",
-  "title": "Chaos clocks \u2192 calm pad",
+  "title": "Chaos clocks → calm pad",
   "category": "chaos-calm",
   "tags": [
     "tiktok",
     "15s",
     "120bpm"
   ],
-  "prompt": "Make a 15 s music bed for a TikTok ad at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 720000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nTiming: 120 BPM (1 beat = 15 frames). Cues: frame 0 = hit; frame 150 = chaos stops, calm begins; last beat = soft ending that fades to exactly 0.\nSound: [chaos: clashing clocks, notification pings, glitchy drums, rising noise] \u2192 [calm: warm maj9 pad, felt piano, soft half-time pulse], key D major.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nYou can't listen, so verify: measure loudness and peak with ffmpeg ebur128, check the exact length, confirm the energy change lands on each cue frame, check the notes fit the chords, render a spectrogram and inspect it. Fix and re-render until every check passes, then report the numbers.",
-  "modelId": "local-synth",
+  "prompt": "A 15-second chaos-to-calm bed at 120 BPM that resolves into F major. It opens on a jarring hit at frame 0: a glitch kick, a burst of noise and a dissonant cluster of pings. For five seconds, clocks tick at clashing rates (on the beat, every 0.6 s, every 0.43 s, every 0.71 s, plus one that speeds up into the cut). Single off-key notification pings come in more and more often. Glitchy drums stutter on a broken sixteenth grid, and a band-passed noise riser climbs underneath. At frame 150 (5.0 s) everything stops within 3 ms and a soft felt-piano dyad lands on the downbeat. A warm Fmaj9 pad swells in, and the piece moves through Fmaj9, Bbmaj9, Dm9, Gm9 and C9sus4 back to Fmaj9. Soft piano-like plucks play a slow melody, a sine bass and a gentle half-time pulse keep the low end mono, and a long room reverb carries the last chord. It fades to silence by 15 s.",
+  "modelId": "claude-opus-5-5",
   "generatedAt": "2026-10-06",
-  "seed": 42,
+  "seed": 150801,
   "timing": {
     "bpm": 120,
     "fps": 30,
-    "durationSec": 15,
+    "durationSec": 15.0,
     "samples": 720000,
     "sampleRate": 48000
   },
   "cues": [
     {
       "frame": 0,
-      "label": "hit"
+      "label": "chaos hit"
     },
     {
       "frame": 150,
-      "label": "chaos stops, calm begins"
+      "label": "chaos stops / calm begins"
     }
   ],
   "master": {
-    "targetLufs": -14,
+    "targetLufs": -14.0,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.0,
-    "truePeak": -9.5,
+    "lufs": -14.01,
+    "truePeak": -1.3,
     "durationSec": 15.0,
     "passedChecks": true
   },
@@ -45,13 +45,12 @@
     "spectrogram": "/assets/chaos-calm-01/spectrogram.png",
     "code": "/assets/chaos-calm-01/generate.py"
   },
-  "notes": "Runner-verified local numpy/scipy synthesis. Mastering: pyloudnorm stereo LUFS + true-peak limit (ffmpeg ebur128 verification).",
+  "notes": "Chaos (0-5 s): five clocks ticking at clashing rates (0.5/0.6/0.43/0.71 s plus one accelerating into the cut), off-key sine pings that pile up, glitch kicks/snares with stutter ratchets and gated band-limited blips, and an SVF noise riser. At f150 the chaos bus closes with a 3 ms raised-cosine fade that ends on the cue sample, and a felt-piano F/C dyad lands on it. The calm (5-15 s) is a warm detuned additive pad through Fmaj9, Bbmaj9, Dm9, Gm9, C9sus4 and Fmaj9, with an inharmonic two-string piano melody, a mono sine bass, a half-time thump and a 2.6 s noise-IR room. It fades to exactly 0.",
   "mood": [
     "energetic",
-    "dark",
+    "tense",
     "calm",
-    "bright"
+    "warm"
   ],
-  "tempo": "fast",
-  "targetModelId": "claude-opus-5-5"
+  "tempo": "fast"
 }

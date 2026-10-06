@@ -1,13 +1,12 @@
 import type { MetadataRoute } from "next";
 import { getAllBlogPosts } from "@/lib/blog";
-import { CATEGORY_ORDER } from "@/lib/categories";
-import { getAllEntriesMerged } from "@/lib/entries";
+import { getAllEntries } from "@/lib/entries";
 import { getSiteUrl } from "@/lib/site-url";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function sitemap(): MetadataRoute.Sitemap {
   const base = getSiteUrl();
   const now = new Date();
-  const entries = await getAllEntriesMerged();
+  const entries = getAllEntries();
 
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -15,18 +14,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 1,
-    },
-    {
-      url: `${base}/about`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.85,
-    },
-    {
-      url: `${base}/mcp`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.7,
     },
     {
       url: `${base}/sponsor`,
@@ -38,22 +25,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${base}/blog`,
       lastModified: now,
       changeFrequency: "weekly",
-      priority: 0.7,
+      priority: 0.85,
     },
   ];
-
-  const categoryPages: MetadataRoute.Sitemap = CATEGORY_ORDER.map((category) => ({
-    url: `${base}/c/${category}`,
-    lastModified: now,
-    changeFrequency: "weekly" as const,
-    priority: 0.88,
-  }));
 
   const blogPosts: MetadataRoute.Sitemap = getAllBlogPosts().map((post) => ({
     url: `${base}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: "monthly" as const,
-    priority: 0.65,
+    priority: 0.75,
   }));
 
   const entryPages: MetadataRoute.Sitemap = entries.map((entry) => ({
@@ -63,5 +43,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...categoryPages, ...blogPosts, ...entryPages];
+  return [...staticPages, ...blogPosts, ...entryPages];
 }

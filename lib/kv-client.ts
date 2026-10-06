@@ -1,7 +1,6 @@
 export type KvLike = {
   get(key: string): Promise<string | null>;
   put(key: string, value: string): Promise<void>;
-  delete?(key: string): Promise<void>;
   list?: (options?: { prefix?: string; limit?: number }) => Promise<{
     keys: { name: string }[];
   }>;
@@ -18,9 +17,6 @@ function devKv(storeId: string): KvLike {
     },
     async put(key, value) {
       mem.set(key, value);
-    },
-    async delete(key) {
-      mem.delete(key);
     },
     async list({ prefix = "" } = {}) {
       const keys = [...mem.keys()]

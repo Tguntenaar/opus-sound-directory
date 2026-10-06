@@ -7,9 +7,7 @@
   },
   "packageManager": "npm@10.9.7",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
     "@vinext/cloudflare": "^1.0.1",
-    "agents": "^0.26.0",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.52.0",
@@ -18,11 +16,9 @@
     "react-dom": "latest",
     "react-server-dom-webpack": "^19.3.0",
     "tailwind-merge": "^3.7.0",
-    "vinext": "^1.0.1",
-    "zod": "^4.6.5"
+    "vinext": "^1.0.1"
   },
   "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2",
     "@cloudflare/vite-plugin": "^2.0.0-beta.sha-52b0dc0e9",
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
@@ -31,8 +27,6 @@
     "@vitejs/plugin-react": "^6.1.2",
     "@vitejs/plugin-rsc": "^0.5.35",
     "cf": "^1.0.0-beta.12",
-    "sharp": "^0.34.4",
-    "to-ico": "^1.1.5",
     "tailwindcss": "latest",
     "typescript": "latest",
     "vite": "^8.3.0",
@@ -45,7 +39,6 @@
     "prebuild": "node scripts/sync-entries.mjs && node scripts/sync-blog.mjs",
     "build": "vite build",
     "start": "vite preview",
-    "deploy": "vinext-cloudflare deploy",
-    "generate:icons": "node scripts/generate-brand-icons.mjs"
+    "deploy": "vinext-cloudflare deploy"
   }
 }

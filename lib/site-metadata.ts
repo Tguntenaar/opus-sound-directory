@@ -7,13 +7,6 @@ import {
   getSiteUrl,
 } from "@/lib/site-url";
 
-/** Bump when favicon assets change so browsers pick up new icons. */
-export const FAVICON_VERSION = "2";
-
-function iconHref(path: string): string {
-  return `${path}?v=${FAVICON_VERSION}`;
-}
-
 export function canonicalForPath(path: string): string {
   const base = getSiteUrl();
   if (!path || path === "/") return base;
@@ -22,8 +15,6 @@ export function canonicalForPath(path: string): string {
 
 export function rootSiteMetadata(): Metadata {
   const siteUrl = getSiteUrl();
-  const googleVerification = process.env.GOOGLE_SITE_VERIFICATION?.trim();
-  const bingVerification = process.env.BING_SITE_VERIFICATION?.trim();
   return {
     metadataBase: new URL(siteUrl),
     title: {
@@ -36,15 +27,13 @@ export function rootSiteMetadata(): Metadata {
     },
     icons: {
       icon: [
-        { url: iconHref("/favicon.ico"), sizes: "any" },
-        { url: iconHref("/favicon.svg"), type: "image/svg+xml" },
-        { url: iconHref("/favicon-48.png"), sizes: "48x48", type: "image/png" },
-        { url: iconHref("/favicon-32.png"), sizes: "32x32", type: "image/png" },
-        { url: iconHref("/favicon-16.png"), sizes: "16x16", type: "image/png" },
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+        { url: "/favicon-16.png", sizes: "16x16", type: "image/png" },
       ],
-      apple: [{ url: iconHref("/apple-touch-icon.png"), sizes: "180x180", type: "image/png" }],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
     },
-    manifest: iconHref("/site.webmanifest"),
+    manifest: "/site.webmanifest",
     openGraph: {
       type: "website",
       locale: "en_US",
@@ -57,7 +46,7 @@ export function rootSiteMetadata(): Metadata {
           url: DEFAULT_OG_IMAGE,
           width: 1200,
           height: 630,
-          alt: "Opus Sounds Directory — synthesised beds and SFX",
+          alt: "Opus Sound Directory — synthesised beds and SFX",
         },
       ],
     },
@@ -67,16 +56,6 @@ export function rootSiteMetadata(): Metadata {
       description: DEFAULT_SITE_DESCRIPTION,
       images: [DEFAULT_OG_IMAGE],
     },
-    ...(googleVerification || bingVerification
-      ? {
-          verification: {
-            ...(googleVerification ? { google: googleVerification } : {}),
-            ...(bingVerification
-              ? { other: { "msvalidate.01": bingVerification } }
-              : {}),
-          },
-        }
-      : {}),
   };
 }
 

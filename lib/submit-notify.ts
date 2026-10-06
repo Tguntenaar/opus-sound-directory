@@ -1,7 +1,6 @@
 import type { SubmitEntry } from "@/lib/submit-types";
 import { CATEGORIES } from "@/lib/categories";
 import { formatMood } from "@/lib/mood";
-import { SITE_NAME } from "@/lib/site-url";
 
 const DEFAULT_NOTIFY_TO = "thomas@guntenaar.org";
 
@@ -45,13 +44,11 @@ export async function notifySubmitEntry(entry: SubmitEntry): Promise<void> {
     const to = (env.SPONSOR_MAIL_TO?.trim() || DEFAULT_NOTIFY_TO).toLowerCase();
     const cat = CATEGORIES[entry.category]?.label ?? entry.category;
     const moods = entry.mood.map(formatMood).join(", ");
-    const subject = `Sound submission: ${entry.title} [${entry.status}]`;
+    const subject = `Sound submission: ${entry.title}`;
     const text = [
-      `Directory submission (${entry.id}) — ${entry.status}`,
-      entry.communitySlug ? `Live: /e/${entry.communitySlug}` : null,
+      `New directory submission (${entry.id})`,
       ``,
       `Title: ${entry.title}`,
-      `Source: ${entry.source}`,
       `Category: ${cat}`,
       `Mood: ${moods}`,
       `Email: ${entry.email}`,
@@ -69,7 +66,7 @@ export async function notifySubmitEntry(entry: SubmitEntry): Promise<void> {
     const html = `<pre style="font-family:ui-monospace,monospace;font-size:13px">${text.replace(/</g, "&lt;")}</pre>`;
 
     await sender.send({
-      from: { email: from, name: SITE_NAME },
+      from: { email: from, name: "Opus Sound Directory" },
       to: [{ email: to }],
       replyTo: { email: entry.email },
       subject,

@@ -7,14 +7,14 @@
     "drop",
     "3s"
   ],
-  "prompt": "Make a 3 s transition drop sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 144000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: sub drop + noise burst + short tail; peak impact aligned to frame 45 at 30fps.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
-  "modelId": "local-synth",
+  "prompt": "A 3-second cinematic heavy impact centred on low C, built for trailer-style drops. It opens on a dark, distant rumble that slowly swells. From 1.0 s a reversed \"pre-suck\" pulls the air inwards: reversed dark noise and a reversed metal shimmer rise as their filter opens. The suck cuts off 60 ms before the hit and leaves a short vacuum. On frame 45 (1.5 s) everything lands at once. A mono sub boom drops in pitch from about 130 Hz down to C1, with a C2 octave for small speakers. A sharp transient crack and a chesty body thump hit with it. A clangy, inharmonic metal-plate ring on C beats and fades. A dark, wide noise and reverb tail rolls off over about 1.5 s. The sub boom is the only content below 120 Hz, and it is mono.",
+  "modelId": "claude-opus-5-5",
   "generatedAt": "2026-10-06",
-  "seed": 42,
+  "seed": 604545,
   "timing": {
     "bpm": 120,
     "fps": 30,
-    "durationSec": 3,
+    "durationSec": 3.0,
     "samples": 144000,
     "sampleRate": 48000
   },
@@ -25,12 +25,12 @@
     }
   ],
   "master": {
-    "targetLufs": -14,
+    "targetLufs": -14.0,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -13.6,
-    "truePeak": -8.4,
+    "lufs": -14.03,
+    "truePeak": -1.4,
     "durationSec": 3.0,
     "passedChecks": true
   },
@@ -40,11 +40,10 @@
     "spectrogram": "/assets/drop-impact-heavy/spectrogram.png",
     "code": "/assets/drop-impact-heavy/generate.py"
   },
-  "notes": "Runner-verified local numpy/scipy synthesis. Mastering: pyloudnorm stereo LUFS + true-peak limit (ffmpeg ebur128 verification).",
+  "notes": "Dark rumble swell, then a reversed noise + metal-shimmer pre-suck (TPT low-pass opening) that cuts with a 3 ms fade 60 ms before frame 45, leaving a vacuum. Impact: mono sub boom sweeping ~130 Hz -> C1 with a C2 layer, broadband transient crack, 140-450 Hz body thump, detuned inharmonic plate ring on C4/C3, closing-low-pass noise tail and a dark 2.2 s hall. Only the sub sits below 120 Hz; limiter followed by an 18 Hz DC block.",
   "mood": [
     "energetic",
     "dark"
   ],
-  "tempo": "fast",
-  "targetModelId": "claude-opus-5-5"
+  "tempo": "fast"
 }

@@ -8,7 +8,6 @@ import { canonicalForPath } from "@/lib/site-metadata";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 import { blogPostingJsonLd, faqPageJsonLd } from "@/lib/structured-data";
 import { BlogArticleBody } from "@/components/blog-article-body";
-import { BlogSponsorCard } from "@/components/blog-sponsor-card";
 import { JsonLd } from "@/components/json-ld";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -85,9 +84,7 @@ export default async function BlogPostPage({ params }: Props) {
       </header>
       <BlogArticleBody blocks={blocks} toc={toc} showToc={showToc} />
       {post.faq.length > 0 ? (
-        <>
-          <BlogSponsorCard slug={slug} />
-          <section className="not-prose mt-12 border-t border-zinc-800/80 pt-8">
+        <section className="not-prose mt-12 border-t border-zinc-800/80 pt-8">
           <h2 className="text-sm font-medium text-zinc-300">FAQ</h2>
           <dl className="mt-4 flex flex-col gap-4">
             {post.faq.map((item) => (
@@ -98,10 +95,7 @@ export default async function BlogPostPage({ params }: Props) {
             ))}
           </dl>
         </section>
-        </>
-      ) : (
-        <BlogSponsorCard slug={slug} />
-      )}
+      ) : null}
     </article>
   );
 }

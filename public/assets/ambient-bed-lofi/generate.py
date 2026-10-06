@@ -1,349 +1,348 @@
-"""Synthesis code for ambient-bed-lofi. Run: python generate.py (writes out.wav)."""
+"""ambient-bed-lofi: Opus Sound Directory
+
+A 12-second seamless lo-fi bed at 75 BPM: fifteen beats, laid out as five bars of a
+lazy, swung 3/4. A mellow FM electric-piano (bell-ish tine, soft bark, stereo
+tremolo and slow tape wow) comps rootless Ebmaj9 and Eb6/9, Fm9 for two bars, and
+a Bb13 turnaround that leans back into the top of the loop. Under it sit a round
+sine bass, dusty soft drums (a pillowy kick, a band-limited brushy snare on beat
+3, low-passed swung hats) and a vinyl layer of hiss and soft crackle. The loop
+starts with a kick and chord strike on frame 0 and is rendered circularly: three
+identical cycles are synthesised, tails, reverb, wow and limiting run across
+them, and the middle cycle is kept, so the last sample flows straight back into
+the first with no fade. Only the mono kick and bass sit below 120 Hz.
+
+Run:  python3 generate.py   -> writes out.wav next to this file.
+"""
 from __future__ import annotations
 
 from pathlib import Path
 
 import numpy as np
-
-import math
-import wave
-from pathlib import Path
-
-import numpy as np
+from scipy import signal
+from scipy.io import wavfile
+from scipy.ndimage import minimum_filter1d, uniform_filter1d
 
 SAMPLE_RATE = 48000
+SEED = 75012
+DURATION_SEC = 12
+BPM = 75
+KEY = "Eb major (Ebmaj9 / Fm9)"
+FPS = 30
+CUE_FRAMES = (0,)              # loop top: kick + chord strike on sample 0
+TARGET_LUFS = -14.0
+TRUE_PEAK_CEILING_DBTP = -1.0
+
+SR = SAMPLE_RATE
+N = DURATION_SEC * SR          # one loop cycle
+CYC = 3                        # cycles rendered; the middle one is kept
+BEAT = 60.0 / BPM              # 0.8 s; 15 beats = 12 s = 5 bars of 3/4
+BAR = 3 * BEAT
+SWING = 0.60                   # off-beat eighth lands at 60 % of the beat
+
+rng = np.random.default_rng(SEED)
 
 
-def t_grid(duration_sec: float) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration_sec)
-    return np.linspace(0, duration_sec, n, endpoint=False, dtype=np.float64)
+# ---------------------------------------------------------------- utilities
+def hz(midi: float) -> float:
+    return 440.0 * 2 ** ((midi - 69) / 12)
 
 
-def sine(freq: float, duration_sec: float, phase: float = 0.0) -> np.ndarray:
-    tt = t_grid(duration_sec)
-    return np.sin(2 * np.pi * freq * tt + phase).astype(np.float32)
+def tt(dur: float) -> np.ndarray:
+    return np.arange(int(round(dur * SR))) / SR
 
 
-def envelope_adsr(
-    length: int,
-    attack: float = 0.01,
-    decay: float = 0.05,
-    sustain: float = 0.7,
-    release: float = 0.12,
-) -> np.ndarray:
-    a = max(1, int(attack * SAMPLE_RATE))
-    d = max(1, int(decay * SAMPLE_RATE))
-    r = max(1, int(release * SAMPLE_RATE))
-    s = max(0, length - a - d - r)
-    env = np.concatenate(
-        [
-            np.linspace(0, 1, a),
-            np.linspace(1, sustain, d),
-            np.full(s, sustain),
-            np.linspace(sustain, 0, r),
-        ]
-    )
-    if len(env) < length:
-        env = np.pad(env, (0, length - len(env)))
-    return env[:length].astype(np.float32)
+def fade(x: np.ndarray, a: float = 0.001, r: float = 0.005) -> np.ndarray:
+    x = x.copy()
+    na, nr = min(len(x), max(1, int(a * SR))), min(len(x), max(1, int(r * SR)))
+    shp = (-1,) + (1,) * (x.ndim - 1)
+    x[:na] *= (0.5 - 0.5 * np.cos(np.linspace(0, np.pi, na))).reshape(shp)
+    x[-nr:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nr))).reshape(shp)
+    return x
 
 
-def soft_clip(x: np.ndarray, drive: float = 1.15) -> np.ndarray:
-    return np.tanh(x * drive).astype(np.float32)
-
-
-def limiter(x: np.ndarray, ceiling: float = 0.89) -> np.ndarray:
-    peak = float(np.max(np.abs(x)))
-    if peak > ceiling and peak > 0:
-        x = x * (ceiling / peak)
-    return x.astype(np.float32)
-
-
-def stereo(mono: np.ndarray, width: float = 0.12) -> np.ndarray:
-    n = len(mono)
-    pan = np.linspace(-width, width, n).astype(np.float32)
-    left = mono * (1 - pan)
-    right = mono * (1 + pan)
-    return np.stack([left, right], axis=-1)
-
-
-def fade_edges(mono: np.ndarray, sec: float = 0.03) -> np.ndarray:
-    f = max(1, int(sec * SAMPLE_RATE))
-    mono = mono.copy()
-    mono[:f] *= np.linspace(0, 1, f)
-    mono[-f:] *= np.linspace(1, 0, f)
-    return mono
-
-
-def integrated_lufs_estimate(mono: np.ndarray) -> float:
-    rms = float(np.sqrt(np.mean(mono**2)))
-    if rms < 1e-10:
-        return -70.0
-    return 20 * math.log10(rms) - 0.691
-
-
-def _as_stereo(audio: np.ndarray) -> np.ndarray:
-    if audio.ndim == 1:
-        return np.stack([audio, audio], axis=-1)
-    return audio
-
-
-def integrated_lufs_stereo(stereo: np.ndarray) -> float:
-    import pyloudnorm as pyln
-
-    st = _as_stereo(stereo).astype(np.float64)
-    meter = pyln.Meter(SAMPLE_RATE)
-    try:
-        return float(meter.integrated_loudness(st))
-    except Exception:
-        mono = st.mean(axis=1)
-        return integrated_lufs_estimate(mono.astype(np.float32))
-
-
-def normalize_lufs_stereo(stereo: np.ndarray, target: float = -14.0) -> np.ndarray:
-    import pyloudnorm as pyln
-
-    st = _as_stereo(stereo).astype(np.float64)
-    st -= np.mean(st, axis=0, keepdims=True)
-    meter = pyln.Meter(SAMPLE_RATE)
-    try:
-        loud = meter.integrated_loudness(st)
-        if loud > -70:
-            st = pyln.normalize.loudness(st, loud, target)
-    except Exception:
-        mono = st.mean(axis=1).astype(np.float32)
-        gain = 10 ** ((target - integrated_lufs_estimate(mono)) / 20)
-        st = st * gain
-    return st.astype(np.float32)
-
-
-def master_stereo(
-    stereo: np.ndarray,
-    target_lufs: float = -14.0,
-    true_peak_db: float = -1.0,
-) -> np.ndarray:
-    st = normalize_lufs_stereo(stereo, target_lufs)
-    ceiling = 10 ** (true_peak_db / 20.0)
-    for _ in range(8):
-        st = soft_clip(st, 1.05)
-        peak = float(np.max(np.abs(st)))
-        if peak > ceiling and peak > 0:
-            st = st * (ceiling / peak)
-        loud = integrated_lufs_stereo(st.astype(np.float64))
-        if abs(loud - target_lufs) > 0.45:
-            st = normalize_lufs_stereo(st, target_lufs)
-    peak = float(np.max(np.abs(st)))
-    if peak > ceiling and peak > 0:
-        st = st * (ceiling / peak)
-    return st.astype(np.float32)
-
-
-def master_chain(mono: np.ndarray, target_lufs: float = -14.0, true_peak_db: float = -1.0) -> np.ndarray:
-    """Mono convenience wrapper — loudness measured on duplicated stereo (matches ffmpeg ebur128)."""
-    return master_stereo(stereo(mono, width=0.0), target_lufs, true_peak_db).mean(axis=1).astype(np.float32)
-
-
-def kick(duration: float = 0.18, seed: int = 0) -> np.ndarray:
-    tt = t_grid(duration)
-    pitch = 58 * np.exp(-tt * 36)
-    body = np.sin(2 * np.pi * pitch * tt) * np.exp(-tt * 14)
-    click = np.random.default_rng(seed).standard_normal(len(tt)).astype(np.float32)
-    click *= np.exp(-tt * 80) * 0.15
-    return (body + click).astype(np.float32)
-
-
-def hihat(duration: float = 0.06, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    rng = np.random.default_rng(seed)
-    noise = rng.standard_normal(n).astype(np.float32)
-    env = np.exp(-np.linspace(0, 18, n))
-    return noise * env * 0.35
-
-
-def clap(duration: float = 0.12, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    rng = np.random.default_rng(seed)
-    bursts = np.zeros(n, dtype=np.float32)
-    for off in (0, 0.008, 0.016):
-        i = int(off * SAMPLE_RATE)
-        blen = min(n - i, int(0.04 * SAMPLE_RATE))
-        if blen <= 0:
+def place(bus: np.ndarray, x: np.ndarray, t: float, gain: float = 1.0, pan: float = 0.0) -> None:
+    """Mix a snippet into the CYC-cycle bus at loop time t, once per cycle, so every
+    event (and its tail) repeats identically and wraps across the loop point."""
+    if x.ndim == 1:
+        th = (pan + 1) * np.pi / 4
+        x = np.stack([x * np.cos(th), x * np.sin(th)], axis=1) * np.sqrt(2)
+    t = t % DURATION_SEC                       # an event nudged before 0 wraps to the loop end
+    for k in range(CYC):
+        s = int(round(t * SR)) + k * N
+        if s >= len(bus):
             continue
-        b = rng.standard_normal(blen).astype(np.float32)
-        b *= np.exp(-np.linspace(0, 10, blen))
-        bursts[i : i + blen] += b
-    return bursts * 0.5
+        e = min(len(bus), s + len(x))
+        bus[s:e] += gain * x[: e - s]
 
 
-def pluck(freq: float, duration: float, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    tt = np.linspace(0, duration, n, endpoint=False)
-    rng = np.random.default_rng(seed)
-    partials = [1.0, 0.5, 0.25, 0.12]
-    sig = np.zeros(n, dtype=np.float32)
-    for i, amp in enumerate(partials):
-        sig += amp * np.sin(2 * np.pi * freq * (i + 1) * tt + rng.uniform(0, 0.2))
-    env = envelope_adsr(n, attack=0.002, decay=0.08, sustain=0.15, release=0.2)
-    return sig * env
+def sos_filter(x, kind, freq, order=2):
+    sos = signal.butter(order, freq, btype=kind, fs=SR, output="sos")
+    return signal.sosfilt(sos, x, axis=0)
 
 
-def bass(freq: float, duration: float) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    tt = np.linspace(0, duration, n, endpoint=False)
-    sig = np.sin(2 * np.pi * freq * tt) + 0.35 * np.sin(2 * np.pi * freq * 2 * tt)
-    env = envelope_adsr(n, attack=0.01, decay=0.1, sustain=0.6, release=0.15)
-    return (sig * env * 0.55).astype(np.float32)
+def noise(dur: float) -> np.ndarray:
+    return rng.standard_normal(int(round(dur * SR)))
 
 
-def pad_layers(root: float, duration: float, seed: int = 0) -> np.ndarray:
-    rng = np.random.default_rng(seed)
-    freqs = [root, root * 1.25, root * 1.5, root * 2.0]
-    n = int(SAMPLE_RATE * duration)
-    mix = np.zeros(n, dtype=np.float32)
-    for f in freqs:
-        layer = sine(f * (1 + rng.uniform(-0.008, 0.008)), duration)
-        mix += layer
-    env = envelope_adsr(n, attack=0.4, decay=0.2, sustain=0.75, release=0.5)
-    return (mix / len(freqs) * env).astype(np.float32)
+def slot(bar: int, eighth: int) -> float:
+    """Loop time of a swung eighth (0..5) in a 3/4 bar."""
+    beat, off = divmod(eighth, 2)
+    return bar * BAR + (beat + SWING * off) * BEAT
 
 
-def piano_tone(freq: float, duration: float, seed: int = 0) -> np.ndarray:
-    return pluck(freq, duration, seed=seed) * 0.85
+# ---------------------------------------------------------------- voices
+def epiano(midi: float, dur: float, vel: float = 1.0) -> np.ndarray:
+    """FM electric piano: 1:1 carrier/modulator whose index decays (soft bark into a
+    round sustain), plus a short 14:1 tine partial. Sidebands stay well under 10 kHz."""
+    t = tt(dur)
+    f = hz(midi)
+    idx = vel * (1.5 * np.exp(-t / 0.22) + 0.25)
+    ph0 = rng.uniform(0, 2 * np.pi)
+    y = np.sin(2 * np.pi * f * t + ph0 + idx * np.sin(2 * np.pi * f * t))
+    tine = 0.12 * vel * np.sin(2 * np.pi * f * 14 * t) * np.exp(-t / 0.018) if f * 14 < 9000 else 0.0
+    env = np.exp(-t / 2.2) * (0.6 + 0.4 * np.exp(-t / 0.4))
+    return fade((y * env + tine) * 0.3 * vel, a=0.002, r=min(0.25, dur * 0.3))
 
 
-def noise_burst(duration: float, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    rng = np.random.default_rng(seed)
-    return (rng.standard_normal(n) * np.exp(-np.linspace(0, 6, n))).astype(np.float32)
+def sine_bass(midi: float, dur: float) -> np.ndarray:
+    t = tt(dur)
+    f = hz(midi)
+    y = np.sin(2 * np.pi * f * t) + 0.18 * np.sin(4 * np.pi * f * t) + 0.05 * np.sin(6 * np.pi * f * t)
+    env = 0.6 + 0.4 * np.exp(-t / 0.3)
+    return fade(y * env * 0.5, a=0.008, r=0.12)
 
 
-def bandpass_noise(duration: float, f0: float, f1: float, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    rng = np.random.default_rng(seed)
-    noise = rng.standard_normal(n)
-    # simple sweepable resonant filter via cumulative sine modulation
-    tt = np.linspace(0, duration, n, endpoint=False)
-    freq = np.linspace(f0, f1, n)
-    mod = np.sin(2 * np.pi * freq * tt)
-    return (noise * mod * np.linspace(0.2, 1, n)).astype(np.float32)
+def kick() -> np.ndarray:
+    t = tt(0.45)
+    f = 52 + (115 - 52) * np.exp(-t / 0.035)
+    body = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.2)
+    knock = sos_filter(noise(0.45), "bandpass", [600, 2200]) * np.exp(-t / 0.006) * 0.12
+    y = np.tanh(1.4 * (body + knock)) / np.tanh(1.4)
+    return fade(sos_filter(y, "lowpass", 2500), a=0.0008, r=0.03)
 
 
-def whoosh_riser(duration: float, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    tt = np.linspace(0, duration, n, endpoint=False)
-    freqs = np.linspace(200, 4000, n)
-    phase = np.cumsum(freqs / SAMPLE_RATE) * 2 * np.pi
-    tone = np.sin(phase) * np.linspace(0.05, 0.9, n)
-    noise = bandpass_noise(duration, 300, 8000, seed=seed) * np.linspace(0.1, 0.7, n)
-    return (tone + noise).astype(np.float32)
+def snare(ghost: bool = False) -> np.ndarray:
+    d = 0.35
+    t = tt(d)
+    body = np.sin(2 * np.pi * 185 * t + 0.6 * np.sin(2 * np.pi * 330 * t)) * np.exp(-t / 0.04) * 0.5
+    brush = sos_filter(noise(d), "bandpass", [700, 5200], order=2)
+    brush *= (1 - np.exp(-t / 0.004)) * np.exp(-t / (0.06 if ghost else 0.11))
+    return fade((body + brush) * (0.4 if ghost else 0.8), a=0.001, r=0.03)
 
 
-def metallic_hit(seed: int = 0) -> np.ndarray:
-    dur = 0.35
-    n = int(SAMPLE_RATE * dur)
-    tt = np.linspace(0, dur, n, endpoint=False)
-    rng = np.random.default_rng(seed)
-    freqs = [880, 1320, 1760, 2210]
-    sig = np.zeros(n, dtype=np.float32)
-    for f in freqs:
-        sig += np.sin(2 * np.pi * f * tt) * np.exp(-tt * (8 + rng.uniform(0, 4)))
-    _mix_at(sig, 0, noise_burst(0.08, seed=seed + 1), 0.4)
-    return sig
+def hat(vel: float) -> np.ndarray:
+    d = 0.08
+    t = tt(d)
+    y = sos_filter(noise(d), "bandpass", [5500, 10500], order=2)
+    y *= (1 - np.exp(-t / 0.0015)) * np.exp(-t / 0.022)
+    return fade(y * 0.3 * vel, a=0.001, r=0.01)
 
 
-def ui_chime_pair(f1: float, f2: float, duration: float, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    mono = np.zeros(n, dtype=np.float32)
-    a = pluck(f1, duration * 0.55, seed=seed)
-    b = pluck(f2, duration * 0.65, seed=seed + 1)
-    mono[: len(a)] += a
-    offset = int(0.08 * SAMPLE_RATE)
-    mono[offset : offset + len(b)] += b * 0.85
-    return mono[:n]
+def reverb(x: np.ndarray, rt60: float = 1.1, predelay: float = 0.012) -> np.ndarray:
+    t = tt(rt60 * 1.1)
+    env = np.exp(-6.9 * t / rt60) * (1 - np.exp(-t / 0.01))
+    irs = []
+    for _ in range(2):
+        ir = sos_filter(rng.standard_normal(len(t)), "bandpass", [250, 4500]) * env
+        ir = np.concatenate([np.zeros(int(predelay * SR)), ir])
+        irs.append(ir / np.sqrt(np.sum(ir ** 2)))
+    return np.stack([signal.fftconvolve(x[:, i], irs[i])[: len(x)] for i in range(2)], axis=1)
 
 
-def _mix_at(mono: np.ndarray, pos: int, snippet: np.ndarray, gain: float = 1.0) -> None:
-    end = min(len(mono), pos + len(snippet))
-    if pos >= end:
-        return
-    mono[pos:end] += snippet[: end - pos] * gain
+def vinyl() -> np.ndarray:
+    """One loop cycle of vinyl surface: band-passed hiss plus soft crackle blips
+    (Poisson-spaced, each a raised-cosine-windowed band-passed burst of ~0.4-1.2 ms)."""
+    hiss = np.stack([sos_filter(noise(DURATION_SEC), "bandpass", [900, 8000]) for _ in range(2)], 1) * 0.012
+    out = hiss
+    n_pops = rng.poisson(9 * DURATION_SEC)
+    times = rng.uniform(0, DURATION_SEC - 0.01, n_pops)
+    for t0 in times:
+        ln = int(rng.uniform(0.0004, 0.0012) * SR)
+        b = noise(ln / SR) * np.hanning(ln)
+        b = sos_filter(b, "bandpass", [1500, 6000])
+        a = 0.04 * rng.lognormal(0, 0.5)
+        pan = rng.uniform(-0.8, 0.8)
+        th = (pan + 1) * np.pi / 4
+        s = int(t0 * SR)
+        out[s:s + ln, 0] += a * b * np.cos(th)
+        out[s:s + ln, 1] += a * b * np.sin(th)
+    return out
 
 
-def chaos_clocks(duration: float, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    mono = np.zeros(n, dtype=np.float32)
-    rng = np.random.default_rng(seed)
-    for _ in range(24):
-        pos = rng.integers(0, max(1, n - int(0.2 * SAMPLE_RATE)))
-        tick = pluck(1800 + rng.uniform(-400, 400), 0.08, seed=int(rng.integers(0, 1_000_000)))
-        _mix_at(mono, pos, tick, 0.35)
-    _mix_at(mono, 0, noise_burst(min(duration, 0.4), seed=seed), 0.25)
-    for i in range(0, n, int(SAMPLE_RATE * 0.5)):
-        _mix_at(mono, i, kick(0.1, seed=seed + i), 0.5)
-    return mono
+# ---------------------------------------------------------------- loudness / peak
+def k_weight(x: np.ndarray) -> np.ndarray:
+    """ITU-R BS.1770 K-weighting (48 kHz coefficients)."""
+    b1 = [1.53512485958697, -2.69169618940638, 1.19839281085285]
+    a1 = [1.0, -1.69065929318241, 0.73248077421585]
+    b2 = [1.0, -2.0, 1.0]
+    a2 = [1.0, -1.99004745483398, 0.99007225036621]
+    return signal.lfilter(b2, a2, signal.lfilter(b1, a1, x, axis=0), axis=0)
 
 
-def chaos_traffic(duration: float, seed: int = 0) -> np.ndarray:
-    n = int(SAMPLE_RATE * duration)
-    mono = np.zeros(n, dtype=np.float32)
-    rng = np.random.default_rng(seed)
-    for _ in range(18):
-        pos = rng.integers(0, max(1, n - 4000))
-        honk = sine(220 + rng.uniform(-40, 40), 0.25) * envelope_adsr(int(0.25 * SAMPLE_RATE), 0.01, 0.05, 0.4, 0.1)
-        end = min(n, pos + len(honk))
-        _mix_at(mono, pos, honk, 0.4)
-    _mix_at(mono, 0, bandpass_noise(duration, 400, 2500, seed=seed), 0.2)
-    return mono
+def integrated_lufs(x: np.ndarray) -> float:
+    """BS.1770-4 integrated loudness: 400 ms blocks, 75 % overlap, -70 LUFS abs + -10 LU rel gates."""
+    y = k_weight(x)
+    blk, hop = int(0.4 * SR), int(0.1 * SR)
+    z = np.array([np.mean(y[s:s + blk] ** 2, axis=0).sum() for s in range(0, len(y) - blk + 1, hop)])
+    lk = -0.691 + 10 * np.log10(z + 1e-20)
+    z1 = z[lk > -70]
+    rel = -0.691 + 10 * np.log10(z1.mean()) - 10
+    z2 = z1[(-0.691 + 10 * np.log10(z1)) > rel]
+    return float(-0.691 + 10 * np.log10(z2.mean()))
 
 
-def crossfade_at(chaos: np.ndarray, calm: np.ndarray, cue: int, xfade_sec: float = 0.35) -> np.ndarray:
-    n = len(chaos)
-    calm = calm[:n]
-    if len(calm) < n:
-        calm = np.pad(calm, (0, n - len(calm)))
-    xf = int(xfade_sec * SAMPLE_RATE)
-    out = chaos.copy()
-    end = min(n, cue + xf)
-    ramp = np.linspace(1, 0, max(1, end - cue))
-    out[cue:end] = chaos[cue:end] * ramp[: end - cue] + calm[cue:end] * (1 - ramp[: end - cue])
-    out[end:] = calm[end:]
-    return fade_edges(out, 0.04)
+def true_peak_dbtp(x: np.ndarray) -> float:
+    os = signal.resample_poly(x, 4, 1, axis=0)
+    return float(20 * np.log10(np.max(np.abs(os)) + 1e-20))
 
 
-def write_wav(path: Path, stereo_audio: np.ndarray) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    audio = np.clip(stereo_audio, -1, 1)
-    pcm = (audio * 32767).astype(np.int16)
-    with wave.open(str(path), "w") as wf:
-        wf.setnchannels(2)
-        wf.setsampwidth(2)
-        wf.setframerate(SAMPLE_RATE)
-        wf.writeframes(pcm.tobytes())
+def soft_limiter(x: np.ndarray, ceiling_db: float, look_ms: float = 2.0, rel_ms: float = 120.0) -> np.ndarray:
+    """Look-ahead gain limiter driven by the 4x-oversampled (true) peak. Runs on the
+    periodic multi-cycle buffer with wrap-around windows, so the kept middle cycle
+    has a gain curve that is itself periodic."""
+    ceil = 10 ** (ceiling_db / 20)
+    os = np.abs(signal.resample_poly(x, 4, 1, axis=0)).max(axis=1)
+    pk = os[: len(x) * 4].reshape(len(x), 4).max(axis=1)
+    need = np.minimum(1.0, ceil / np.maximum(pk, 1e-12))
+    L = int(look_ms * 1e-3 * SR)
+    held = minimum_filter1d(need, size=2 * L + 1, mode="wrap")
+    rc = np.exp(-1.0 / (rel_ms * 1e-3 * SR))
+    g = np.empty_like(held)
+    prev = 1.0
+    for n, h in enumerate(held.tolist()):
+        prev = min(h, prev * rc + (1 - rc))
+        g[n] = prev
+    g = uniform_filter1d(g, size=L + 1, mode="wrap")
+    return x * g[:, None]
 
 
-E3, B3, D4, A3 = 164.81, 246.94, 293.66, 220.0
-
-def _n(duration: float) -> int:
-    return int(SAMPLE_RATE * duration)
-
-def _add(mono: np.ndarray, pos: int, snippet: np.ndarray, gain: float = 1.0) -> None:
-    end = min(len(mono), pos + len(snippet))
-    if pos >= end:
-        return
-    mono[pos:end] += snippet[: end - pos] * gain
-
-def synth_ambient_bed_lofi(duration: float, seed: int) -> np.ndarray:
-    mono = pad_layers(220, duration, seed=seed) * 0.55
-    mono += pad_layers(277.18, duration, seed=seed + 1) * 0.35
-    _add(mono, int(2.5 * SAMPLE_RATE), pluck(440, 0.8, seed=seed), 0.08)
-    return stereo(master_chain(mono, target_lufs=-16.0))
+def mid_cycle(x: np.ndarray) -> np.ndarray:
+    return x[N:2 * N]
 
 
-def generate(seed: int = 42) -> np.ndarray:
-    return synth_ambient_bed_lofi(12, seed)
+def master(mix: np.ndarray) -> np.ndarray:
+    """Normalise the kept cycle to TARGET_LUFS; limit the whole periodic buffer."""
+    gain_db = TARGET_LUFS - integrated_lufs(mid_cycle(mix))
+    ceiling = TRUE_PEAK_CEILING_DBTP - 0.3
+    for _ in range(12):
+        y = soft_limiter(mix * 10 ** (gain_db / 20), ceiling)
+        err = TARGET_LUFS - integrated_lufs(mid_cycle(y))
+        if abs(err) < 0.03:
+            break
+        gain_db += err
+    y = mid_cycle(y)
+    return y - y.mean(axis=0)          # constant offset only, so the loop seam is untouched
+
+
+# ---------------------------------------------------------------- arrangement
+EB9, EB69, FM9, BB13 = (55, 58, 62, 65), (55, 60, 62, 65), (56, 60, 63, 67), (56, 60, 62, 67)
+BARS = [(EB9, 39), (EB69, 39), (FM9, 41), (FM9, 41), (BB13, 34)]   # (EP voicing, bass root)
+TOPLINE = [(1, 4, 70), (1, 5, 67), (3, 4, 72), (3, 5, 68), (4, 3, 74), (4, 5, 70)]   # (bar, eighth, midi)
+
+
+def render() -> np.ndarray:
+    L = CYC * N
+    low = np.zeros((L, 2))
+    drums = np.zeros((L, 2))
+    keys = np.zeros((L, 2))
+    send = np.zeros((L, 2))
+
+    def hum(dt: float = 0.008) -> float:
+        return rng.uniform(-dt, dt)
+
+    # ---- electric piano comping
+    for b, (ch, root) in enumerate(BARS):
+        t0 = slot(b, 0)
+        for i, m in enumerate(ch):
+            v = 0.9 * rng.uniform(0.9, 1.05)
+            e = epiano(m, BAR + 0.5, v)
+            tt0 = t0 + (0 if b == 0 else hum(0.004)) + 0.009 * i * (b > 0)   # gentle roll after the top
+            place(keys, e, tt0, 0.5, pan=-0.25 + 0.17 * i)
+            place(send, e, tt0, 0.18, pan=-0.25 + 0.17 * i)
+        # soft re-strike of the upper two notes on the swung "2-and"
+        for m in ch[2:]:
+            e = epiano(m, BEAT * 1.2, 0.6)
+            t = slot(b, 3) + hum()
+            place(keys, e, t, 0.32, pan=0.2)
+            place(send, e, t, 0.12)
+    for b, e8, m in TOPLINE:
+        e = epiano(m, BEAT * 0.9, 0.75)
+        t = slot(b, e8) + hum()
+        place(keys, e, t, 0.34, pan=0.3)
+        place(send, e, t, 0.15)
+
+    # ---- bass: root on 1, a fifth or octave pickup on the 3-and
+    for b, (ch, root) in enumerate(BARS):
+        place(low, sine_bass(root, BEAT * 1.8), slot(b, 0), 0.55)
+        nxt = BARS[(b + 1) % len(BARS)][1]
+        pick = root + 7 if b in (0, 2) else (root + 12 if b == 1 else nxt - 1 if b == 3 else root + 5)
+        place(low, sine_bass(pick, BEAT * 0.38), slot(b, 5), 0.5 if b == 4 else 0.38)
+
+    # ---- dusty drums
+    for b in range(5):
+        place(low, kick(), slot(b, 0), 0.8)
+        if b in (1, 3, 4):
+            place(low, kick(), slot(b, 3) + (hum() if b else 0), 0.45)
+        if b == 4:                                   # pickup kick on the last 3-and, into the loop top
+            place(low, kick(), slot(b, 5), 0.68)
+        sn = snare()
+        place(drums, sn, slot(b, 4) + 0.012, 0.6, pan=0.05)
+        place(send, sn, slot(b, 4) + 0.012, 0.22)
+        if b in (2, 4):
+            place(drums, snare(ghost=True), slot(b, 5) + hum(), 0.35, pan=0.1)
+        for e8 in range(6):
+            v = (1.0 if e8 % 2 == 0 else 0.65) * rng.uniform(0.8, 1.1)
+            place(drums, hat(v), slot(b, e8) + hum(0.005), 0.5, pan=-0.3)
+
+    # ---- bus processing (all on the periodic 3-cycle buffer)
+    n = np.arange(L) / SR
+    # tape wow: slow periodic fractional delay on the keys (0.25 Hz -> 3 cycles per loop)
+    d = (0.0025 + 0.0007 * np.sin(2 * np.pi * 0.25 * n)) * SR
+    idx = np.arange(L) - d
+    keys = np.stack([np.interp(idx, np.arange(L), keys[:, c]) for c in range(2)], 1)
+    # stereo tremolo, 1.25 Hz (15 cycles per loop)
+    trem = 0.18 * np.sin(2 * np.pi * 1.25 * n)
+    keys *= np.stack([1 + trem, 1 - trem], 1)
+    keys = sos_filter(sos_filter(keys, "lowpass", 4200, order=2), "highpass", 150, order=4)
+    drums = np.tanh(1.5 * drums) / 1.5
+    drums = sos_filter(sos_filter(drums, "lowpass", 7000, order=2), "highpass", 150, order=4)
+    wet = sos_filter(reverb(send, rt60=1.1), "highpass", 180, order=4) * 0.45
+    vin = np.tile(vinyl(), (CYC, 1))
+    vin = sos_filter(vin, "highpass", 300, order=2)
+    low = np.repeat(low.mean(axis=1, keepdims=True), 2, axis=1)
+    low = sos_filter(low, "lowpass", 1800, order=2)
+
+    # gentle pump on keys from the downbeat kicks
+    duck = np.ones(L)
+    tk = tt(0.4)
+    shape = 1 - 0.22 * np.exp(-tk / 0.12) * (1 - np.exp(-tk / 0.004))
+    for k in range(CYC):
+        for b in range(5):
+            s0 = int(round(slot(b, 0) * SR)) + k * N
+            e = min(L, s0 + len(shape))
+            duck[s0:e] = np.minimum(duck[s0:e], shape[: e - s0])
+    keys *= duck[:, None]
+
+    mix = low + drums * 0.9 + keys + wet + vin
+    mid, side = (mix[:, 0] + mix[:, 1]) / 2, (mix[:, 0] - mix[:, 1]) / 2
+    side = sos_filter(side, "highpass", 260, order=8)
+    mix = np.stack([mid + side, mid - side], axis=1)
+    mix = sos_filter(mix, "highpass", 22, order=2)
+    mix = sos_filter(mix, "lowpass", 15000, order=4)
+    return mix
+
+
+def main() -> None:
+    y = master(render())
+    dither = (rng.uniform(-0.5, 0.5, y.shape) + rng.uniform(-0.5, 0.5, y.shape)) / 32768
+    pcm = np.round(np.clip((y + dither) * 32767, -32768, 32767)).astype(np.int16)
+    assert pcm.shape == (N, 2)
+    out = Path(__file__).resolve().parent / "out.wav"
+    wavfile.write(out, SR, pcm)
+    f = pcm.astype(np.float64) / 32768
+    print(f"wrote {out}  samples={len(pcm)}  LUFS={integrated_lufs(f):.2f}  TP={true_peak_dbtp(f):.2f} dBTP  "
+          f"seam step {np.abs(f[0] - f[-1]).max():.4f}")
 
 
 if __name__ == "__main__":
-    out = Path(__file__).resolve().parent / "out.wav"
-    write_wav(out, generate())
-    print(f"Wrote {out}")
+    main()

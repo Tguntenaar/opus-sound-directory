@@ -16,7 +16,8 @@ export type SoundEntry = {
   generatedAt: string;
   seed: number;
   timing: {
-    bpm: number;
+    /** Omitted for untimed sounds (e.g. UI one-shots). */
+    bpm?: number;
     fps: number;
     durationSec: number;
     samples: number;
@@ -27,10 +28,6 @@ export type SoundEntry = {
   metrics: {
     lufs: number | null;
     truePeak: number | null;
-    /** Max momentary (400 ms) loudness from ffmpeg ebur128 when measured. */
-    lufsMomentaryMax?: number | null;
-    /** Max short-term (3 s) loudness from ffmpeg ebur128 when measured. */
-    lufsShortTermMax?: number | null;
     durationSec: number | null;
     passedChecks: boolean;
   };
@@ -41,10 +38,4 @@ export type SoundEntry = {
     code: string;
   };
   notes: string;
-  /** KV-backed community publish */
-  isCommunity?: boolean;
-  submissionId?: string;
-  author?: { name?: string; url?: string };
-  hasRenderedAudio?: boolean;
-  codeApiPath?: string;
 };

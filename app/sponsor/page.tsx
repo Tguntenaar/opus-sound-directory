@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { SponsorInterestForm } from "@/components/sponsor-interest-form";
 import { SPONSOR_PACKAGES } from "@/lib/sponsor-packages";
 import { canonicalForPath } from "@/lib/site-metadata";
@@ -7,7 +6,7 @@ import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 
 const title = "Sponsor";
 const description =
-  "Featured placements and brand partnerships on the Opus Sounds Directory — homepage slots, category takeovers, and model packs.";
+  "Featured placements and brand partnerships on the Opus Sound Directory — homepage slots, category takeovers, and model packs.";
 
 export const metadata: Metadata = {
   title,
@@ -33,9 +32,9 @@ export default function SponsorPage() {
       <section className="max-w-2xl">
         <p className="text-sm font-medium uppercase tracking-wider text-violet-400">Partnerships</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-50 sm:text-4xl">
-          Put your brand next to sound for AI-made video
+          Put your brand next to Opus-generated sound
         </h1>
-        <p className="mt-4 text-base leading-relaxed text-zinc-300">
+        <p className="mt-4 text-zinc-400 leading-relaxed">
           Editors and producers browse here before they commit beds and SFX to a timeline. Sponsorship
           works like paid directory inventory — featured slots, category shelves, and co-built sound
           packs — not display ads. Tell us what you want; we reply with availability and an invoice
@@ -47,10 +46,10 @@ export default function SponsorPage() {
         <h2 id="packages-heading" className="text-xl font-semibold text-zinc-100">
           Packages
         </h2>
-        <p className="mt-2 text-sm text-zinc-300">
+        <p className="mt-2 text-sm text-zinc-500">
           Mix and match — most partners start with one slot and expand after the first month.
         </p>
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2 [&>li:last-child:nth-child(odd)]:sm:col-span-2">
+        <ul className="mt-6 grid gap-4 sm:grid-cols-2">
           {SPONSOR_PACKAGES.map((pkg) => (
             <li
               key={pkg.id}
@@ -58,7 +57,7 @@ export default function SponsorPage() {
             >
               <h3 className="font-medium text-zinc-50">{pkg.name}</h3>
               <p className="mt-1 text-sm text-violet-300/90">{pkg.tagline}</p>
-              <ul className="mt-4 flex-1 space-y-2 text-sm text-zinc-300">
+              <ul className="mt-4 flex-1 space-y-2 text-sm text-zinc-400">
                 {pkg.bullets.map((b) => (
                   <li key={b} className="flex gap-2">
                     <span className="text-violet-500" aria-hidden>·</span>
@@ -78,13 +77,11 @@ export default function SponsorPage() {
         <h2 id="inquiry-heading" className="text-xl font-semibold text-zinc-100">
           Company inquiry
         </h2>
-        <p className="mt-2 text-sm text-zinc-300">
+        <p className="mt-2 text-sm text-zinc-500">
           Share your goals and we&apos;ll follow up with inventory, pricing, and a simple insertion order.
         </p>
         <div className="mt-8">
-          <Suspense fallback={<p className="text-sm text-zinc-400">Loading form…</p>}>
-            <SponsorInterestForm />
-          </Suspense>
+          <SponsorInterestForm />
         </div>
       </section>
     </div>
