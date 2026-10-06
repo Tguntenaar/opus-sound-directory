@@ -16,7 +16,8 @@ export default defineConfig({
       SPONSOR_KV: bindings.kv(),
       /**
        * Optional Email Sending binding — enable domain in dashboard, set SPONSOR_MAIL_FROM
-       * (verified sender). Notifies thomas@guntenaar.org unless SPONSOR_MAIL_TO is set.
+       * (verified sender). Notifies olivierguntenaar@gmail.com and thomas@guntenaar.org
+       * unless SPONSOR_MAIL_TO is set (comma/semicolon list).
        */
       SPONSOR_SEND_EMAIL: bindings.sendEmail(),
       /** Workers AI — automated submission review (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`). */

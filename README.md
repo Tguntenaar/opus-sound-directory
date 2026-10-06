@@ -161,7 +161,7 @@ SPONSOR_KV: bindings.kv({ id: "<namespace-id>" }),
 
 1. Enable [Email Sending](https://developers.cloudflare.com/email-service/) on your domain (`wrangler email sending enable yourdomain.com`).
 2. `cloudflare.config.ts` already declares **`SPONSOR_SEND_EMAIL`** (`bindings.sendEmail()`).
-3. Set Worker variable **`SPONSOR_MAIL_FROM`** to a verified sender on that domain (e.g. `sponsors@yourdomain.com`). Optional **`SPONSOR_MAIL_TO`** overrides the default `thomas@guntenaar.org`.
+3. Set Worker variable **`SPONSOR_MAIL_FROM`** to a verified sender on that domain (e.g. `sponsors@yourdomain.com`). Optional **`SPONSOR_MAIL_TO`** is a comma/semicolon list (default `olivierguntenaar@gmail.com,thomas@guntenaar.org`). Optional Worker secrets **`SPONSOR_NOTIFY_WEBHOOK_URL`** and **`SPONSOR_NOTIFY_WEBHOOK_KEY`** POST the lead JSON after email (or skip).
 
 ```bash
 curl -s -H "Authorization: Bearer $SPONSOR_ADMIN_TOKEN" https://your-worker.example/api/sponsor | jq
