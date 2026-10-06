@@ -6,36 +6,38 @@
   "tags": [
     "ad",
     "30s",
-    "105bpm"
+    "105bpm",
+    "nylon-guitar",
+    "swing"
   ],
-  "prompt": "Make a 30 s lifestyle ad bed sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 1440000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: acoustic-guitar-like plucks (synthesised), soft shaker, warm bass, B major; gentle build to frame 600.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
-  "modelId": "local-synth",
-  "generatedAt": "2026-10-05",
-  "seed": 42,
+  "prompt": "A relaxed 30-second lifestyle stroll in G major at 105 BPM with a light swing, for a sunny everyday-product ad. It opens on a warm nylon-string strum of Gmaj9 at frame 0 with a soft kick and the bass. Two bars of Karplus-Strong fingerpicking follow through the sunny Gmaj9-Cmaj9-Em9-D6/9 loop. In bars 3-4 a round finger bass, a soft kick and lightly swung hats join. Bars 5-8 open up with a side-stick on 2 and 4, a swung shaker, a soft pad and a singing high-string melody. A three-beat turnaround bar (Am9 to D9sus) pushes and stops for a breath. The end tag then lands exactly on frame 600 (20.0 s): a bright Gmaj9 strum, kick, bass and a rising three-note motif. The groove thins out over three gentle bars, and a final Gmaj9 strum with a high echo of the motif rings out to silence. Only the kick and bass sit below 120 Hz, in mono. The bed is softly scooped around 2.5 kHz so a voiceover sits on top.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 105030,
   "timing": {
     "bpm": 105,
     "fps": 30,
-    "durationSec": 30,
-    "samples": 960000,
-    "sampleRate": 32000
+    "durationSec": 30.0,
+    "samples": 1440000,
+    "sampleRate": 48000
   },
   "cues": [
     {
       "frame": 0,
-      "label": "intro hook"
+      "label": "opening strum"
     },
     {
       "frame": 600,
-      "label": "brand moment"
+      "label": "end tag"
     }
   ],
   "master": {
-    "targetLufs": -14,
+    "targetLufs": -14.0,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -23.2,
-    "truePeak": -2.5,
+    "lufs": -14.01,
+    "truePeak": -1.3,
     "durationSec": 30.0,
     "passedChecks": true
   },
@@ -45,12 +47,11 @@
     "spectrogram": "/assets/ad-bed-30-lifestyle/spectrogram.png",
     "code": "/assets/ad-bed-30-lifestyle/generate.py"
   },
-  "notes": "Runner-verified synthesis (numpy). Prompt describes creative intent; code is executable. WAV shipped as 32 kHz mono for Workers 5 MiB asset limit.",
+  "notes": "Warm nylon plucks are vectorised Karplus-Strong strings (3-tap damping low-pass convolved with a linear fractional delay, so a whole period is computed per numpy step) with a soft low-passed excitation, pluck-position comb and two body resonances; strums roll low-to-high with the first string exactly on the cue. Light 62 % swing on hats, shaker and picking; side-stick instead of claps; round finger bass and soft kick are the only content below 120 Hz, mono.\nArc: frame-0 Gmaj9 strum, two bars of solo fingerpicking (Gmaj9-Cmaj9-Em9-D6/9), bass/kick/hats from bar 3, side-stick, shaker, pad and high-string melody from bar 5, a 3-beat Am9-D9sus turnaround that stops for a 60 ms breath, then the end tag exactly on frame 600 (strum + rising B-D-G motif, the loudest moment), thinning to a final Gmaj9 strum with a high motif echo that rings out to silence.\nMastered with a 4x-oversampled look-ahead gain limiter iterated to -14 LUFS / -1.3 dBTP; guitar bus scooped -2.5 dB at 2.5 kHz for voiceover; residual DC removed with a sub-1 Hz Hann-shaped offset; TPDF-dithered to 16-bit.",
   "mood": [
-    "calm",
-    "happy",
-    "bright"
+    "warm",
+    "relaxed",
+    "sunny"
   ],
-  "tempo": "medium",
-  "targetModelId": "claude-opus-5-5"
+  "tempo": "medium"
 }
