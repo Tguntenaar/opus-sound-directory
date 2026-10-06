@@ -1,40 +1,42 @@
 {
   "id": "chaos-calm-04",
   "slug": "chaos-calm-04",
-  "title": "Scroll frenzy \u2192 focus hum",
+  "title": "Scroll frenzy → focus hum",
   "category": "chaos-calm",
   "tags": [
     "app",
     "8s",
-    "110bpm"
+    "110bpm",
+    "scroll",
+    "drone"
   ],
-  "prompt": "Make a 8 s music bed for a TikTok ad at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 384000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nTiming: 110 BPM (1 beat = 16 frames). Cues: frame 0 = swipe whoosh; frame 90 = UI settles; last beat = soft ending that fades to exactly 0.\nSound: [chaos: rapid UI ticks, swipe whooshes, bright digital chirps] \u2192 [calm: low focus hum, soft sine pulse, minimal reverb tail], key C major.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nYou can't listen, so verify: measure loudness and peak with ffmpeg ebur128, check the exact length, confirm the energy change lands on each cue frame, check the notes fit the chords, render a spectrogram and inspect it. Fix and re-render until every check passes, then report the numbers.",
-  "modelId": "local-synth",
-  "generatedAt": "2026-10-05",
-  "seed": 42,
+  "prompt": "An 8-second chaos-to-calm bed at 110 BPM for a \"put the phone down\" moment. It opens on frame 0 with a flick: a burst of scroll-wheel detent ticks, a mid \"thock\" and a fast swipe whoosh. For three seconds the scrolling turns frantic. Momentum flicks overlap, each a run of tiny resonant ticks whose spacing stretches out as it coasts, and every stream has its own pitch and place in the stereo field. A sixteenth-note ratchet on the 110 BPM grid tightens to thirty-seconds, swipe whooshes cross the image, and a jittery band of digital fizz swells underneath. All ticks are enveloped (0.3 ms attack) and band-limited below 7.5 kHz. On frame 90 (3.0 s) the frenzy collapses: everything stops through a 2 ms fade that ends on the cue sample, and a focused, steady low hum on A starts on that same sample with a soft sub thud. The hum is A1 and A2 with a quiet fifth and a few warm harmonics under 1 kHz, slowly beating, mono below 120 Hz. It holds until the end and fades to silence.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 110490,
   "timing": {
     "bpm": 110,
     "fps": 30,
-    "durationSec": 8,
+    "durationSec": 8.0,
     "samples": 384000,
     "sampleRate": 48000
   },
   "cues": [
     {
       "frame": 0,
-      "label": "swipe whoosh"
+      "label": "flick"
     },
     {
       "frame": 90,
-      "label": "UI settles"
+      "label": "collapse to hum"
     }
   ],
   "master": {
-    "targetLufs": -14,
+    "targetLufs": -14.0,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -8.6,
+    "lufs": -14.02,
     "truePeak": -1.3,
     "durationSec": 8.0,
     "passedChecks": true
@@ -45,13 +47,10 @@
     "spectrogram": "/assets/chaos-calm-04/spectrogram.png",
     "code": "/assets/chaos-calm-04/generate.py"
   },
-  "notes": "Runner-verified synthesis (numpy). Prompt describes creative intent; code is executable.",
+  "notes": "Scroll-tick frenzy: overlapping momentum flicks (resonant two-mode detent ticks, 0.3 ms attack, band-limited 0.9-7.5 kHz, geometric spacing as each flick coasts), a 110 BPM 16th ratchet tightening to 32nds, 8th-note haptic taps, SVF swipe whooshes and a jittery fizz bed. On frame 90 the chaos stops via a 2 ms fade ending on the cue sample and a focused A drone (mono A1/A2 core, soft upper partials < 1 kHz) starts on the same sample with a sub thud. Ticks pass the default click limit (max crest 9.9), no --click-limit needed.",
   "mood": [
-    "upbeat",
     "energetic",
-    "calm",
-    "happy"
+    "calm"
   ],
-  "tempo": "fast",
-  "targetModelId": "claude-opus-5-5"
+  "tempo": "fast"
 }
