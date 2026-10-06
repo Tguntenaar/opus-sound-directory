@@ -10,7 +10,7 @@ Product analytics use [PostHog](https://posthog.com) US cloud. Events are **snak
 | `NEXT_PUBLIC_POSTHOG_HOST` | Build-time (optional) | API host for proxy upstream (default `https://us.i.posthog.com`). |
 | `POSTHOG_KEY` | Worker secret / var (optional) | Server-side capture (`/capture`). Falls back to inlined `NEXT_PUBLIC_POSTHOG_KEY` if set at build. |
 
-Client SDK uses first-party **`/ingest`** (middleware proxy to `us.i.posthog.com` and `us-assets.i.posthog.com`). UI links use `https://us.posthog.com`.
+Client SDK uses first-party **`/api/ingest`** (`api_host`) so event POSTs are not broken by vinext trailing-slash **308** redirects (only `/api/*` is exempt). Legacy **`/ingest`** is still proxied. UI links use `https://us.posthog.com`.
 
 ## Event catalog
 

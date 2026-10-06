@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /** Documented for Next; vinext ignores this but capture uses `/api/ingest` (API exempt from 308). */
+  skipTrailingSlashRedirect: true,
   async redirects() {
     return [
       {

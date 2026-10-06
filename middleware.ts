@@ -39,8 +39,14 @@ async function guardAdminReview(request: NextRequest): Promise<NextResponse | nu
   return null;
 }
 
+function isPosthogIngestPath(pathname: string): boolean {
+  return (
+    pathname.startsWith("/ingest") || pathname.startsWith("/api/ingest")
+  );
+}
+
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith("/ingest")) {
+  if (isPosthogIngestPath(request.nextUrl.pathname)) {
     return proxyPosthogIngest(request);
   }
 

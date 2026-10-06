@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "^2.0.0-beta.sha-52b0dc0e9",
+    "@playwright/test": "^1.63.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "latest",
     "@types/node": "latest",
@@ -48,6 +49,7 @@
     "start": "vite preview",
     "deploy": "vinext-cloudflare deploy",
     "generate:icons": "node scripts/generate-brand-icons.mjs",
-    "test": "node --experimental-strip-types --test lib/mcp/search.test.ts"
+    "test": "node --experimental-strip-types --test lib/mcp/search.test.ts",
+    "test:e2e": "playwright test"
   }
 }

@@ -14,7 +14,8 @@ const HOP_BY_HOP = new Set([
 ]);
 
 function upstreamForPath(pathname: string): { origin: string; upstreamPath: string } {
-  const rest = pathname.replace(/^\/ingest/, "") || "/";
+  const rest =
+    pathname.replace(/^\/api\/ingest/, "").replace(/^\/ingest/, "") || "/";
   if (rest.startsWith("/static/")) {
     return { origin: posthogAssetsHost(), upstreamPath: rest };
   }

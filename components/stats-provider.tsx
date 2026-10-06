@@ -11,6 +11,8 @@ import {
 } from "react";
 import type { EntryStats, StatEvent, StatsMap } from "@/lib/stats-types";
 import { EMPTY_STATS } from "@/lib/stats-types";
+import { getPosthogWhenReady } from "@/lib/analytics-client";
+import { PosthogPageviews } from "@/components/posthog-pageviews";
 
 type StatsContextValue = {
   stats: StatsMap;
@@ -22,6 +24,10 @@ const StatsContext = createContext<StatsContextValue | null>(null);
 
 export function StatsProvider({ children }: { children: ReactNode }) {
   const [stats, setStats] = useState<StatsMap>({});
+
+  useEffect(() => {
+    void getPosthogWhenReady();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -75,7 +81,12 @@ export function StatsProvider({ children }: { children: ReactNode }) {
     [stats, track, getEntryStats],
   );
 
-  return <StatsContext.Provider value={value}>{children}</StatsContext.Provider>;
+  return (
+    <StatsContext.Provider value={value}>
+      <PosthogPageviews />
+      {children}
+    </StatsContext.Provider>
+  );
 }
 
 export function useStats() {
