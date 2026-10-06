@@ -104,6 +104,10 @@ You can compare these with ready-made, frame-timed examples such as the [8-secon
 
 [Heavy impact drop](/e/drop-impact-heavy)
 
+For a longer build, this heartbeat speeds up for 11 seconds and cuts to silence on frame 330, so the scene change has a fixed frame to land on:
+
+[Accelerating heartbeat](/e/heartbeat-tension-12s)
+
 ## How loud should the music and voice be?
 
 Aim for about -14 LUFS integrated with a true peak at or below -1 dBTP for social and YouTube, and duck the music well under any voice. [This guide](https://blog.cosine.ren/en/post/opus-5-5-motion-video-resources/) ducks the background music automatically under voice and normalizes every episode to the same loudness.
@@ -117,25 +121,3 @@ You can normalize a finished mix with ffmpeg's [loudnorm filter](https://ffmpeg.
 Mix sources by job. For voice, creators most often praise ElevenLabs over default local TTS. For short timed effects, [ElevenLabs sound effects](https://elevenlabs.io/sound-effects), [Freesound](https://freesound.org), [Pixabay sound effects](https://pixabay.com/sound-effects/) and Opus Sounds Directory are all options, each with its own license terms.
 
 Keep a manifest of where every file came from. One product-video skill [had to drop its original effects](https://www.orcarouter.ai/blog/claude-opus-5-5-product-video-skill) because nobody had recorded which library each clip came from.
-
-## FAQ
-
-### Why does every Opus 5.5 video sound the same?
-
-Left without constraints, Opus 5.5 tends to write similar code-synthesized music with default tempos, chords and simple oscillators, so many videos share one sound. Naming tempo, key, instruments and a reference fixes most of it.
-
-### Can Claude Opus 5.5 hear the audio it makes?
-
-No. Opus 5.5 writes the code that renders sound but cannot listen to the result, so it checks audio with measurements such as beat detection, loudness meters, spectrograms and Whisper transcripts, and a human still needs to listen.
-
-### How do I sync sound effects to a Claude-made video?
-
-Put every visual event and every sound on one shared timeline in seconds or frames, generate the voiceover first, measure the beats of any music track, and place each effect on the frame of the event it belongs to.
-
-### How loud should the audio be in an Opus 5.5 video?
-
-A common target for social and YouTube is about -14 LUFS integrated with a true peak at or below -1 dBTP, with music ducked well under any voiceover. Measure with ffmpeg rather than trusting the model's report.
-
-### Should I use code-generated music or a music model for Claude videos?
-
-Use code-generated sound for short, frame-exact effects like hits, risers and UI sounds, and use a supplied track or a music model when you want a full, musical score, letting Opus handle the timing either way.

@@ -99,36 +99,14 @@ fuller harmony at frame 1500 (50 s), final chord fades to exactly 0 at the last 
 Master: -14 LUFS integrated, true peak <= -1 dBTP. Verify with ffmpeg ebur128 and report the numbers.
 ```
 
-Loop the short bed under a long video by crossfading copies in your editor, or with ffmpeg's [acrossfade filter](https://ffmpeg.org/ffmpeg-filters.html#acrossfade). Most entries on the site are local numpy synthesis written to Opus-style prompts, and each page says how it was made.
+Loop the short bed under a long video by crossfading copies in your editor, or with ffmpeg's [acrossfade filter](https://ffmpeg.org/ffmpeg-filters.html#acrossfade). Every entry on the site is Claude Opus 5.5 output: the model writes the Python synthesis code that renders the sound, and each page shows that prompt and code.
+
+For a long video, a seamless ambience loop is easier to stretch than a short music bed:
+
+[Ocean shore ambience (loop)](/e/ocean-shore-loop)
 
 ## How loud should background music be under a voice?
 
 Keep it well below the voice. Background music is there to fill silence, not to compete. Set the voice first, bring the music up until you just notice it, then back it off a little. Measure the final mix with ffmpeg's [ebur128 filter](https://ffmpeg.org/ffmpeg-filters.html#ebur128) and aim for about -14 LUFS integrated with true peak at or below -1 dBTP.
 
 If the music needs to dip automatically when someone talks, ffmpeg's [sidechaincompress filter](https://ffmpeg.org/ffmpeg-filters.html#sidechaincompress) can duck it under the voice track.
-
-## FAQ
-
-### What is the safest background music for YouTube?
-
-Music from the YouTube Audio Library in YouTube Studio, which YouTube says is copyright-safe and won't be claimed through Content ID, plus music you made yourself.
-
-### What is the difference between a Content ID claim and a copyright strike?
-
-A Content ID claim is an automated match that can restrict or monetize your video for the rights holder; a copyright strike follows a legal removal request and removes the video.
-
-### Does 'no copyright music' mean I can use it on YouTube?
-
-Not necessarily. YouTube's help center warns that music labeled 'free' can still be flagged by Content ID, so check the actual license and keep proof.
-
-### Can I use Creative Commons music on YouTube?
-
-Usually yes, if the license allows your use and you give the credit it requires; Audio Library tracks marked Creative Commons need attribution in the description.
-
-### How many copyright strikes before a YouTube channel is terminated?
-
-YouTube says channels that get three copyright strikes within 90 days are subject to termination.
-
-### Is music that's safe in a Short also safe in a long video?
-
-Not always. YouTube notes that music that's safe in a Short under 60 seconds may not be safe in a longer video.

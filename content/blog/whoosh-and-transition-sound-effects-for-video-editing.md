@@ -70,6 +70,12 @@ Good starting points:
 - The [YouTube Audio Library](https://www.youtube.com/audiolibrary) sound effects tab, for YouTube videos.
 - Synthesized sounds from your own code, or from Opus Sounds Directory, which publishes the prompt and Python code behind each riser, drop and transition.
 
+Two ready-made transitions that go beyond the classic whoosh, a stuttering digital glitch and a tape-stop slowdown:
+
+[Digital glitch transition](/e/glitch-transition-digital)
+
+[Tape-stop transition](/e/tape-stop-transition)
+
 ## How do I make a whoosh that fits my cut exactly?
 
 Generate it to the frame. These prompts work with any code-capable LLM. Each one matches an entry you can play here:
@@ -119,25 +125,3 @@ Master: true peak <= -1 dBTP. Verify with ffmpeg ebur128 and report the numbers.
 Quieter than you think. Transition sounds should support the picture and never cover dialogue. Set them by ear against the voice, then measure the full mix. A common online target is about -14 LUFS integrated with true peak at or below -1 dBTP, measured with ffmpeg's [ebur128 filter](https://ffmpeg.org/ffmpeg-filters.html#ebur128).
 
 If you stack a riser, whoosh and impact on one moment, check the true peak there in particular. Stacked transients are where clipping usually shows up.
-
-## FAQ
-
-### What is a whoosh sound effect used for?
-
-A whoosh sells movement across a cut, such as a swipe, zoom, whip pan or text flying in, by sweeping noise past the listener as the picture changes.
-
-### Where should a whoosh start relative to the cut?
-
-Start it a few frames before the cut so its loudest point lands on the first frame of the new shot, then let the tail fade just after.
-
-### What is a riser in video editing?
-
-A riser is a sound that builds in pitch, brightness or volume over a few seconds to create tension, usually cutting off or resolving into an impact at a reveal.
-
-### Where can I get free transition sound effects?
-
-Pixabay sound effects and Freesound both have large whoosh and riser collections; check each sound's license, and you can also synthesize your own with code.
-
-### How many transition sounds should I use?
-
-Fewer than you think. Put sound on the cuts that carry meaning, such as reveals and section changes, and leave routine cuts quiet.

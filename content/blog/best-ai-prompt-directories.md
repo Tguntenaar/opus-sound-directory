@@ -61,7 +61,7 @@ For video, prompt guides from model makers are often more useful than third-part
 
 Sound is the least-covered category. Three useful places:
 
-- **Opus Sounds Directory** is a free directory of sound effects and music beds for video (ad beds by length, drops, risers, UI sounds, logo stings, ambient and chaos-to-calm beds). Each entry shows the numeric prompt, the Python synthesis code, a spectrogram and measured loudness, so you can see whether a render hit its targets. Most current entries are local numpy synthesis written to Opus-style prompts, and each entry page states how it was made.
+- **Opus Sounds Directory** is a free directory of sound effects and music beds for video (ad beds by length, drops, risers, UI sounds, logo stings, ambient and chaos-to-calm beds). Each entry shows the numeric prompt, the Python synthesis code, a spectrogram and measured loudness, so you can see whether a render hit its targets. Every entry is Claude Opus 5.5 output (the model writes the Python code that renders the sound), and each entry page names the model.
 - **Hugging Face model cards** for audio models such as [MusicGen](https://huggingface.co/facebook/musicgen-large) and [Stable Audio Open 1.0](https://huggingface.co/stabilityai/stable-audio-open-1.0) include example text prompts.
 - **Recorded sound libraries** such as [Freesound](https://freesound.org) and [Pixabay sound effects](https://pixabay.com/sound-effects/) aren't prompt directories, but their tags and descriptions are a good vocabulary source when you describe a sound.
 
@@ -100,25 +100,3 @@ Use a quick checklist before you trust any directory entry:
 5. **Can you change one variable?** Good prompts have obvious knobs, such as key, tempo or duration.
 
 **Reproducibility** means another person can run the same prompt with the same model and settings and get the same or a very similar result.
-
-## FAQ
-
-### What is an AI prompt directory?
-
-An AI prompt directory is a searchable collection of prompts, rules or assets that others have written and tested, so you can copy and adapt them instead of starting from scratch.
-
-### What is the best prompt directory for coding?
-
-For Cursor users, cursor.directory collects community rules and plugins by framework; prompts.chat is a broader open-source prompt collection for ChatGPT, Claude and Gemini.
-
-### Where can I find prompts for AI sound effects and music?
-
-Opus Sounds Directory lists numeric sound prompts with their Python code, spectrogram and measured loudness, and Hugging Face model cards and Spaces show example prompts for text-to-audio models.
-
-### Are prompts in directories free to use?
-
-Many are, but check each site's terms; open-source collections such as prompts.chat publish their license on GitHub, while marketplaces sell prompts under their own terms.
-
-### How do I know if a prompt is good?
-
-Prefer prompts that show the output they produced, state the model and date, and use specific numbers or constraints you can change.

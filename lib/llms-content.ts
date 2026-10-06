@@ -8,7 +8,10 @@ import { CC0_LICENSE_URL, LICENSE_MIT_URL, LICENSE_SOUNDS_URL } from "@/lib/lice
 function modelLine(entry: { modelId: string; targetModelId?: string }): string {
   const attr = modelAttribution(entry.modelId, entry.targetModelId);
   if (attr.isLocalSynth) {
-    return "modelId: local-synth (local numpy runner — not Opus-generated)";
+    return "modelId: local-synth";
+  }
+  if (entry.modelId === "claude-opus-5-5") {
+    return "modelId: claude-opus-5-5 (Python synthesis from Claude Opus 5.5, measured and mastered)";
   }
   return `modelId: ${entry.modelId}`;
 }

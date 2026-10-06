@@ -106,26 +106,4 @@ ffmpeg -i final_mix.wav -af ebur128=peak=true -f null -
 
 Read the license for every sound, even free ones. Freesound sounds carry Creative Commons licenses (CC0, Attribution, or Attribution-NonCommercial), as its [FAQ](https://freesound.org/help/faq/) explains. Pixabay's [license summary](https://pixabay.com/service/license-summary/) allows free use without attribution but bans reselling the files as-is. Audio Library tracks are cleared for YouTube, and some require credit in the description. Model weights differ too: MusicGen's weights are released under CC-BY-NC 4.0, so check a model card before you use its output commercially.
 
-For sounds you render yourself from code, you control the inputs, which keeps licensing simple. Opus Sounds Directory publishes the prompt, the Python code and a spectrogram for each entry so you can re-render or change a sound. Most of its current entries are local numpy synthesis written to Opus-style prompts, and each entry page says how it was made.
-
-## FAQ
-
-### Do AI video generators make sound?
-
-Some do. Google's Veo 3.1 generates synchronized audio with the video, while many other generators output silent clips that need audio added in an editor.
-
-### What is the easiest way to add music to an AI-generated video?
-
-Export the clip, import it into an editor such as CapCut or DaVinci Resolve with a licensed music bed, trim the bed to the clip length, add short fades, and check loudness before export.
-
-### Can AI add sound effects to an existing video?
-
-Yes. Video-to-audio models such as MMAudio and HunyuanVideo-Foley on Hugging Face generate sound effects from the video frames plus an optional text description.
-
-### How loud should the music be in a short video?
-
-A common target for the finished mix is about -14 LUFS integrated with a true peak at or below -1 dBTP, with music sitting well under any voiceover.
-
-### Where can I find free sound effects for AI videos?
-
-Freesound, Pixabay, the YouTube Audio Library, and Opus Sounds Directory all offer free sounds, each with its own license terms that you should read before use.
+For sounds you render yourself from code, you control the inputs, which keeps licensing simple. Opus Sounds Directory publishes the prompt, the Python code and a spectrogram for each entry so you can re-render or change a sound. Its entries are Claude Opus 5.5 output: the model writes the Python synthesis code, and each entry page names the model that made it.

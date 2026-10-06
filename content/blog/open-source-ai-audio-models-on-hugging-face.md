@@ -72,7 +72,7 @@ You can browse both on Hugging Face's [text-to-audio model list](https://hugging
 
 Generative models are good at texture and realism. They are weaker at exact length, frame-accurate hits and identical re-renders. When you need a whoosh on frame 30 or a bed that is exactly 720,000 samples, it's often easier to have an LLM write synthesis code.
 
-Opus Sounds Directory collects prompts in that style next to the Python code, spectrogram and measured loudness. Most entries are local numpy synthesis written to Opus-style prompts, and each page says how it was made. Here are two examples and their prompts.
+Opus Sounds Directory collects prompts in that style next to the Python code, spectrogram and measured loudness. Each entry is Claude Opus 5.5 output: the model writes the synthesis code, and the page names the model. Here are two examples and their prompts.
 
 [Notification storm → breath](/e/chaos-calm-03)
 
@@ -112,25 +112,3 @@ Describe the sound plainly and add the facts the model can use:
 - **What to avoid** ("no vocals", "no reverb tail").
 
 Then generate several takes and pick by ear. These models aren't deterministic unless you fix the seed.
-
-## FAQ
-
-### What is the best open-source AI music model?
-
-It depends on your use. MusicGen and Stable Audio Open are widely used for short clips, and ACE-Step 1.5 targets full songs under an MIT license; test a few against your own prompts.
-
-### Can I use music from MusicGen commercially?
-
-Be careful. Meta releases the MusicGen weights under CC-BY-NC 4.0, a non-commercial license, so check the model card and get legal advice before commercial use.
-
-### Which open model makes sound effects rather than music?
-
-AudioGen is trained for text-to-sound effects, AudioLDM 2 covers general sound effects and music, and Stable Audio Open generates both short sounds and music.
-
-### Is there an open model that adds sound to a video?
-
-Yes. MMAudio and HunyuanVideo-Foley are video-to-audio models on Hugging Face that generate sound effects synchronized to video frames.
-
-### Do I need a GPU to run these models?
-
-For reasonable speed, usually yes, but many models have hosted demos in Hugging Face Spaces that you can try in a browser first.

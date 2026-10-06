@@ -61,6 +61,10 @@ Pick the route that matches what's missing.
 
 **For timed effects (whooshes, risers, stings):** pull from [Freesound](https://freesound.org) or [Pixabay sound effects](https://pixabay.com/sound-effects/), or have a code-capable LLM write synthesis code that lands each sound on an exact frame.
 
+**For background ambience:** a seamless loop can run under the whole clip so a generated scene never sits in dead silence, for example:
+
+[Sci-fi hangar ambience (loop)](/e/sci-fi-hangar-loop)
+
 **Foley** is the craft of creating everyday sound effects (footsteps, cloth, props) to match picture.
 
 ## Should I keep the generated audio or replace it?
@@ -105,26 +109,4 @@ keep 1-4 kHz quiet so speech stays clear. Last 50 ms must crossfade cleanly into
 Master: -14 LUFS integrated, true peak <= -1 dBTP. Verify with ffmpeg ebur128 and report the numbers.
 ```
 
-Each entry on the site shows its prompt, the Python code, a spectrogram and measured loudness. Most entries are local numpy synthesis written to Opus-style prompts, and each page says how it was made.
-
-## FAQ
-
-### Which AI video generators create audio?
-
-Google's Veo 3.1, Kling 3.0 and ByteDance's Seedance 2.0 all generate synchronized audio together with the video, according to their makers' documentation.
-
-### Why is my AI-generated video silent?
-
-Many models and modes generate picture only, and some audio-capable models make audio optional; Kling, for example, offers Native Audio and No Native Audio modes.
-
-### How do I add sound to a silent AI video?
-
-Run it through a video-to-audio model such as MMAudio or HunyuanVideo-Foley, or add music and sound effects from a library in a video editor.
-
-### Should I keep the audio an AI video generator makes?
-
-Keep it for dialogue and ambience that matches the scene, but replace or layer music, logo stings and timed effects when you need exact length and placement.
-
-### Can I turn native audio off?
-
-On some tools, yes. Kling 3.0 offers a No Native Audio mode, and Runway's Veo 3.1 page says you can generate without audio when you plan to score the edit yourself.
+Each entry on the site shows its prompt, the Python code, a spectrogram and measured loudness. Every entry is Claude Opus 5.5 output: the model writes the Python synthesis code that renders the sound.

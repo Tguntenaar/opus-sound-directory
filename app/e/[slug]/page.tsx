@@ -115,7 +115,7 @@ export default async function EntryPage({ params }: Props) {
           </div>
           <EntryShareActions slug={entry.slug} title={entry.title} entry={entry} />
         </div>
-        <RelatedGuideLink category={entry.category} />
+        <RelatedGuideLink entryId={entry.id} category={entry.category} />
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <div className="max-w-md">
             <ModelBadge entry={entry} prominent />

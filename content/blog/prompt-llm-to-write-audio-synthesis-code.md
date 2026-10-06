@@ -120,30 +120,12 @@ Normalizing the sample peak to -1.5 dBFS is a rough shortcut. True peak can sit 
 
 Use the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) when the sound has to play inside a web page or app, for example a button click that triggers a chime. The same prompt structure works: ask for oscillator types, frequencies, gain envelopes in milliseconds and a total duration.
 
+Short interface sounds, such as a camera shutter for a capture button, make a good first test because you can hear right away whether an envelope clicks:
+
+[Camera shutter](/e/ui-camera-shutter)
+
 If you need a file from browser code, an [OfflineAudioContext](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext) renders the graph to a buffer faster than real time. Libraries like [Tone.js](https://tonejs.github.io/) add instruments and scheduling on top.
 
 ## Where can I find prompts that already work?
 
 Start from a working prompt and change the numbers rather than writing from scratch. Opus Sounds Directory lists sound prompts next to their Python code, spectrogram and measured loudness, which lets you compare a prompt's targets with what the render actually measured. For text-to-audio models instead of code, browse [Hugging Face text-to-audio models](https://huggingface.co/models?pipeline_tag=text-to-audio). For general prompt-writing advice, Anthropic's [prompt engineering overview](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/overview) is worth reading.
-
-## FAQ
-
-### Can an LLM generate sound effects?
-
-A text-only LLM cannot output audio directly, but it can write synthesis code in Python or JavaScript that renders a WAV file when you run it.
-
-### Which Python libraries do I need to synthesize sound?
-
-numpy for generating the waveform and scipy.io.wavfile for writing it to a WAV file are enough; pyloudnorm or ffmpeg can measure loudness afterwards.
-
-### How do I make the LLM check its own audio if it can't listen?
-
-Ask it to measure what it can: exact sample count, integrated LUFS and true peak with ffmpeg ebur128, energy at each cue frame, and a spectrogram image.
-
-### Should I use Python or the Web Audio API?
-
-Use Python when you want an offline WAV for a video edit, and use the Web Audio API when the sound must play live in a browser or web app.
-
-### Why does my generated sound click at the start or end?
-
-Clicks usually come from a waveform that starts or stops at a non-zero value; ask for a short fade-in and fade-out of a few milliseconds.

@@ -51,6 +51,10 @@ Here is a quick map of common sources and what to check on each.
 - **[Epidemic Sound](https://www.epidemicsound.com/tiktok/)**: a subscription library whose commercial plans cover ads on TikTok and other platforms.
 - **Synthesized sounds**: sounds rendered from your own code have no third-party samples inside. Opus Sounds Directory collects free ad beds by length, risers, drops and logo stings, each with its prompt and Python code, so you can re-render a sound to your own timing.
 
+For example, a 20-second bed with a hook at the 10-second mark, sized for a short product ad:
+
+[Synthwave night drive](/e/synthwave-drive-20s)
+
 ## What lengths and cue points do short-form ads need?
 
 Cut beds to the placement length, not "roughly" to it. Common lengths are 6 s (bumper), 15 s, 30 s and 60 s.
@@ -114,29 +118,3 @@ Note the 128 BPM grid does not divide evenly into 30 fps frames (one beat is 14.
 Aim for about -14 LUFS integrated and a true peak no higher than -1 dBTP for the full mix, then listen on a phone. Platforms normalize and process audio in different ways and don't all publish a single number, so the goal is a mix that is clear and doesn't clip.
 
 Measure with ffmpeg's [ebur128 filter](https://ffmpeg.org/ffmpeg-filters.html#ebur128). If voiceover is present, keep the bed well underneath it.
-
-## FAQ
-
-### Can I use trending TikTok sounds in an ad?
-
-No, not by default. TikTok's Commercial Music Library user terms say Commercial Sounds are the only sounds made available on TikTok for commercial uses.
-
-### Is royalty-free music free to use?
-
-Not always. Royalty-free means you don't pay per play or per view, but the license may still cost money, require attribution, or limit commercial use.
-
-### Where can I get free sound effects for commercial videos?
-
-Pixabay sound effects, CC0 sounds on Freesound, the YouTube Audio Library for YouTube videos, and sounds you synthesize yourself are common free options.
-
-### How long should a music bed for a short-form ad be?
-
-Match the ad length exactly, typically 6, 15, 30 or 60 seconds, with a real musical ending on the last beat rather than a fade in the middle of a bar.
-
-### Do I need a different license for each platform?
-
-Often yes. TikTok Commercial Sounds list Usable Placements, YouTube Audio Library tracks are cleared for YouTube, so check each source before posting across platforms.
-
-### Can I use AI-generated music in ads?
-
-It depends on the tool's terms and the model license. Some open model weights, such as MusicGen's, are non-commercial, so read the terms before using output in ads.

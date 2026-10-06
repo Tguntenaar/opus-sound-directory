@@ -93,6 +93,12 @@ Verify length and peak with ffmpeg ebur128; render a spectrogram; fix until chec
 
 Both share an E-based palette, so they sound like they belong to the same app.
 
+Two more short UI cues, a send confirmation and a switch, show how brief everyday interface sounds can be (0.6 and 0.4 seconds):
+
+[Message sent](/e/ui-message-sent)
+
+[Toggle on](/e/ui-toggle-on)
+
 ## How do I write prompts for transitions and stings?
 
 The same structure scales up. For a transition, name the cue frame and the sample it maps to:
@@ -119,25 +125,3 @@ If you need exact timing, ask a code-capable model such as [Claude Opus 5.5](htt
 ## How short is too short for loudness measurement?
 
 Very short sounds are hard to measure as "integrated loudness". BS.1770 meters work in 400 ms blocks, so a 0.4 s tap gives you barely one block. For UI sounds, set a true-peak ceiling and judge level by ear against the rest of your app or video mix, rather than chasing a LUFS number.
-
-## FAQ
-
-### What makes a good sound effect prompt?
-
-A good sound effect prompt states the exact length, format and timing, describes the sound in concrete physical terms such as pitch, attack and decay, and lists checks the result must pass.
-
-### How long should a UI sound be?
-
-Short. Microsoft's Windows UX guidelines recommend sounds under one second, and taps and confirmations are usually far shorter, often a few hundred milliseconds.
-
-### What frequency range works for UI sounds?
-
-Microsoft's guidelines suggest mid to high frequencies of about 600 Hz to 2 kHz, which are clear on small speakers without being harsh.
-
-### Should I name an artist or a song in a sound prompt?
-
-No. Describe the style and the sound's physical properties instead; it is more precise and avoids copying someone else's work.
-
-### Can sound be the only signal for a notification?
-
-No. The BBC's accessibility guidelines say notifications must be both visible and audible, so pair every sound with a visual cue.

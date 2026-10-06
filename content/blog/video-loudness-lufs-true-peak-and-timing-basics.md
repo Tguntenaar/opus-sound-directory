@@ -104,6 +104,10 @@ Tempos that give whole frames per beat (90, 100, 120 at 30 fps; 120 at 24 fps gi
 
 A **cue frame** is the specific video frame number where an audio event (a hit, a drop, a logo sting) must land.
 
+A countdown makes cue frames easy to hear: in this one, each pip lands exactly on a whole second (frames 0, 30, 60 and so on at 30 fps).
+
+[Countdown 10 → 0](/e/countdown-10-to-0)
+
 ## How do I put these numbers into a sound prompt?
 
 If you generate audio from code, write the numbers straight into the prompt. Here is a drop that lands on a fixed frame, the same structure as the [Heavy impact drop](https://opussounds.directory/e/drop-impact-heavy) entry on Opus Sounds Directory:
@@ -143,29 +147,3 @@ Opus Sounds Directory shows each entry's target next to its measured integrated 
 4. Keep true peak at or below -1 dBTP.
 5. Check that cues land on their frames.
 6. Listen on a phone and on headphones.
-
-## FAQ
-
-### What LUFS should a YouTube or social video be?
-
-About -14 LUFS integrated with a true peak at or below -1 dBTP is a widely used target for online video, though platforms don't all publish a fixed number and may adjust playback.
-
-### What is the difference between LUFS and dB?
-
-dBFS measures signal level relative to digital full scale, while LUFS measures perceived loudness using the K-weighting and gating defined in ITU-R BS.1770.
-
-### What is true peak?
-
-True peak is the estimated peak of the reconstructed analog waveform between samples, measured in dBTP, and it can be higher than the highest sample value.
-
-### How do I measure LUFS for free?
-
-Run ffmpeg with the ebur128 filter, for example: ffmpeg -i mix.wav -af ebur128=peak=true -f null -, and read the integrated loudness and true peak in the summary.
-
-### How many frames is one beat?
-
-Frames per beat equals fps times 60 divided by BPM, so at 30 fps one beat at 120 BPM is 15 frames and at 90 BPM is 20 frames.
-
-### What loudness does broadcast TV use?
-
-EBU R128 recommends -23 LUFS integrated with a maximum true peak of -1 dBTP for broadcast in Europe.
