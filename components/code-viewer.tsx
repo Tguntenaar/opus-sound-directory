@@ -1,8 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CopyButton } from "@/components/copy-button";
 
-export function CodeViewer({ assetPath }: { assetPath: string }) {
+export function CodeViewer({
+  assetPath,
+  entryId,
+}: {
+  assetPath: string;
+  entryId: string;
+}) {
   const [code, setCode] = useState<string>("Loading…");
 
   useEffect(() => {
@@ -20,12 +27,21 @@ export function CodeViewer({ assetPath }: { assetPath: string }) {
     };
   }, [assetPath]);
 
+  const canCopy = code.length > 0 && !code.startsWith("Loading") && !code.startsWith("# Unable");
+
   return (
-    <pre
-      className="max-h-[28rem] overflow-auto rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-xs leading-relaxed text-zinc-300"
-      tabIndex={0}
-    >
-      <code>{code}</code>
-    </pre>
+    <div className="flex flex-col gap-2">
+      {canCopy && (
+        <div className="flex justify-end">
+          <CopyButton text={code} entryId={entryId} label="Copy code" />
+        </div>
+      )}
+      <pre
+        className="max-h-[28rem] overflow-auto rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-xs leading-relaxed text-zinc-300 transition-colors hover:border-zinc-700/90"
+        tabIndex={0}
+      >
+        <code>{code}</code>
+      </pre>
+    </div>
   );
 }

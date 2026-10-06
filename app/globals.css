@@ -34,3 +34,176 @@ h2,
 h3 {
   font-weight: 500;
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes eq-pulse {
+  0%,
+  100% {
+    height: 4px;
+    opacity: 0.55;
+  }
+  50% {
+    height: 12px;
+    opacity: 1;
+  }
+}
+
+@keyframes check-pop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes spectrogram-reveal {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.35s ease-out both;
+}
+
+.sound-card {
+  animation: fade-in-up 0.45s ease-out both;
+}
+
+.eq-bar--active {
+  height: 4px;
+  animation: eq-pulse 0.85s ease-in-out infinite;
+}
+
+.icon-check-pop {
+  animation: check-pop 0.35s ease-out both;
+}
+
+.spectrogram-reveal {
+  animation: spectrogram-reveal 0.7s ease-out both;
+}
+
+.page-enter {
+  animation: fade-in-up 0.5s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sound-card,
+  .animate-fade-in,
+  .page-enter,
+  .spectrogram-reveal {
+    animation: none;
+  }
+
+  .eq-bar--active {
+    animation: none;
+    height: 8px;
+  }
+
+  .icon-check-pop {
+    animation: none;
+  }
+}
+
+.blog-prose {
+  max-width: 68ch;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: rgb(161 161 170);
+}
+
+.blog-prose p {
+  margin: 0 0 1rem;
+}
+
+.blog-prose h2,
+.blog-prose h3 {
+  margin: 1.75rem 0 0.75rem;
+  color: rgb(244 244 245);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.blog-prose h2 {
+  font-size: 1.125rem;
+}
+
+.blog-prose h3 {
+  font-size: 1rem;
+}
+
+.blog-prose a {
+  color: rgb(167 139 250);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.blog-prose a:hover {
+  color: rgb(196 181 253);
+}
+
+.blog-prose ul,
+.blog-prose ol {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.blog-prose code {
+  font-size: 0.85em;
+  color: rgb(212 212 216);
+}
+
+.blog-prose pre {
+  margin: 0 0 1rem;
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(39 39 42);
+  background: rgb(24 24 27 / 0.5);
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+}
+
+.blog-heading-anchor {
+  color: inherit;
+  text-decoration: none;
+}
+
+.blog-heading-anchor:hover {
+  color: rgb(196 181 253);
+}

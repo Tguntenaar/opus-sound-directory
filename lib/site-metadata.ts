@@ -7,6 +7,12 @@ import {
   getSiteUrl,
 } from "@/lib/site-url";
 
+export function canonicalForPath(path: string): string {
+  const base = getSiteUrl();
+  if (!path || path === "/") return base;
+  return `${base}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
 export function rootSiteMetadata(): Metadata {
   const siteUrl = getSiteUrl();
   return {
@@ -16,6 +22,18 @@ export function rootSiteMetadata(): Metadata {
       template: `%s · ${SITE_NAME}`,
     },
     description: DEFAULT_SITE_DESCRIPTION,
+    alternates: {
+      canonical: siteUrl,
+    },
+    icons: {
+      icon: [
+        { url: "/favicon.svg", type: "image/svg+xml" },
+        { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+        { url: "/favicon-16.png", sizes: "16x16", type: "image/png" },
+      ],
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    },
+    manifest: "/site.webmanifest",
     openGraph: {
       type: "website",
       locale: "en_US",

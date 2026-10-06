@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SponsorInterestForm } from "@/components/sponsor-interest-form";
 import { SPONSOR_PACKAGES } from "@/lib/sponsor-packages";
+import { canonicalForPath } from "@/lib/site-metadata";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 
 const title = "Sponsor";
@@ -10,6 +11,7 @@ const description =
 export const metadata: Metadata = {
   title,
   description,
+  alternates: { canonical: canonicalForPath("/sponsor") },
   openGraph: {
     title: `${title} · ${SITE_NAME}`,
     description,

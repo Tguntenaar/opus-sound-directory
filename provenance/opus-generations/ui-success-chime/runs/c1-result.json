@@ -1,0 +1,141 @@
+{
+  "entry": "ui-success-chime",
+  "candidate": 1,
+  "seed": 42,
+  "note": "Round 0 and round 1 originally failed only because of a host sandbox mount bug (bwrap could not create /sandbox), not because of the model's code. Round 0's unmodified code was re-run in the fixed sandbox without any further API call and passed all checks. Round 2 was blocked by 'credit balance too low'.",
+  "attempts": [
+    {
+      "round": 0,
+      "usage": {
+        "input_tokens": 605,
+        "cache_creation_input_tokens": 2713,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 2713,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 9305,
+        "output_tokens_details": {
+          "thinking_tokens": 5410
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "description": "A warm, bright two-note \"ding-ding\" success chime: a soft mallet strike on C6 at frame 0, then E6 a major third up 75 ms later, ringing out smoothly to silence within half a second.",
+      "problems": [
+        "host sandbox bug (bwrap /sandbox mount) - not a model error"
+      ]
+    },
+    {
+      "round": 1,
+      "usage": {
+        "input_tokens": 4644,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 2713,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5387,
+        "output_tokens_details": {
+          "thinking_tokens": 1239
+        },
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "problems": [
+        "host sandbox bug (bwrap /sandbox mount) - not a model error"
+      ]
+    },
+    {
+      "round": 2,
+      "error": "HTTP 400 credit balance too low"
+    },
+    {
+      "round": 0,
+      "rerun": true,
+      "runtimeSec": 0.8,
+      "metrics": {
+        "sampleRate": 48000,
+        "channels": 2,
+        "sampleWidthBytes": 2,
+        "samples": 24000,
+        "durationSec": 0.5,
+        "lufs": -14.0,
+        "truePeak": -3.9,
+        "samplePeakDb": -3.9,
+        "rmsDb": -17.14,
+        "crestDb": 13.24,
+        "dcOffset": [
+          0.0,
+          0.0
+        ],
+        "clippedSamples": 0,
+        "bandEnergy": {
+          "sub<60": 0.0,
+          "low60-250": 0.0,
+          "mid250-2k": 0.99,
+          "hmid2k-6k": 0.01,
+          "high>6k": 0.0
+        },
+        "lrCorrelation": 0.461,
+        "endAbs": 0.0,
+        "cues": [
+          {
+            "frame": 0,
+            "label": "chime",
+            "onsetRmsDb": -13.2
+          }
+        ],
+        "failures": [],
+        "warnings": [],
+        "passedChecks": true
+      },
+      "passed": true,
+      "problems": []
+    }
+  ],
+  "passed": true,
+  "best": {
+    "round": 0,
+    "code": "/workspace/opus-work/ui-success-chime/c1/runs/c1-r0.generate.py",
+    "wav": "/workspace/opus-work/ui-success-chime/c1/runs/c1-r0-rerun.wav",
+    "metrics": {
+      "sampleRate": 48000,
+      "channels": 2,
+      "sampleWidthBytes": 2,
+      "samples": 24000,
+      "durationSec": 0.5,
+      "lufs": -14.0,
+      "truePeak": -3.9,
+      "samplePeakDb": -3.9,
+      "rmsDb": -17.14,
+      "crestDb": 13.24,
+      "dcOffset": [
+        0.0,
+        0.0
+      ],
+      "clippedSamples": 0,
+      "bandEnergy": {
+        "sub<60": 0.0,
+        "low60-250": 0.0,
+        "mid250-2k": 0.99,
+        "hmid2k-6k": 0.01,
+        "high>6k": 0.0
+      },
+      "lrCorrelation": 0.461,
+      "endAbs": 0.0,
+      "cues": [
+        {
+          "frame": 0,
+          "label": "chime",
+          "onsetRmsDb": -13.2
+        }
+      ],
+      "failures": [],
+      "warnings": [],
+      "passedChecks": true
+    },
+    "description": "A warm, bright two-note \"ding-ding\" success chime: a soft mallet strike on C6 at frame 0, then E6 a major third up 75 ms later, ringing out smoothly to silence within half a second."
+  }
+}

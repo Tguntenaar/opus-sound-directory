@@ -1,0 +1,19 @@
+[
+  {
+    "id": "ui-success-chime",
+    "staged": true,
+    "passed": true,
+    "lufs": -14.0,
+    "truePeak": -3.9,
+    "attempts": 3,
+    "candidates": 1,
+    "description": "A warm, bright two-note \"ding-ding\" success chime: a soft mallet strike on C6 at frame 0, then E6 a major third up 75 ms later, ringing out smoothly to silence within half a second.",
+    "usage": {
+      "input": 5249,
+      "output": 14692,
+      "cache_read": 2713,
+      "cache_write": 2713,
+      "calls": 2
+    }
+  }
+]

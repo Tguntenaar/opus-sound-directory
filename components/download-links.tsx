@@ -1,6 +1,10 @@
 "use client";
 
+import { useState } from "react";
+import { Check, Download } from "lucide-react";
 import { useStats } from "@/components/stats-provider";
+import { IconButton } from "@/components/icon-button";
+import { cn } from "@/lib/utils";
 
 type Props = {
   entryId: string;
@@ -11,29 +15,47 @@ type Props = {
 
 export function DownloadLinks({ entryId, wav, mp3, title }: Props) {
   const { track } = useStats();
+  const [lastFormat, setLastFormat] = useState<"wav" | "mp3" | null>(null);
 
-  function onDownload() {
+  const base = title.replace(/\s+/g, "-").toLowerCase();
+
+  function triggerDownload(href: string, filename: string, format: "wav" | "mp3") {
     track(entryId, "download");
+    setLastFormat(format);
+    const a = document.createElement("a");
+    a.href = href;
+    a.download = filename;
+    a.click();
+    window.setTimeout(() => setLastFormat(null), 1600);
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <a
-        href={wav}
-        download={`${title.replace(/\s+/g, "-").toLowerCase()}.wav`}
-        onClick={onDownload}
-        className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:border-violet-500 hover:text-violet-300"
+    <div className="flex flex-wrap items-center gap-2">
+      <IconButton
+        label={lastFormat === "wav" ? "WAV download started" : "Download WAV"}
+        variant="outline"
+        onClick={() => triggerDownload(wav, `${base}.wav`, "wav")}
+        className={cn(lastFormat === "wav" && "border-emerald-500/40 text-emerald-200")}
       >
-        Download WAV
-      </a>
-      <a
-        href={mp3}
-        download={`${title.replace(/\s+/g, "-").toLowerCase()}.mp3`}
-        onClick={onDownload}
-        className="rounded-lg border border-zinc-700 px-3 py-1.5 text-sm text-zinc-200 hover:border-violet-500 hover:text-violet-300"
+        {lastFormat === "wav" ? (
+          <Check className="icon-check-pop h-4 w-4" aria-hidden />
+        ) : (
+          <Download className="h-4 w-4" aria-hidden />
+        )}
+      </IconButton>
+      <IconButton
+        label={lastFormat === "mp3" ? "MP3 download started" : "Download MP3"}
+        variant="outline"
+        onClick={() => triggerDownload(mp3, `${base}.mp3`, "mp3")}
+        className={cn(lastFormat === "mp3" && "border-emerald-500/40 text-emerald-200")}
       >
-        Download MP3
-      </a>
+        {lastFormat === "mp3" ? (
+          <Check className="icon-check-pop h-4 w-4" aria-hidden />
+        ) : (
+          <Download className="h-4 w-4" aria-hidden />
+        )}
+      </IconButton>
+      <span className="text-xs text-zinc-600" aria-hidden>WAV · MP3</span>
     </div>
   );
 }

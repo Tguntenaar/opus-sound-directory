@@ -1,0 +1,70 @@
+{
+  "id": "ui-success-chime",
+  "chosenCandidate": 1,
+  "chosenRound": 0,
+  "seed": 42,
+  "reason": "best score 0.0 of 1 passing / 1 candidates: LUFS err 0.00, PLR 10.1 dB (ok 7-19)",
+  "modelDescription": "A warm, bright two-note \"ding-ding\" success chime: a soft mallet strike on C6 at frame 0, then E6 a major third up 75 ms later, ringing out smoothly to silence within half a second.",
+  "metrics": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "sampleWidthBytes": 2,
+    "samples": 24000,
+    "durationSec": 0.5,
+    "lufs": -14.0,
+    "truePeak": -3.9,
+    "samplePeakDb": -3.9,
+    "rmsDb": -17.14,
+    "crestDb": 13.24,
+    "dcOffset": [
+      0.0,
+      0.0
+    ],
+    "clippedSamples": 0,
+    "bandEnergy": {
+      "sub<60": 0.0,
+      "low60-250": 0.0,
+      "mid250-2k": 0.99,
+      "hmid2k-6k": 0.01,
+      "high>6k": 0.0
+    },
+    "lrCorrelation": 0.461,
+    "endAbs": 0.0,
+    "cues": [
+      {
+        "frame": 0,
+        "label": "chime",
+        "onsetRmsDb": -13.2
+      }
+    ],
+    "failures": [],
+    "warnings": [],
+    "passedChecks": true
+  },
+  "ranking": [
+    {
+      "candidate": 1,
+      "score": 0.0,
+      "why": [
+        "LUFS err 0.00",
+        "PLR 10.1 dB (ok 7-19)"
+      ]
+    }
+  ],
+  "candidatesRun": 1,
+  "candidatesPlanned": 3,
+  "apiAttempts": 3,
+  "usage": {
+    "input": 5249,
+    "output": 14692,
+    "cache_read": 2713,
+    "cache_write": 2713,
+    "calls": 2
+  },
+  "shippedWav": {
+    "sampleRate": 48000,
+    "channels": 2,
+    "samples": 24000,
+    "downsampled": false
+  }
+}

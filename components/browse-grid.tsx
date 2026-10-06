@@ -1,11 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowDownAZ, Search, SlidersHorizontal, TrendingUp } from "lucide-react";
 import type { SoundEntry } from "@/lib/entries";
 import { CATEGORY_ORDER, CATEGORIES } from "@/lib/categories";
 import { MOOD_FACETS, formatMood } from "@/lib/mood";
 import { EntryCard } from "@/components/entry-card";
-import { cn } from "@/lib/utils";
+import { FilterPillGroup, type PillOption } from "@/components/filter-pill-group";
+import { FeaturedSlot } from "@/components/featured-slot";
+import { getFeaturedEntry } from "@/lib/featured";
+import { matchesSearch, sortEntries, type SortMode } from "@/lib/browse-sort";
+import { useStats } from "@/components/stats-provider";
+import { IconButton } from "@/components/icon-button";
 
 type Props = {
   entries: SoundEntry[];
@@ -20,83 +26,151 @@ function moodsInCatalog(entries: SoundEntry[]): string[] {
 }
 
 export function BrowseGrid({ entries }: Props) {
-  const [category, setCategory] = useState<string | "all">("all");
-  const [mood, setMood] = useState<string | "all">("all");
+  const { stats } = useStats();
+  const [category, setCategory] = useState<string>("all");
+  const [mood, setMood] = useState<string>("all");
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<SortMode>("popular");
+  const gridRef = useRef<HTMLDivElement>(null);
 
+  const featured = useMemo(() => getFeaturedEntry(entries), [entries]);
   const moodOptions = useMemo(() => moodsInCatalog(entries), [entries]);
 
+  const categoryPills: PillOption[] = useMemo(() => {
+    const items: PillOption[] = [{ value: "all", label: "All" }];
+    for (const id of CATEGORY_ORDER) {
+      const count = entries.filter((e) => e.category === id).length;
+      if (count === 0) continue;
+      items.push({ value: id, label: CATEGORIES[id].label });
+    }
+    return items;
+  }, [entries]);
+
+  const moodPills: PillOption[] = useMemo(
+    () => [
+      { value: "all", label: "Any mood" },
+      ...moodOptions.map((id) => ({ value: id, label: formatMood(id) })),
+    ],
+    [moodOptions],
+  );
+
   const filtered = useMemo(() => {
-    return entries.filter((e) => {
+    const base = entries.filter((e) => {
+      if (featured && e.id === featured.id) return false;
       if (category !== "all" && e.category !== category) return false;
       if (mood !== "all" && !(e.mood ?? []).includes(mood)) return false;
+      if (!matchesSearch(e, query)) return false;
       return true;
     });
-  }, [entries, category, mood]);
+    return sortEntries(base, sort, stats);
+  }, [entries, category, mood, query, sort, stats, featured]);
 
-  const chip =
-    "rounded-full px-3 py-1 text-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60";
-  const chipIdle = "text-zinc-500 hover:text-zinc-300";
-  const chipActive = "bg-violet-500/15 text-violet-200";
+  const filterKey = `${category}-${mood}-${query}-${sort}`;
+
+  const cycleSort = useCallback(() => {
+    setSort((s) => (s === "popular" ? "new" : "popular"));
+  }, []);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      const cards = Array.from(
+        gridRef.current?.querySelectorAll<HTMLElement>("[data-sound-card]") ?? [],
+      );
+      if (cards.length === 0) return;
+      const idx = cards.findIndex((c) => c === document.activeElement);
+      const col = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 640 ? 2 : 1;
+      let next = idx;
+      if (e.key === "ArrowRight") next = idx < 0 ? 0 : Math.min(cards.length - 1, idx + 1);
+      if (e.key === "ArrowLeft") next = idx < 0 ? 0 : Math.max(0, idx - 1);
+      if (e.key === "ArrowDown") next = idx < 0 ? 0 : Math.min(cards.length - 1, idx + col);
+      if (e.key === "ArrowUp") next = idx < 0 ? 0 : Math.max(0, idx - col);
+      if (next !== idx && next >= 0) {
+        e.preventDefault();
+        cards[next]?.focus();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [filterKey]);
+
+  const sortLabel = sort === "popular" ? "Sort: Popular" : "Sort: Newest";
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Category">
-          <button
-            type="button"
-            onClick={() => setCategory("all")}
-            className={cn(chip, category === "all" ? chipActive : chipIdle)}
-          >
-            All
-          </button>
-          {CATEGORY_ORDER.map((id) => {
-            const count = entries.filter((e) => e.category === id).length;
-            if (count === 0) return null;
-            const active = category === id;
-            return (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setCategory(id)}
-                className={cn(chip, active ? chipActive : chipIdle)}
-              >
-                {CATEGORIES[id].label}
-              </button>
-            );
-          })}
-        </div>
-        {moodOptions.length > 0 && (
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Mood">
-            <button
-              type="button"
-              onClick={() => setMood("all")}
-              className={cn(chip, mood === "all" ? chipActive : chipIdle)}
+      {featured && <FeaturedSlot entry={featured} />}
+
+      <div
+        className="sticky top-0 z-30 -mx-4 border-b border-zinc-800/70 bg-zinc-950/90 px-4 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-zinc-950/75"
+      >
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <label className="relative min-w-[12rem] flex-1">
+              <span className="sr-only">Search sounds</span>
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
+                aria-hidden
+              />
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search title, mood, tags…"
+                className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 py-2 pl-9 pr-3 text-sm text-zinc-100 placeholder:text-zinc-600 transition-colors focus:border-violet-500/40 focus:outline-none focus:ring-2 focus:ring-violet-500/25"
+              />
+            </label>
+            <IconButton
+              label={sortLabel}
+              onClick={cycleSort}
+              variant="outline"
+              className="shrink-0"
             >
-              Any mood
-            </button>
-            {moodOptions.map((id) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setMood(id)}
-                className={cn(chip, mood === id ? chipActive : chipIdle)}
-              >
-                {formatMood(id)}
-              </button>
+              {sort === "popular" ? (
+                <TrendingUp className="h-4 w-4" aria-hidden />
+              ) : (
+                <ArrowDownAZ className="h-4 w-4" aria-hidden />
+              )}
+            </IconButton>
+            <span className="hidden items-center gap-1 text-[10px] uppercase tracking-wide text-zinc-600 sm:inline-flex">
+              <SlidersHorizontal className="h-3 w-3" aria-hidden />
+              Filters
+            </span>
+          </div>
+          <FilterPillGroup
+            aria-label="Category"
+            options={categoryPills}
+            value={category}
+            onChange={setCategory}
+          />
+          {moodOptions.length > 0 && (
+            <FilterPillGroup
+              aria-label="Mood"
+              options={moodPills}
+              value={mood}
+              onChange={setMood}
+            />
+          )}
+        </div>
+      </div>
+
+      <div ref={gridRef}>
+        {filtered.length === 0 ? (
+          <p className="animate-fade-in py-16 text-center text-sm text-zinc-600">
+            No sounds match these filters.
+          </p>
+        ) : (
+          <div
+            key={filterKey}
+            className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+          >
+            {filtered.map((entry, index) => (
+              <EntryCard key={entry.id} entry={entry} staggerIndex={index} />
             ))}
           </div>
         )}
       </div>
-
-      {filtered.length === 0 ? (
-        <p className="py-16 text-center text-sm text-zinc-600">No sounds match these filters.</p>
-      ) : (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((entry) => (
-            <EntryCard key={entry.id} entry={entry} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }

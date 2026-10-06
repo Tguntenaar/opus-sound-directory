@@ -1,13 +1,30 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { canonicalForPath } from "@/lib/site-metadata";
+import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
+
+const title = "About";
+
+export const metadata: Metadata = {
+  title,
+  alternates: { canonical: canonicalForPath("/about") },
+  openGraph: {
+    title: `${title} · ${SITE_NAME}`,
+    url: "/about",
+    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
+  },
+};
 
 export default function AboutPage() {
   return (
     <div className="prose prose-invert max-w-2xl prose-headings:text-zinc-100 prose-p:text-zinc-400">
       <h1 className="text-3xl font-semibold">About this directory</h1>
       <p>
-        Opus Sound Directory catalogues <strong className="text-zinc-200">Claude Opus–generated</strong>{" "}
-        audio built for video: ad beds, transitions, UI ticks, logo stings, and ambient layers. Each
-        listing is stored as JSON in git with assets under <code className="text-zinc-300">public/assets/</code>.
+        Opus Sound Directory catalogues synthesised audio built for video: ad beds, transitions, UI
+        ticks, logo stings, and ambient layers — with the{" "}
+        <strong className="text-zinc-200">Claude Opus prompts and Python code</strong> behind each
+        entry. Listings live as JSON in git with assets under{" "}
+        <code className="text-zinc-300">public/assets/</code>.
       </p>
       <p>
         Each entry ships the prompt, Python synthesis code, waveform, spectrogram, and loudness
@@ -33,10 +50,18 @@ export default function AboutPage() {
         <li>Verify length, LUFS/peak, spectrogram; commit JSON + assets.</li>
       </ol>
       <p>
-        <Link href="/submit" className="text-violet-400 hover:text-violet-300">
-          Submit form
-        </Link>{" "}
-        is a stub — v1 source of truth is JSON in the repo.
+        Use the{" "}
+        <Link href="/submit" className="text-violet-400 hover:text-violet-300">submit form</Link> or
+        open a PR on{" "}
+        <a
+          href="https://github.com/Tguntenaar/opus-sound-directory"
+          className="text-violet-400 hover:text-violet-300"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </a>{" "}
+        to add entries.
       </p>
     </div>
   );

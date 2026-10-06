@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Pause, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -12,6 +11,9 @@ import {
   requestPlay,
   subscribePlayback,
 } from "@/lib/audio-controller";
+import { PlayPauseIcon } from "@/components/play-pause-icon";
+import { EqualizerBars } from "@/components/equalizer-bars";
+import { WaveformScrubber } from "@/components/waveform-scrubber";
 
 type Props = {
   audioId: string;
@@ -33,7 +35,9 @@ export function AudioPlayer({ audioId, src, title, className }: Props) {
 
   useEffect(() => {
     return subscribePlayback((id) => {
-      setPlaying(id === audioId);
+      const isPlaying = id === audioId;
+      setPlaying(isPlaying);
+      if (!isPlaying) setProgress(0);
     });
   }, [audioId]);
 
@@ -44,6 +48,7 @@ export function AudioPlayer({ audioId, src, title, className }: Props) {
     const onEnd = () => {
       notifyEnded(audioId);
       setPlaying(false);
+      setProgress(0);
     };
     el.addEventListener("timeupdate", onTime);
     el.addEventListener("ended", onEnd);
@@ -65,6 +70,18 @@ export function AudioPlayer({ audioId, src, title, className }: Props) {
     }
   }, [audioId, playing]);
 
+  const seek = useCallback(
+    (ratio: number) => {
+      const el = audioRef.current;
+      if (!el) return;
+      const clamped = Math.min(1, Math.max(0, ratio));
+      if (el.duration) el.currentTime = clamped * el.duration;
+      setProgress(clamped);
+      if (!playing) void requestPlay(audioId);
+    },
+    [audioId, playing],
+  );
+
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.code !== "Space" || e.target instanceof HTMLInputElement) return;
@@ -81,7 +98,10 @@ export function AudioPlayer({ audioId, src, title, className }: Props) {
     <div
       data-audio-player
       className={cn(
-        "flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4",
+        "flex flex-col gap-3 rounded-xl border bg-zinc-900/60 p-4 transition-[border-color,box-shadow] duration-300",
+        playing
+          ? "border-violet-500/35 shadow-[0_0_0_1px_rgb(139_92_246/0.12)]"
+          : "border-zinc-800",
         className,
       )}
     >
@@ -94,24 +114,22 @@ export function AudioPlayer({ audioId, src, title, className }: Props) {
           onClick={() => void toggle()}
           aria-pressed={playing}
           aria-label={playing ? "Pause" : "Play"}
+          className="active:scale-[0.97]"
         >
-          {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          {playing ? "Pause" : "Play"}
+          <PlayPauseIcon playing={playing} />
+          <span className="sr-only">{playing ? "Pause" : "Play"}</span>
         </Button>
-        <span className="text-sm text-zinc-400">Space to play/pause when focused</span>
+        {playing && <EqualizerBars active className="h-4" />}
+        <span className="text-xs text-zinc-600" title="Keyboard shortcut">
+          Space
+        </span>
       </div>
-      <div
-        className="h-1.5 overflow-hidden rounded-full bg-zinc-800"
-        role="progressbar"
-        aria-valuenow={Math.round(progress * 100)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-      >
-        <div
-          className="h-full bg-violet-500 transition-[width] duration-150"
-          style={{ width: `${progress * 100}%` }}
-        />
-      </div>
+      <WaveformScrubber
+        src={src}
+        progress={progress}
+        playing={playing}
+        onSeek={seek}
+      />
     </div>
   );
 }

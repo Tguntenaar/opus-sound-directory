@@ -62,7 +62,12 @@ def ffmpeg_ebur128(path: Path) -> dict[str, float | None]:
 
 
 def render_spectrogram(wav_path: Path, out_png: Path) -> None:
-    import matplotlib
+    try:
+        import matplotlib
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "matplotlib is required for spectrograms — pip install -r runner/requirements.txt"
+        )
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt

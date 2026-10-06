@@ -1,0 +1,3 @@
+exit=1 elapsed=0.0s
+--- stderr ---
+bwrap: Can't create file /sandbox: Read-only file system

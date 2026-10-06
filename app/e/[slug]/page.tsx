@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { getAllEntries, getEntryBySlug } from "@/lib/entries";
-import { entryShareDescription } from "@/lib/site-metadata";
+import { canonicalForPath, entryShareDescription } from "@/lib/site-metadata";
 import { SITE_NAME } from "@/lib/site-url";
 import { CATEGORIES } from "@/lib/categories";
 import { AudioPlayer } from "@/components/audio-player";
@@ -13,6 +14,10 @@ import { DownloadLinks } from "@/components/download-links";
 import { UsageBadges } from "@/components/usage-badges";
 import { MoodChips } from "@/components/mood-chips";
 import { ModelBadge } from "@/components/model-badge";
+import { SpectrogramImage } from "@/components/spectrogram-image";
+import { EntryShareActions } from "@/components/entry-share-actions";
+import { entryAudioObjectJsonLd } from "@/lib/structured-data";
+import { JsonLd } from "@/components/json-ld";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -32,6 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    alternates: { canonical: canonicalForPath(`/e/${entry.slug}`) },
     openGraph: {
       type: "article",
       title,
@@ -61,13 +67,23 @@ export default async function EntryPage({ params }: Props) {
   const catLabel = CATEGORIES[entry.category]?.label ?? entry.category;
 
   return (
-    <article className="flex flex-col gap-8">
+    <article className="page-enter flex flex-col gap-8">
+      <JsonLd data={entryAudioObjectJsonLd(entry)} />
       <div className="flex flex-col gap-2">
-        <Link href="/" className="text-sm text-violet-400 hover:text-violet-300">
-          ← Browse
+        <Link
+          href="/"
+          className="inline-flex w-fit items-center gap-1.5 text-sm text-violet-400 transition-colors hover:text-violet-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
+          Browse
         </Link>
-        <h1 className="text-3xl font-semibold text-zinc-50">{entry.title}</h1>
-        <p className="text-sm text-zinc-500">{catLabel} · {entry.generatedAt}</p>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-semibold text-zinc-50">{entry.title}</h1>
+            <p className="mt-1 text-sm text-zinc-500">{catLabel} · {entry.generatedAt}</p>
+          </div>
+          <EntryShareActions slug={entry.slug} title={entry.title} />
+        </div>
         <div className="mt-3 max-w-md">
           <ModelBadge entry={entry} prominent />
         </div>
@@ -77,7 +93,7 @@ export default async function EntryPage({ params }: Props) {
         <UsageBadges entryId={entry.id} className="mt-3" />
       </div>
 
-      <AudioPlayer audioId={entry.id} src={entry.assets.wav} title={entry.title} />
+      <AudioPlayer audioId={entry.id} src={entry.assets.mp3} title={entry.title} />
       <DownloadLinks
         entryId={entry.id}
         wav={entry.assets.wav}
@@ -88,10 +104,10 @@ export default async function EntryPage({ params }: Props) {
       <section className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg font-medium text-zinc-100">Prompt</h2>
-          <CopyButton text={entry.prompt} entryId={entry.id} />
+          <CopyButton text={entry.prompt} entryId={entry.id} iconOnly />
         </div>
         <pre
-          className="whitespace-pre-wrap rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-sm leading-relaxed text-zinc-300"
+          className="whitespace-pre-wrap rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 text-sm leading-relaxed text-zinc-300 transition-colors hover:border-zinc-700/90"
           tabIndex={0}
         >
           {entry.prompt}
@@ -105,17 +121,15 @@ export default async function EntryPage({ params }: Props) {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-medium text-zinc-100">Spectrogram</h2>
-        <img
+        <SpectrogramImage
           src={entry.assets.spectrogram}
           alt={`Spectrogram for ${entry.title}`}
-          className="w-full rounded-xl border border-zinc-800 bg-zinc-950"
-          loading="lazy"
         />
       </section>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-lg font-medium text-zinc-100">Generated code</h2>
-        <CodeViewer assetPath={entry.assets.code} />
+        <CodeViewer assetPath={entry.assets.code} entryId={entry.id} />
       </section>
 
       <section className="flex flex-col gap-2 text-sm text-zinc-500">

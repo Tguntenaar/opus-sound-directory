@@ -78,14 +78,62 @@ def integrated_lufs_estimate(mono: np.ndarray) -> float:
     return 20 * math.log10(rms) - 0.691
 
 
-def normalize_lufs(mono: np.ndarray, target: float = -14.0) -> np.ndarray:
-    current = integrated_lufs_estimate(mono)
-    gain = 10 ** ((target - current) / 20)
-    return limiter(mono * gain)
+def _as_stereo(audio: np.ndarray) -> np.ndarray:
+    if audio.ndim == 1:
+        return np.stack([audio, audio], axis=-1)
+    return audio
 
 
-def master_chain(mono: np.ndarray, target_lufs: float = -14.0) -> np.ndarray:
-    return limiter(soft_clip(normalize_lufs(mono, target_lufs)))
+def integrated_lufs_stereo(stereo: np.ndarray) -> float:
+    import pyloudnorm as pyln
+
+    st = _as_stereo(stereo).astype(np.float64)
+    meter = pyln.Meter(SAMPLE_RATE)
+    try:
+        return float(meter.integrated_loudness(st))
+    except Exception:
+        mono = st.mean(axis=1)
+        return integrated_lufs_estimate(mono.astype(np.float32))
+
+
+def normalize_lufs_stereo(stereo: np.ndarray, target: float = -14.0) -> np.ndarray:
+    import pyloudnorm as pyln
+
+    st = _as_stereo(stereo).astype(np.float64)
+    st -= np.mean(st, axis=0, keepdims=True)
+    meter = pyln.Meter(SAMPLE_RATE)
+    try:
+        loud = meter.integrated_loudness(st)
+        if loud > -70:
+            st = pyln.normalize.loudness(st, loud, target)
+    except Exception:
+        mono = st.mean(axis=1).astype(np.float32)
+        gain = 10 ** ((target - integrated_lufs_estimate(mono)) / 20)
+        st = st * gain
+    return st.astype(np.float32)
+
+
+def master_stereo(
+    stereo: np.ndarray,
+    target_lufs: float = -14.0,
+    true_peak_db: float = -1.0,
+) -> np.ndarray:
+    st = normalize_lufs_stereo(stereo, target_lufs)
+    ceiling = 10 ** (true_peak_db / 20.0)
+    for _ in range(2):
+        st = soft_clip(st, 1.08)
+        peak = float(np.max(np.abs(st)))
+        if peak > ceiling and peak > 0:
+            st = st * (ceiling / peak)
+        loud = integrated_lufs_stereo(st)
+        if abs(loud - target_lufs) > 0.35:
+            st = normalize_lufs_stereo(st, target_lufs)
+    return st.astype(np.float32)
+
+
+def master_chain(mono: np.ndarray, target_lufs: float = -14.0, true_peak_db: float = -1.0) -> np.ndarray:
+    """Mono convenience wrapper — loudness measured on duplicated stereo (matches ffmpeg ebur128)."""
+    return master_stereo(stereo(mono, width=0.0), target_lufs, true_peak_db).mean(axis=1).astype(np.float32)
 
 
 def kick(duration: float = 0.18, seed: int = 0) -> np.ndarray:

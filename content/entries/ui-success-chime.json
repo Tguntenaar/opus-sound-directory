@@ -8,8 +8,8 @@
     "0.5s"
   ],
   "prompt": "Make a 0.5 s UI success sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 24000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: two-tone pleasant chime, fast decay, no harsh highs; centre at frame 0.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
-  "modelId": "local-synth",
-  "generatedAt": "2026-10-05",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
   "seed": 42,
   "timing": {
     "bpm": 120,
@@ -29,8 +29,8 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -12.2,
-    "truePeak": -1.3,
+    "lufs": -14.0,
+    "truePeak": -5.0,
     "durationSec": 0.5,
     "passedChecks": true
   },
@@ -40,11 +40,10 @@
     "spectrogram": "/assets/ui-success-chime/spectrogram.png",
     "code": "/assets/ui-success-chime/generate.py"
   },
-  "notes": "Runner-verified synthesis (numpy). Prompt describes creative intent; code is executable.",
+  "notes": "Written by claude-opus-5-5 via the Anthropic API (best of 1 candidate). Site runner re-verified at -14.0 LUFS / -5.0 dBTP (ffmpeg ebur128). Provenance: provenance/opus-generations/ui-success-chime/runs/.",
   "mood": [
     "happy",
     "bright"
   ],
-  "tempo": "fast",
-  "targetModelId": "claude-opus-4-20250514"
+  "tempo": "fast"
 }

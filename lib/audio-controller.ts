@@ -1,5 +1,7 @@
 /** Global single-playback coordinator for all <audio> elements. */
 
+import { setLastPlayedEntryId } from "@/lib/playback-focus";
+
 const elements = new Map<string, HTMLAudioElement>();
 let currentId: string | null = null;
 const listeners = new Set<(id: string | null) => void>();
@@ -35,6 +37,7 @@ export async function requestPlay(id: string) {
     }
   }
   currentId = id;
+  setLastPlayedEntryId(id);
   notify();
   const el = elements.get(id);
   if (el) await el.play();

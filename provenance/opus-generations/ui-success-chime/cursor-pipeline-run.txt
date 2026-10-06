@@ -1,0 +1,6 @@
+{
+  "lufs": -14.0,
+  "truePeak": -5.0,
+  "durationSec": 0.5,
+  "passedChecks": true
+}

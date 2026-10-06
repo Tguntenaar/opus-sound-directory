@@ -28,6 +28,16 @@ npm run dev
 
 Open [http://127.0.0.1:43123](http://127.0.0.1:43123).
 
+### Blog
+
+Posts live in `content/blog/<slug>.md` with YAML frontmatter (`title`, `slug`, `description`, `date`, `keywords[]`, `faq`, optional `draft: true`). `npm run prebuild` runs `scripts/sync-blog.mjs` to regenerate `lib/blog.generated.ts`. Published posts appear at `/blog`, in `/sitemap.xml`, `/blog/rss.xml`, and `/llms.txt`. Set `draft: true` to keep a post out of listings, RSS, sitemap, and LLM indexes.
+
+Embed a sound on its own line in markdown:
+
+```md
+[Success chime](/entries/ui-success-chime)
+```
+
 ```bash
 npm run build    # production build (vinext + Cloudflare)
 npm run start    # preview production build locally
@@ -173,7 +183,7 @@ Metrics in the JSON are measured from the shipped file (`verify.py` + ffmpeg `eb
 | Script | Purpose |
 |--------|---------|
 | `run.py` | Synthesise, verify, update JSON metrics, export `generate.py`, stamp `modelId` / mood |
-| `entry_meta.py` | Per-entry `mood` / `tempo`; `local-synth` + `targetModelId` (`claude-opus-4-20250514`) |
+| `entry_meta.py` | Per-entry `mood` / `tempo`; `local-synth` + `targetModelId` (`claude-opus-5-5`) |
 | `synth/entry_synth.py` | Per-entry sound design (16 ids) |
 | `verify.py` | Length, LUFS/peak, spectrogram |
 | `code_writer.py` | Export self-contained `generate.py` |
@@ -199,7 +209,8 @@ python3 runner/run.py content/entries/chaos-calm-01.json --mock
 python3 runner/run.py content/entries/chaos-calm-01.json --mock --best-of 3
 ```
 
-- **`--mock`** (default): runs the per-entry numpy synthesiser, sets **`modelId`: `local-synth`** (honest — not an API call), **`targetModelId`: `claude-opus-4-20250514`**, mood/tempo from `entry_meta.py`, and updates `metrics` in JSON.
+- **`--mock`** (default): runs the per-entry numpy synthesiser, sets **`modelId`: `local-synth`** (honest — not an API call), **`targetModelId`: `claude-opus-5-5`**, mood/tempo from `entry_meta.py`, and updates `metrics` in JSON.
+- **`--pipeline-only`**: skip synthesis; remaster `out.wav` (pyloudnorm LUFS + peak limit), ffmpeg verify, spectrogram, MP3, Workers sizing. Use after dropping in Opus `generate.py` / WAV. Add **`--run-generate-py`** to execute the asset script first. **`--preserve-model-id`** keeps `modelId: claude-opus-5-5` (no `targetModelId`).
 - **`--agent`**: reserved for real generation (not wired in MVP). To integrate later:
   - **Claude Code CLI**: `claude -p "$(cat prompt.txt)"` with a project rule to write `generate.py` and run verification.
   - **Agent SDK**: implement `agent_generate()` in `run.py` to call your agent with the entry prompt + seed, then run the same `verify.py` pipeline.

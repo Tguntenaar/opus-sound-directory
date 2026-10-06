@@ -2,6 +2,7 @@
 
 import { Copy, Download } from "lucide-react";
 import { useStats } from "@/components/stats-provider";
+import { AnimatedNumber } from "@/components/animated-number";
 import { cn } from "@/lib/utils";
 
 export function UsageBadges({
@@ -24,15 +25,27 @@ export function UsageBadges({
       )}
       aria-label={`${copy} prompt copies, ${download} audio downloads`}
     >
-      <span className="inline-flex items-center gap-1" title="Prompt copies">
+      <span className="inline-flex items-center gap-1 tabular-nums" title="Prompt copies">
         <Copy className="h-3 w-3 opacity-70" aria-hidden />
-        {compact ? copy : `${copy.toLocaleString()} ${copy === 1 ? "copy" : "copies"}`}
+        {compact ? (
+          <AnimatedNumber value={copy} />
+        ) : (
+          <>
+            <AnimatedNumber value={copy} />
+            {` ${copy === 1 ? "copy" : "copies"}`}
+          </>
+        )}
       </span>
-      <span className="inline-flex items-center gap-1" title="Audio downloads">
+      <span className="inline-flex items-center gap-1 tabular-nums" title="Audio downloads">
         <Download className="h-3 w-3 opacity-70" aria-hidden />
-        {compact
-          ? download
-          : `${download.toLocaleString()} ${download === 1 ? "download" : "downloads"}`}
+        {compact ? (
+          <AnimatedNumber value={download} />
+        ) : (
+          <>
+            <AnimatedNumber value={download} />
+            {` ${download === 1 ? "download" : "downloads"}`}
+          </>
+        )}
       </span>
     </div>
   );

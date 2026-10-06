@@ -11,6 +11,10 @@ export function getEntryBySlug(slug: string): SoundEntry | undefined {
   return ALL_ENTRIES.find((e) => e.slug === slug);
 }
 
+export function getEntryById(id: string): SoundEntry | undefined {
+  return ALL_ENTRIES.find((e) => e.id === id);
+}
+
 export function getEntriesByCategory(category: string): SoundEntry[] {
   return getAllEntries().filter((e) => e.category === category);
 }

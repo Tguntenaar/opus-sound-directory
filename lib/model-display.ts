@@ -3,7 +3,7 @@
 export const LOCAL_SYNTH_MODEL_ID = "local-synth";
 
 /** Default Anthropic Opus model id for future `--agent` runs (Messages API). */
-export const TARGET_OPUS_MODEL_ID = "claude-opus-4-20250514";
+export const TARGET_OPUS_MODEL_ID = "claude-opus-5-5";
 
 const DISPLAY: Record<string, { label: string; detail?: string }> = {
   [LOCAL_SYNTH_MODEL_ID]: {
@@ -19,8 +19,8 @@ const DISPLAY: Record<string, { label: string; detail?: string }> = {
     detail: "Anthropic Messages API",
   },
   "claude-opus-5-5": {
-    label: "Claude Opus 5.5 (display id)",
-    detail: "Legacy placeholder — use local-synth or a real API id",
+    label: "Claude Opus 5.5",
+    detail: "Anthropic Messages API",
   },
 };
 
@@ -40,9 +40,9 @@ export function modelAttribution(modelId: string, targetModelId?: string): {
   if (isLocal && targetModelId) {
     const target = DISPLAY[targetModelId];
     secondary = target
-      ? `Agent target: ${target.label} (\`${targetModelId}\`)`
-      : `Agent target: \`${targetModelId}\``;
-  } else if (known?.detail) {
+      ? `Agent target: ${target.label}`
+      : `Agent target: ${targetModelId}`;
+  } else if (known?.detail && !isLocal) {
     secondary = known.detail;
   }
   return { primary, secondary, isLocalSynth: isLocal };

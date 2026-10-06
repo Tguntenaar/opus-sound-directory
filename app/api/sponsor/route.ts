@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { scheduleBackground } from "@/lib/schedule-background";
 import { listSponsorLeads, saveSponsorLead } from "@/lib/sponsor-kv";
 import { notifySponsorLead } from "@/lib/sponsor-notify";
 import { isHoneypotDiscard, validateSponsorPayload } from "@/lib/sponsor-validate";
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
   }
 
   const lead = await saveSponsorLead(result.data);
-  void notifySponsorLead(lead);
+  scheduleBackground(notifySponsorLead(lead));
   return NextResponse.json({ ok: true });
 }
 

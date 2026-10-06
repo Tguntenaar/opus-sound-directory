@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 LOCAL_SYNTH_MODEL_ID = "local-synth"
-TARGET_OPUS_MODEL_ID = "claude-opus-4-20250514"
+TARGET_OPUS_MODEL_ID = "claude-opus-5-5"
 
 ENTRY_MOOD: dict[str, dict] = {
     "ad-bed-15-upbeat": {
@@ -73,13 +73,21 @@ ENTRY_MOOD: dict[str, dict] = {
 }
 
 
-def apply_entry_meta(entry: dict, agent_mode: bool = False) -> None:
+def apply_entry_meta(
+    entry: dict,
+    agent_mode: bool = False,
+    preserve_model_id: bool = False,
+) -> None:
     entry_id = entry["id"]
     meta = ENTRY_MOOD.get(entry_id, {})
     if meta:
         entry["mood"] = meta.get("mood", entry.get("mood", []))
         if "tempo" in meta:
             entry["tempo"] = meta["tempo"]
+    if preserve_model_id:
+        if entry.get("modelId") and entry["modelId"] != LOCAL_SYNTH_MODEL_ID:
+            entry.pop("targetModelId", None)
+        return
     if agent_mode:
         entry["modelId"] = TARGET_OPUS_MODEL_ID
         entry.pop("targetModelId", None)

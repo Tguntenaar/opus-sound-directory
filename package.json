@@ -9,7 +9,9 @@
   "dependencies": {
     "@vinext/cloudflare": "^1.0.1",
     "clsx": "^2.1.1",
+    "gray-matter": "^4.0.3",
     "lucide-react": "^1.52.0",
+    "marked": "^18.1.0",
     "react": "latest",
     "react-dom": "latest",
     "react-server-dom-webpack": "^19.3.0",
@@ -32,9 +34,9 @@
   },
   "type": "module",
   "scripts": {
-    "predev": "node scripts/sync-entries.mjs",
+    "predev": "node scripts/sync-entries.mjs && node scripts/sync-blog.mjs",
     "dev": "vite dev --port 43123 --host 127.0.0.1",
-    "prebuild": "node scripts/sync-entries.mjs",
+    "prebuild": "node scripts/sync-entries.mjs && node scripts/sync-blog.mjs",
     "build": "vite build",
     "start": "vite preview",
     "deploy": "vinext-cloudflare deploy"
