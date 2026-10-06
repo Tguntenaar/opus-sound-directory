@@ -1,0 +1,57 @@
+{
+  "id": "game-level-up",
+  "slug": "game-level-up",
+  "title": "Chiptune level up",
+  "category": "logo-stings",
+  "tags": [
+    "game",
+    "2.5s",
+    "150bpm",
+    "chiptune",
+    "fanfare"
+  ],
+  "prompt": "A 2.5-second chiptune level-up fanfare in C major at 150 BPM, built like a four-channel 8-bit sound chip. Frame 0 opens on a punch: a triangle kick, a noise-channel crack and the first note of a 25 % duty pulse arpeggio. Sixteenth note arpeggios then climb through C, F and G (I-IV-V), shadowed by a thinner 12.5 % duty pulse playing a \"chip echo\" a dotted thirty-second behind. A triangle bass bounces in octaves, and the noise channel rolls from sixteenths into thirty-seconds as the arpeggio breaks into a fast run up to C7. Everything stops for a breath, and on frame 45 (1.5 s) a triumphant C major chord lands: both pulses (with delayed vibrato), triangle root, kick and a noise crash. The chord steps down in 60 Hz volume frames under a high, sparkling 12.5 % duty arpeggio that ping-pongs across the stereo field and fades to silence. All oscillators are additive and band-limited (partials below 16 kHz). The triangle bass and kick are the only content below 120 Hz, and they are mono.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 150245,
+  "timing": {
+    "fps": 30,
+    "durationSec": 2.5,
+    "samples": 120000,
+    "sampleRate": 48000,
+    "bpm": 150
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "start"
+    },
+    {
+      "frame": 45,
+      "label": "level up"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.03,
+    "truePeak": -1.3,
+    "durationSec": 2.5,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/game-level-up/out.wav",
+    "mp3": "/assets/game-level-up/out.mp3",
+    "spectrogram": "/assets/game-level-up/spectrogram.png",
+    "code": "/assets/game-level-up/generate.py"
+  },
+  "notes": "Four-channel chip build: band-limited additive pulse leads (25 % arpeggio + 12.5 % chip echo), triangle octave bass and pitch-swept triangle kick (mono, the only content under 120 Hz), and a band-passed noise channel rolling 16ths into 32nds. All volume envelopes step at a 60 Hz frame rate, smoothed 1.5 ms. The pre-hit buses stop with a 3 ms fade at 1.45 s, so the C major chord (vibrato after 160 ms, noise crash, high ping-pong sparkle) lands alone on frame 45.",
+  "mood": [
+    "happy",
+    "energetic",
+    "bright"
+  ],
+  "tempo": "fast"
+}
