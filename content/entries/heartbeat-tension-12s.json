@@ -1,0 +1,55 @@
+{
+  "id": "heartbeat-tension-12s",
+  "slug": "heartbeat-tension-12s",
+  "title": "Accelerating heartbeat",
+  "category": "risers",
+  "tags": [
+    "12s",
+    "heartbeat",
+    "tension",
+    "sub"
+  ],
+  "prompt": "A 12-second tension builder with no pitch centre, all in the low body. A heartbeat starts on frame 0 at 60 BPM: each beat is a \"lub-dub\" pair of mono sub thumps (a pitch-dropping sine with a muffled knock; the \"dub\" is shorter and a little higher). The heart speeds up smoothly to about 150 BPM, and its thumps grow harder and closer together. Above it, a faint high tinnitus ring fades in and slowly beats between the ears. Underneath, a breath-like noise swell grows from slow, deep breaths into fast, shallow panting. On frame 330 (11.0 s), mid-beat, everything flatlines: the whole bus cuts to dead silence through a 2 ms fade that ends on the cue. After a held silence, one distant, soft, muffled thud sounds in a small dark room and dies away. Only the mono heart thumps sit below 120 Hz.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 1133011,
+  "timing": {
+    "fps": 30,
+    "durationSec": 12.0,
+    "samples": 576000,
+    "sampleRate": 48000,
+    "bpm": 60
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "first beat"
+    },
+    {
+      "frame": 330,
+      "label": "flatline cut"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.02,
+    "truePeak": -1.4,
+    "durationSec": 12.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/heartbeat-tension-12s/out.wav",
+    "mp3": "/assets/heartbeat-tension-12s/out.mp3",
+    "spectrogram": "/assets/heartbeat-tension-12s/spectrogram.png",
+    "code": "/assets/heartbeat-tension-12s/generate.py"
+  },
+  "notes": "Stems: mono lub-dub sub thumps (pitch-dropping sines, soft tanh, muffled 70-320 Hz knock) on a smooth 60->150 BPM tempo curve with shrinking lub-dub gap; faint 7.35/7.357 kHz tinnitus ring (7 Hz inter-ear beating); stereo breath noise (bright inhale / low exhale bands) whose cycles speed up and swell. Pre-cut bus is filtered, limited and DC-blocked first, then cut by a 2 ms fade ending on frame 330 (mid-beat, the dub never comes); 0.42 s of silence, then one low-passed distant thud in a small dark room. DC trimmed with a sub-audio ramped constant; no flags.",
+  "mood": [
+    "dark",
+    "energetic"
+  ],
+  "tempo": "medium"
+}
