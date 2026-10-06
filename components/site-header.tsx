@@ -27,6 +27,7 @@ export function SiteHeader() {
           <IconTooltip label="MCP server">
             <Link
               href="/mcp"
+              prefetch={false}
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-900/80 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
               aria-label="MCP server"
             >

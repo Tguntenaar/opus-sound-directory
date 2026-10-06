@@ -1,15 +1,11 @@
 import { handleMcpRequest } from "@/lib/mcp/handler";
 import { mcpInfoHtml } from "@/lib/mcp/info-html";
+import { shouldServeMcpInfoPage } from "@/lib/mcp/should-serve-info-page";
 
 export const runtime = "edge";
 
 export async function GET(request: Request) {
-  const accept = request.headers.get("accept") ?? "";
-  const isBrowser =
-    accept.includes("text/html") &&
-    !accept.includes("application/json") &&
-    request.headers.get("mcp-session-id") == null;
-  if (isBrowser) {
+  if (shouldServeMcpInfoPage(request)) {
     return new Response(mcpInfoHtml(), {
       headers: { "Content-Type": "text/html; charset=utf-8" },
     });
