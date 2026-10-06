@@ -1,0 +1,53 @@
+{
+  "id": "logo-sting-dark-cinematic",
+  "slug": "logo-sting-dark-cinematic",
+  "title": "Dark cinematic logo reveal",
+  "category": "logo-stings",
+  "tags": [
+    "logo",
+    "4s",
+    "braam",
+    "cinematic"
+  ],
+  "prompt": "A 4-second ominous logo reveal centred on low D. On frame 0 a dull low knock opens a mono sub rumble on D1 that slowly swells, while a metallic scrape (stick-slip friction exciting an inharmonic resonator bank, sliding across the stereo field) grinds and squeals above it, with a second, harder scrape taking over at 1.0 s. From 1.05 s a reverse cymbal pulls the air in, rising to a sharp stop 45 ms before the hit and leaving a short vacuum. On frame 75 (2.5 s) a massive low brass-like braam lands: a D minor stack (D1 D2 A2 D3 F3 A3) of detuned band-limited saws whose resonant low-pass snaps open and slowly closes, with a pitch bend up into the note, a sub knock and a short crack on the attack. A long, dark hall tail then rolls the braam down to silence. Only the sub, the knocks and the braam's low partials sit below 120 Hz, and they are mono.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 620075,
+  "timing": {
+    "fps": 30,
+    "durationSec": 4.0,
+    "samples": 192000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "rumble in"
+    },
+    {
+      "frame": 75,
+      "label": "reveal hit"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.02,
+    "truePeak": -1.4,
+    "durationSec": 4.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/logo-sting-dark-cinematic/out.wav",
+    "mp3": "/assets/logo-sting-dark-cinematic/out.mp3",
+    "spectrogram": "/assets/logo-sting-dark-cinematic/spectrogram.png",
+    "code": "/assets/logo-sting-dark-cinematic/generate.py"
+  },
+  "notes": "Stems: mono D1 sub rumble + low knock on frame 0, stick-slip metal scrapes through an inharmonic resonator bank (two passes, panned sweeps), reverse cymbal into a 45 ms vacuum (intro hall ducked out), then an additive band-limited braam (D minor stack, 3 detuned saws per note, analytic resonant LP swell, pitch scoop) with sub knock + crack on frame 75 and a 3 s dark hall tail. Side high-passed at 250 Hz (8th order); 60 ms-release true-peak limiter; no flags.",
+  "mood": [
+    "dark"
+  ],
+  "tempo": "slow"
+}
