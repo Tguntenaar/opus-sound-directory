@@ -1,0 +1,51 @@
+{
+  "id": "ocean-shore-loop",
+  "slug": "ocean-shore-loop",
+  "title": "Ocean shore ambience (loop)",
+  "category": "ambient",
+  "tags": [
+    "24s",
+    "loop",
+    "waves",
+    "wind",
+    "nature"
+  ],
+  "prompt": "A 24-second seamless shoreline loop: three synthesised waves of different size roll in, build and break, about eight seconds apart. Each one is a noise swell whose low-pass opens as it rises, a feathering hiss along the lip, a bright crash that travels across the stereo field as the wave breaks along the beach, then a shhh of white water running up the sand with crackling foam fizz and hundreds of tiny rising bubble pops, and finally a soft receding backwash. Under them sit a distant surf roar and a light, gusting wind whose whistle drifts in pitch. Far off to the right a bell buoy in Eb rocks on the swell: a bronze bell (hum, prime, minor-third tierce, quint, nominal) whose strikes come in uneven clusters, blurred by distance and wind. The bell strikes at frame 0, the loop top. The noise layers are built as spectral envelopes over a circular overlap-add, and the events are rendered circularly: three identical cycles with tails, reverb and a wrap-mode limiter running across them, keeping the middle one, so the last sample flows straight back into the first with no fade. Only the mono surf rumble sits below 120 Hz.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 152406,
+  "timing": {
+    "fps": 30,
+    "durationSec": 24.0,
+    "samples": 1152000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "loop start"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.01,
+    "truePeak": -1.3,
+    "durationSec": 24.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/ocean-shore-loop/out.wav",
+    "mp3": "/assets/ocean-shore-loop/out.mp3",
+    "spectrogram": "/assets/ocean-shore-loop/spectrogram.png",
+    "code": "/assets/ocean-shore-loop/generate.py"
+  },
+  "notes": "Seamless 24 s shore loop. Waves, surf roar and wind are spectral envelopes over a circular overlap-add (exactly 24 s periodic). Bubbles and the Eb bell buoy are placed over three identical cycles (middle kept, wrap-mode limiter). Three waves (breaks at 3.1, 11.0 and 18.7 s) each swell under an opening low-pass, crash across the stereo field, wash up with granular foam fizz and rising bubble pops, then recede. The distant bell strikes on frame 0 (the loop top). Only the mono surf rumble sits below 120 Hz. Verified with --loop.",
+  "mood": [
+    "calm",
+    "slow"
+  ],
+  "tempo": "slow"
+}
