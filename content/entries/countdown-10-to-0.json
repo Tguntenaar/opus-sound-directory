@@ -1,0 +1,91 @@
+{
+  "id": "countdown-10-to-0",
+  "slug": "countdown-10-to-0",
+  "title": "Countdown 10 → 0",
+  "category": "risers",
+  "tags": [
+    "11s",
+    "countdown",
+    "ticks",
+    "launch"
+  ],
+  "prompt": "An 11-second launch countdown in E minor at 60 BPM, with no speech. Ten clean sine pips land exactly on each second (frames 0, 30, ... 270), one per count from ten down to one. Each pip is a semitone higher than the last, climbing from E5 to C#6. A mono sub thump hits under every pip. The first three seconds are only pips, the thump and a dark low-passed E minor drone. From 3 s an eighth-note pulse of band-limited E minor stabs comes in, and its filter slowly opens. In the last three seconds (7 to 10 s) the pulse tightens to sixteenths. The pips get brighter and shorter, a tense F tone rubs against the drone, and a noise riser climbs. That build is cut with a 3 ms fade ending exactly on frame 300 (10.0 s). The launch hits there: a pitch-dropping low boom, a sharp ignition crack and a roaring, crackling engine-noise burst. These decay over the final second to silence. All content below 120 Hz (sub thumps, boom, rumble) is mono.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 1000110,
+  "timing": {
+    "fps": 30,
+    "durationSec": 11.0,
+    "samples": 528000,
+    "sampleRate": 48000,
+    "bpm": 60
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "10"
+    },
+    {
+      "frame": 30,
+      "label": "9"
+    },
+    {
+      "frame": 60,
+      "label": "8"
+    },
+    {
+      "frame": 90,
+      "label": "7"
+    },
+    {
+      "frame": 120,
+      "label": "6"
+    },
+    {
+      "frame": 150,
+      "label": "5"
+    },
+    {
+      "frame": 180,
+      "label": "4"
+    },
+    {
+      "frame": 210,
+      "label": "3"
+    },
+    {
+      "frame": 240,
+      "label": "2"
+    },
+    {
+      "frame": 270,
+      "label": "1"
+    },
+    {
+      "frame": 300,
+      "label": "launch"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.03,
+    "truePeak": -1.3,
+    "durationSec": 11.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/countdown-10-to-0/out.wav",
+    "mp3": "/assets/countdown-10-to-0/out.mp3",
+    "spectrogram": "/assets/countdown-10-to-0/spectrogram.png",
+    "code": "/assets/countdown-10-to-0/generate.py"
+  },
+  "notes": "Ten sine pips (E5 rising chromatically to C#6), each on its cue with a 0.5 ms attack over a mono sub thump; an E minor stab pulse enters at 3 s in eighths and tightens to sixteenths with a noise riser and an F/G rub from 7 s. The bed is side-chain ducked into every count, the build is cut with a 3 ms fade ending on frame 300, and a pitch-dropping boom, ignition crack and crackling engine roar launch there and decay to silence.",
+  "mood": [
+    "energetic",
+    "dark"
+  ],
+  "tempo": "medium"
+}
