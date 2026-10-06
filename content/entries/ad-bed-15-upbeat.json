@@ -8,34 +8,34 @@
     "15s",
     "128bpm"
   ],
-  "prompt": "Make a 15 s upbeat ad bed sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 720000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: bright plucks, four-on-the-floor kick, claps on 2 and 4, key E major, energetic but not harsh; hit on frame 0, tag at frame 420.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
-  "modelId": "local-synth",
-  "generatedAt": "2026-10-05",
-  "seed": 42,
+  "prompt": "A 15-second upbeat retail pulse in E major at 128 BPM, written to sit under a direct-to-consumer ad voiceover. It opens on a bright chord-stab hit at frame 0 (kick, crash and a full E major stab). It then settles into a four-on-the-floor groove: off-beat bass, syncopated chord plucks moving I-V-vi-IV, claps on 2 and 4, and shimmering hats. A filtered noise riser and a snare roll build through bar 5. The bar at 9.375 s (the \"about 10 s\" lift) adds a crash, a wide pad and a sparkling sixteenth-note arpeggio. The groove then drops out for half a beat, a reverse swell pulls in, and a clean button tag on the tonic lands exactly on frame 420 (14.0 s) and rings out to silence. Everything below 120 Hz is reserved for a mono kick and bass. The music bus is gently scooped around 2.5 kHz so a voice sits on top.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 128015,
   "timing": {
     "bpm": 128,
     "fps": 30,
-    "durationSec": 15,
+    "durationSec": 15.0,
     "samples": 720000,
     "sampleRate": 48000
   },
   "cues": [
     {
       "frame": 0,
-      "label": "logo hit"
+      "label": "opening stab hit"
     },
     {
       "frame": 420,
-      "label": "outro tag"
+      "label": "button tag"
     }
   ],
   "master": {
-    "targetLufs": -14,
+    "targetLufs": -14.0,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -21.5,
-    "truePeak": -1.7,
+    "lufs": -14.02,
+    "truePeak": -1.3,
     "durationSec": 15.0,
     "passedChecks": true
   },
@@ -45,13 +45,12 @@
     "spectrogram": "/assets/ad-bed-15-upbeat/spectrogram.png",
     "code": "/assets/ad-bed-15-upbeat/generate.py"
   },
-  "notes": "Runner-verified synthesis (numpy). Prompt describes creative intent; code is executable.",
+  "notes": "Kick and off-beat bass are the only content below 120 Hz (mono, side channel high-passed at 120 Hz); plucks, pad and arp are additive and band-limited (no aliasing), sidechain-pumped from the kick, and scooped -2.5 dB at 2.5 kHz to leave a voiceover pocket.\nArc: frame-0 tonic stab + crash, sparse filtered intro bar, full groove from bar 2 (I-V-vi-IV), SVF noise riser + snare roll through bar 5, lift on the bar-6 downbeat (9.375 s) with crash, octave-doubled bright plucks, wide pad and 16th arpeggio, then a half-beat drop-out with reverse swell and a V-I button tag exactly on frame 420.\nMastered with a 4x-oversampled look-ahead gain limiter (~2 dB GR, no clipping) iterated to -14 LUFS / -1.3 dBTP, TPDF-dithered to 16-bit.",
   "mood": [
     "upbeat",
     "happy",
     "energetic",
     "bright"
   ],
-  "tempo": "fast",
-  "targetModelId": "claude-opus-5-5"
+  "tempo": "fast"
 }
