@@ -20,7 +20,7 @@ from pathlib import Path
 import numpy as np
 from scipy import signal
 from scipy.io import wavfile
-from scipy.ndimage import minimum_filter1d
+from scipy.ndimage import minimum_filter1d, uniform_filter1d
 
 SAMPLE_RATE = 48000
 SEED = 503030
@@ -231,7 +231,7 @@ def soft_limiter(x: np.ndarray, ceiling_db: float, look_ms: float = 1.5, rel_ms:
     for n, h in enumerate(held.tolist()):
         prev = min(h, prev * rc + (1 - rc))
         g[n] = prev
-    g = np.convolve(g, np.ones(L + 1) / (L + 1), mode="same")
+    g = uniform_filter1d(g, size=L + 1, mode="nearest")  # edge-safe (no ramp at file start/end)
     return x * g[:, None]
 
 
