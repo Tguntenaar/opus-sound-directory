@@ -135,7 +135,8 @@ export default async function EntryPage({ params }: Props) {
       <section className="flex flex-col gap-2 text-sm text-zinc-500">
         <h2 className="text-lg font-medium text-zinc-100">Timing & cues</h2>
         <p>
-          {entry.timing.bpm} BPM · {entry.timing.fps} fps · seed {entry.seed}
+          {entry.timing.bpm != null && `${entry.timing.bpm} BPM · `}
+          {entry.timing.fps} fps · seed {entry.seed}
         </p>
         <ul className="list-inside list-disc text-zinc-400">
           {entry.cues.map((c) => (
