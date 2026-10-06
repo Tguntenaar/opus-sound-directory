@@ -5,32 +5,35 @@
   "category": "ambient",
   "tags": [
     "ambient",
-    "12s"
+    "12s",
+    "lofi",
+    "loop",
+    "75bpm"
   ],
-  "prompt": "Make a 12 s ambient bed sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 576000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: warm detuned pads, subtle vinyl-like noise, very slow movement; loop-friendly fade in at 0.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
-  "modelId": "local-synth",
-  "generatedAt": "2026-10-05",
-  "seed": 42,
+  "prompt": "A 12-second seamless lo-fi bed at 75 BPM: fifteen beats, laid out as five bars of a lazy, swung 3/4. A mellow FM electric-piano (bell-ish tine, soft bark, stereo tremolo and slow tape wow) comps rootless Ebmaj9 and Eb6/9, Fm9 for two bars, and a Bb13 turnaround that leans back into the top of the loop. Under it sit a round sine bass, dusty soft drums (a pillowy kick, a band-limited brushy snare on beat 3, low-passed swung hats) and a vinyl layer of hiss and soft crackle. The loop starts with a kick and chord strike on frame 0 and is rendered circularly: three identical cycles are synthesised, tails, reverb, wow and limiting run across them, and the middle cycle is kept, so the last sample flows straight back into the first with no fade. Only the mono kick and bass sit below 120 Hz.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 75012,
   "timing": {
     "bpm": 75,
     "fps": 30,
-    "durationSec": 12,
+    "durationSec": 12.0,
     "samples": 576000,
     "sampleRate": 48000
   },
   "cues": [
     {
       "frame": 0,
-      "label": "fade in"
+      "label": "loop top"
     }
   ],
   "master": {
-    "targetLufs": -14,
+    "targetLufs": -14.0,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -12.1,
-    "truePeak": -3.1,
+    "lufs": -14.02,
+    "truePeak": -1.3,
     "durationSec": 12.0,
     "passedChecks": true
   },
@@ -40,13 +43,10 @@
     "spectrogram": "/assets/ambient-bed-lofi/spectrogram.png",
     "code": "/assets/ambient-bed-lofi/generate.py"
   },
-  "notes": "Runner-verified synthesis (numpy). Prompt describes creative intent; code is executable.",
+  "notes": "Seamless loop (verified with --loop): three identical cycles rendered with event tails, reverb, tape wow, tremolo and a wrap-mode limiter running across them; the middle cycle is kept, with no end fades. FM electric piano on rootless Ebmaj9 / Eb6/9 / Fm9 / Fm9 / Bb13 in five swung 3/4 bars (15 beats = 12 s at 75 BPM), sine bass, pillowy kick, brushy band-limited snare, low-passed hats, vinyl hiss and soft crackle. A pickup kick and bass on the last 3-and lead back into the frame-0 downbeat.",
   "mood": [
-    "slow",
     "calm",
-    "sad",
-    "dark"
+    "slow"
   ],
-  "tempo": "slow",
-  "targetModelId": "claude-opus-5-5"
+  "tempo": "slow"
 }
