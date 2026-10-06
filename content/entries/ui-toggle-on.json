@@ -1,0 +1,50 @@
+{
+  "id": "ui-toggle-on",
+  "slug": "ui-toggle-on",
+  "title": "Toggle on",
+  "category": "ui-sounds",
+  "tags": [
+    "ui",
+    "0.4s",
+    "toggle",
+    "tactile"
+  ],
+  "prompt": "A 0.4-second tactile switch flipping ON, tuned around A. On frame 0 a small plastic lever clicks: a dry, short \"t-tk\" made of a contact tick and a latch snap 17 ms later, each a burst of band-passed grit over a few inharmonic plastic-housing modes, with a tiny mono thock of body underneath. Riding out of the click is a small, quick upward blip: a soft sine with a whisper of second harmonic that glides smoothly from A5 up to E6 in about 25 ms, holds for a moment and fades. It is a continuous glide, not a stepped beep. A very short, close room adds a hint of space. The top end rolls off above 9 kHz and nothing rings for long, so it stays neutral and satisfying on the hundredth flip. Everything is gone by about 0.3 s, and the last 60 ms fade to silence.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 20201,
+  "timing": {
+    "fps": 30,
+    "durationSec": 0.4,
+    "samples": 19200,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "switch"
+    }
+  ],
+  "master": {
+    "targetLufs": -17.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -17.02,
+    "truePeak": -1.3,
+    "durationSec": 0.4,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/ui-toggle-on/out.wav",
+    "mp3": "/assets/ui-toggle-on/out.mp3",
+    "spectrogram": "/assets/ui-toggle-on/spectrogram.png",
+    "code": "/assets/ui-toggle-on/generate.py"
+  },
+  "notes": "Plastic switch click on frame 0 (contact tick + latch snap 17 ms later: band-passed grit over inharmonic housing modes at 2.4/3.9/5.6 kHz, plus a mono 230->170 Hz body thock), then a soft sine blip gliding A5->E6 in ~25 ms with a little 2nd harmonic, fading by ~0.25 s. Very short 0.12 s close room, 9 kHz low-pass, side high-passed at 300 Hz. ~2 dB of true-peak limiting on the click only. 5 ms RMS arc: -11 click, -12 blip peak at 20 ms, -24 at 100 ms, -40 at 225 ms, silence from 0.3 s.",
+  "mood": [
+    "bright",
+    "happy"
+  ],
+  "tempo": "fast"
+}
