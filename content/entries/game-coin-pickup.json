@@ -1,0 +1,51 @@
+{
+  "id": "game-coin-pickup",
+  "slug": "game-coin-pickup",
+  "title": "Retro coin pickup",
+  "category": "ui-sounds",
+  "tags": [
+    "game",
+    "0.5s",
+    "chiptune",
+    "coin"
+  ],
+  "prompt": "A retro 8-bit coin pickup in E, instantly readable as \"collect\". A NES-style pulse channel plays a two-step blip: a short B5 on frame 0, then E6 a fourth higher four NES frames (67 ms) later. The E6 holds at full volume, then steps down the 4-bit volume ladder (16 linear levels, one step per 1/60 s frame, each step smoothed over 1 ms) until it is silent. The square wave is built additively from band-limited odd harmonics that taper off above 12 kHz, so it never aliases, and the note change glides over 2 ms so it steps without splatter. The output goes through the console's own gentle filter stage: two first-order high-passes (90 Hz and 440 Hz) and a 14 kHz low-pass. A second pulse channel provides the tiny echo, the way old games faked delay. It replays the same two notes six frames later at a third of the volume, with a 25 % duty and a slower decay, so it trails just past the main note and is nudged slightly right. A fainter third repeat comes six frames after that. The core is centred, has no low end at all, and fades to silence before 0.5 s.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 4404,
+  "timing": {
+    "fps": 30,
+    "durationSec": 0.5,
+    "samples": 24000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "coin"
+    }
+  ],
+  "master": {
+    "targetLufs": -17.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -17.0,
+    "truePeak": -8.87,
+    "durationSec": 0.5,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/game-coin-pickup/out.wav",
+    "mp3": "/assets/game-coin-pickup/out.mp3",
+    "spectrogram": "/assets/game-coin-pickup/spectrogram.png",
+    "code": "/assets/game-coin-pickup/generate.py"
+  },
+  "notes": "Two-step NES-style coin: a band-limited additive 50 % pulse (harmonics tapered 12-15 kHz, 2 ms note glide) plays B5 on frame 0, then E6 at 66.7 ms with a 4-bit, 60 Hz-clocked volume ladder (steps smoothed over 1 ms). The echo is a second 25 % pulse channel 6 frames behind at volume 5/15 with a slower decay (slightly right), plus a fainter third repeat. Console-style 90/440 Hz first-order high-passes and a 14 kHz low-pass, and no low end.",
+  "mood": [
+    "happy",
+    "bright",
+    "upbeat"
+  ],
+  "tempo": "fast"
+}
