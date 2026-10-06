@@ -5,32 +5,35 @@
   "category": "risers",
   "tags": [
     "riser",
-    "8s"
+    "8s",
+    "120bpm",
+    "shepard",
+    "cut"
   ],
-  "prompt": "Make a 8 s riser sound effect for video at 30 fps.\nOutput: one WAV, 48 kHz / 16-bit / stereo, exactly 384000 samples.\nPython + numpy/scipy only. Synthesise everything (no samples, no downloads). Fixed random seed.\nSound: rising filtered noise + ascending sine stack; max energy frame 210 then cut.\nMaster: \u221214 LUFS integrated, true peak \u2264 \u22121 dBTP.\nVerify length, loudness, peak with ffmpeg ebur128; render spectrogram; fix until checks pass.",
-  "modelId": "local-synth",
-  "generatedAt": "2026-10-05",
-  "seed": 42,
+  "prompt": "An 8-second tension riser in Bb at 120 BPM that climbs on three fronts at once and then stops dead. A Shepard-Risset glissando (octave-spaced sines on Bb under a raised-cosine spectral window, so it seems to rise forever) speeds up and brightens, and a second stack a fifth above (F) joins halfway. A band-pass noise sweep opens from 250 Hz to 9 kHz. A heartbeat-like low pulse on Bb1 accelerates smoothly from quarter notes to a roughly 18 Hz flutter, and a Bb/F drone tremolos in sync with it. At frame 210 (7.0 s) everything, reverb included, cuts to true silence through a 1.5 ms fade that ends on the cue sample. A quarter of a second later a single soft, low felt-mallet hit on Bb1 blooms in a small dark room and decays to silence. Below 120 Hz there is only the mono pulse and the hit.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 72100,
   "timing": {
     "bpm": 120,
     "fps": 30,
-    "durationSec": 8,
+    "durationSec": 8.0,
     "samples": 384000,
     "sampleRate": 48000
   },
   "cues": [
     {
       "frame": 210,
-      "label": "pre-drop swell"
+      "label": "cut to silence"
     }
   ],
   "master": {
-    "targetLufs": -14,
+    "targetLufs": -14.0,
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -9.6,
-    "truePeak": -1.1,
+    "lufs": -14.03,
+    "truePeak": -1.3,
     "durationSec": 8.0,
     "passedChecks": true
   },
@@ -40,11 +43,10 @@
     "spectrogram": "/assets/riser-tension-8s/spectrogram.png",
     "code": "/assets/riser-tension-8s/generate.py"
   },
-  "notes": "Runner-verified synthesis (numpy). Prompt describes creative intent; code is executable.",
+  "notes": "Shepard-Risset glissando on Bb (octave-spaced sines under a raised-cosine log-frequency window, plus an F stack from 3.4 s) accelerating and brightening, a TPT-SVF noise sweep 250 Hz-9 kHz, and a mono Bb1 heartbeat pulse accelerating exponentially from 2 Hz to 18 Hz with a pulse-locked Bb/F drone tremolo. Everything incl. reverb cuts to true silence via a 1.5 ms fade ending on frame 210; a soft felt-mallet Bb1 hit lands 250 ms later in a small dark room. Loudness arc -26 -> -7 LUFS (0.5 s windows), silence, hit at -22.",
   "mood": [
     "energetic",
     "dark"
   ],
-  "tempo": "medium",
-  "targetModelId": "claude-opus-5-5"
+  "tempo": "medium"
 }
