@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { getAllBlogPosts, getBlogPostBySlug } from "@/lib/blog";
 import { renderBlogBody } from "@/lib/blog-markdown";
-import { canonicalForPath } from "@/lib/site-metadata";
+import { blogPageAlternates } from "@/lib/site-metadata";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 import { blogPostingJsonLd, faqPageJsonLd } from "@/lib/structured-data";
 import { BlogArticleBody } from "@/components/blog-article-body";
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: post.title,
     description: post.description,
     keywords: post.keywords,
-    alternates: { canonical: canonicalForPath(`/blog/${post.slug}`) },
+    alternates: blogPageAlternates(`/blog/${post.slug}`),
     openGraph: {
       type: "article",
       title: post.title,

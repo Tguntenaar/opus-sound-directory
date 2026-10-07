@@ -20,6 +20,16 @@ export function canonicalForPath(path: string): string {
   return `${base}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
+/** Canonical + RSS discovery for `/blog` and `/blog/<slug>` pages. */
+export function blogPageAlternates(canonicalPath: string): Metadata["alternates"] {
+  return {
+    canonical: canonicalForPath(canonicalPath),
+    types: {
+      "application/rss+xml": canonicalForPath("/blog/rss.xml"),
+    },
+  };
+}
+
 export function rootSiteMetadata(): Metadata {
   const siteUrl = getSiteUrl();
   const googleVerification = process.env.GOOGLE_SITE_VERIFICATION?.trim();
