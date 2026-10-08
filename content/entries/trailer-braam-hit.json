@@ -1,0 +1,51 @@
+{
+  "id": "trailer-braam-hit",
+  "slug": "trailer-braam-hit",
+  "title": "Trailer braam",
+  "category": "cinematic",
+  "tags": [
+    "4s",
+    "braam",
+    "trailer",
+    "impact",
+    "c minor"
+  ],
+  "prompt": "A 4-second trailer braam in C minor, 192,000 samples, 30 fps. 0-0.5 s: a short reversed-noise \"suck\" rising into a 40 ms vacuum. Frame 15 (0.5 s): the braam hits, a stack on C1, C2, G2, C3, Eb3 with three detuned band-limited saws per note, a brass formant peak near 700 Hz, a resonant low-pass snapping open from 200 Hz to 3.5 kHz in 80 ms and slowly closing over 2.5 s, a -60 cent pitch scoop into the note, 30 Hz growl amplitude modulation with gentle waveshaping, a sub knock and a short noise crack on the attack. A dark 3 s hall tail ends in true silence by 3.95 s. Side channel high-passed at 250 Hz; mono below 120 Hz. Must NOT resemble the THX Deep Note or any registered sound mark: no long converging glissando from a random cluster, no spread D-major resolution; this is a hard hit, not a swell.\n\nTake angle 1 (faithful): implement the brief exactly as written.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-08",
+  "seed": 42,
+  "timing": {
+    "fps": 30,
+    "durationSec": 4.0,
+    "samples": 192000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 15,
+      "label": "braam hit"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.05,
+    "truePeak": -1.3,
+    "durationSec": 4.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/trailer-braam-hit/out.wav",
+    "mp3": "/assets/trailer-braam-hit/out.mp3",
+    "spectrogram": "/assets/trailer-braam-hit/spectrogram.png",
+    "code": "/assets/trailer-braam-hit/generate.py"
+  },
+  "notes": "A reversed-noise suck into 40 ms of true silence, then on frame 15 a C-minor braam (C1, C2, G2, C3, Eb3; three detuned band-limited saws per note) with a ~700 Hz brass formant, a filter snapping open 200 Hz → 3.5 kHz, a −60 cent scoop, 30 Hz growl, sub knock and noise crack.\nDark 3 s hall, silent by 3.95 s; side high-passed at 250 Hz, mono below 120 Hz. No converging glissando and no D-major resolution: a hard hit, not a sound-mark swell.\nTake 1 of 3 (faithful), picked as the most \"trailer\" of the three.",
+  "mood": [
+    "dark",
+    "energetic"
+  ],
+  "tempo": "slow"
+}
