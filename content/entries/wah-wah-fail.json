@@ -1,0 +1,51 @@
+{
+  "id": "wah-wah-fail",
+  "slug": "wah-wah-fail",
+  "title": "Wah-wah fail",
+  "category": "meme",
+  "tags": [
+    "meme",
+    "2.8s",
+    "fail",
+    "muted brass",
+    "comedy"
+  ],
+  "prompt": "A 2.8-second comedic \"wah-wah\" fail for the plan-goes-wrong beat, 134,400 samples, 30 fps, first note on frame 0. Muted-brass feel: band-limited additive saw with a slight pitch scoop into each note, a breathy noise onset, and a plunger-mute \"wah\": a resonant band-pass sweeping ~500 -> 1,400 -> 500 Hz on each note. The last note holds and droops ~40 cents with a widening vibrato as it fades to true silence by ~2.6 s. Small dry room, no reverb wash. Mono-ish, low end centred. ORIGINAL melody: do NOT use the stock four-note descending-semitone 'sad trombone' figure (e.g. Bb-A-Ab-G or any four equal falling semitone steps); write the contour given in the take angle.\n\nTake angle 1 (three-step droop): three notes: E4 (frame 0, short), C#4 (frame 12, short), then C4 (frame 26) held with a long downward bend of about a minor third over its last second, plunger wah opening and closing twice on the held note.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-08",
+  "seed": 42,
+  "timing": {
+    "fps": 30,
+    "durationSec": 2.8,
+    "samples": 134400,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "note 1"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -3.05,
+    "durationSec": 2.8,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/wah-wah-fail/out.wav",
+    "mp3": "/assets/wah-wah-fail/out.mp3",
+    "spectrogram": "/assets/wah-wah-fail/spectrogram.png",
+    "code": "/assets/wah-wah-fail/generate.py"
+  },
+  "notes": "Original three-step droop, not the stock four-semitone sad trombone: E4 (frame 0), C#4 (frame 12), then a held C4 (frame 26) that bends down a minor third to A3 with a widening vibrato, the plunger mute opening and closing twice.\nBand-limited additive saw with the plunger band-pass (500→1,400→500 Hz) applied per harmonic, a pitch scoop and breath noise on each note, small dry room, near mono; true silence by ~2.6 s.\nTake 1 of 3, picked as the clearest \"plan went wrong\" beat; synthesised brass may read a touch kazoo-ish.",
+  "mood": [
+    "sad",
+    "slow"
+  ],
+  "tempo": "slow"
+}
