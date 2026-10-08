@@ -1,0 +1,164 @@
+[
+  {
+    "script": "hero8/arcade-game-over/take-1.py",
+    "seconds": 1.0,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/arcade-game-over/take-1.wav\", \"samples\": 86400, \"lufs\": -14.000265553533398, \"true_peak_db\": -2.032447060652289}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -2.0 dBFS\n[out#0/null @ 0x781ec1c240] video:0KiB audio:338KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.80 bitrate=N/A speed= 167x elapsed=0:00:00.01    \n\n"
+  },
+  {
+    "script": "hero8/arcade-game-over/take-2.py",
+    "seconds": 1.02,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/arcade-game-over/take-2.wav\", \"samples\": 86400, \"lufs\": -14.000265454639832, \"true_peak_db\": -3.2113156683780124}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.6 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -3.2 dBFS\n[out#0/null @ 0x7bc30046c0] video:0KiB audio:338KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.80 bitrate=N/A speed= 185x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/arcade-game-over/take-3.py",
+    "seconds": 1.0,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/arcade-game-over/take-3.wav\", \"samples\": 86400, \"lufs\": -14.000265748791115, \"true_peak_db\": -2.578130482063009}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -2.6 dBFS\n[out#0/null @ 0x74b8c1c240] video:0KiB audio:338KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.80 bitrate=N/A speed= 169x elapsed=0:00:00.01    \n\n"
+  },
+  {
+    "script": "hero8/dialup-modem-56k/take-1.py",
+    "seconds": 1.22,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/dialup-modem-56k/take-1.wav\", \"samples\": 576000, \"lufs\": -14.000264360043083, \"true_peak_db\": -1.4753667543357025}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         5.0 LU\n    Threshold: -34.2 LUFS\n    LRA low:   -17.4 LUFS\n    LRA high:  -12.4 LUFS\n\n  True peak:\n    Peak:       -1.5 dBFS\n[out#0/null @ 0x7c96c20240] video:0KiB audio:2250KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:12.00 bitrate=N/A speed= 200x elapsed=0:00:00.06    \n\n"
+  },
+  {
+    "script": "hero8/dialup-modem-56k/take-2.py",
+    "seconds": 1.23,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/dialup-modem-56k/take-2.wav\", \"samples\": 576000, \"lufs\": -14.000265737504813, \"true_peak_db\": -5.82263084944525}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         5.7 LU\n    Threshold: -33.7 LUFS\n    LRA low:   -16.8 LUFS\n    LRA high:  -11.1 LUFS\n\n  True peak:\n    Peak:       -5.8 dBFS\n[out#0/null @ 0x7996c1c240] video:0KiB audio:2250KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:12.00 bitrate=N/A speed= 200x elapsed=0:00:00.06    \n\n"
+  },
+  {
+    "script": "hero8/dialup-modem-56k/take-3.py",
+    "seconds": 1.32,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/dialup-modem-56k/take-3.wav\", \"samples\": 576000, \"lufs\": -14.000265355099708, \"true_peak_db\": -4.05019400115067}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         5.7 LU\n    Threshold: -34.1 LUFS\n    LRA low:   -17.6 LUFS\n    LRA high:  -11.9 LUFS\n\n  True peak:\n    Peak:       -4.1 dBFS\n[out#0/null @ 0x76ccc20240] video:0KiB audio:2250KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:12.00 bitrate=N/A speed= 183x elapsed=0:00:00.06    \n\n"
+  },
+  {
+    "script": "hero8/endless-riser-shepard/take-1.py",
+    "seconds": 1.62,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/endless-riser-shepard/take-1.wav\", \"samples\": 576000, \"lufs\": -14.00026453108935, \"true_peak_db\": -5.692960227775541}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         0.1 LU\n    Threshold: -34.0 LUFS\n    LRA low:   -14.1 LUFS\n    LRA high:  -14.0 LUFS\n\n  True peak:\n    Peak:       -5.7 dBFS\n[out#0/null @ 0x77e2c20240] video:0KiB audio:2250KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:12.00 bitrate=N/A speed= 206x elapsed=0:00:00.05    \n\n"
+  },
+  {
+    "script": "hero8/endless-riser-shepard/take-2.py",
+    "seconds": 1.8,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/endless-riser-shepard/take-2.wav\", \"samples\": 576000, \"lufs\": -14.000264359698901, \"true_peak_db\": -6.3705535884215365}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         0.1 LU\n    Threshold: -34.0 LUFS\n    LRA low:   -14.0 LUFS\n    LRA high:  -14.0 LUFS\n\n  True peak:\n    Peak:       -6.4 dBFS\n[out#0/null @ 0x77ecc1c240] video:0KiB audio:2250KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:12.00 bitrate=N/A speed= 206x elapsed=0:00:00.05    \n\n"
+  },
+  {
+    "script": "hero8/endless-riser-shepard/take-3.py",
+    "seconds": 3.57,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/endless-riser-shepard/take-3.wav\", \"samples\": 576000, \"lufs\": -14.00026535017808, \"true_peak_db\": -5.589368150054201}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         0.1 LU\n    Threshold: -34.0 LUFS\n    LRA low:   -14.1 LUFS\n    LRA high:  -13.9 LUFS\n\n  True peak:\n    Peak:       -5.6 dBFS\n[out#0/null @ 0x7b0ac20240] video:0KiB audio:2250KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:12.00 bitrate=N/A speed= 203x elapsed=0:00:00.05    \n\n"
+  },
+  {
+    "script": "hero8/game-coin-pickup/take-1.py",
+    "seconds": 0.82,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/game-coin-pickup/take-1.wav\", \"samples\": 24000, \"lufs\": -17.000264021277022, \"true_peak_db\": -4.802120902489164}\nSummary:\n\n  Integrated loudness:\n    I:         -17.0 LUFS\n    Threshold: -27.0 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -4.8 dBFS\n[out#0/null @ 0x75dec1c240] video:0KiB audio:94KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:00.50 bitrate=N/A speed= 145x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/game-coin-pickup/take-2.py",
+    "seconds": 0.82,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/game-coin-pickup/take-2.wav\", \"samples\": 24000, \"lufs\": -17.00026394597666, \"true_peak_db\": -2.685968843523276}\nSummary:\n\n  Integrated loudness:\n    I:         -17.0 LUFS\n    Threshold: -27.0 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -2.7 dBFS\n[out#0/null @ 0x76930046c0] video:0KiB audio:94KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:00.50 bitrate=N/A speed= 141x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/game-coin-pickup/take-3.py",
+    "seconds": 0.81,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/game-coin-pickup/take-3.wav\", \"samples\": 24000, \"lufs\": -17.000262301416033, \"true_peak_db\": -5.8783171817450945}\nSummary:\n\n  Integrated loudness:\n    I:         -17.0 LUFS\n    Threshold: -27.0 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -5.9 dBFS\n[out#0/null @ 0x7a5d0046c0] video:0KiB audio:94KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:00.50 bitrate=N/A speed= 149x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/heavy-boom-meme/take-1.py",
+    "seconds": 0.89,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/heavy-boom-meme/take-1.wav\", \"samples\": 72000, \"lufs\": -14.000265014315271, \"true_peak_db\": -2.3794843822485627}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -27.7 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -2.4 dBFS\n[out#0/null @ 0x760b0046c0] video:0KiB audio:281KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.50 bitrate=N/A speed= 172x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/heavy-boom-meme/take-2.py",
+    "seconds": 1.02,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/heavy-boom-meme/take-2.wav\", \"samples\": 72000, \"lufs\": -14.00026476593998, \"true_peak_db\": -2.2115858098645234}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -27.8 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -2.2 dBFS\n[out#0/null @ 0x7cecc1c240] video:0KiB audio:281KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.50 bitrate=N/A speed= 178x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/heavy-boom-meme/take-3.py",
+    "seconds": 0.9,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/heavy-boom-meme/take-3.wav\", \"samples\": 72000, \"lufs\": -14.000264476207017, \"true_peak_db\": -1.5247173022527263}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -27.0 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -1.5 dBFS\n[out#0/null @ 0x7c710046c0] video:0KiB audio:281KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.50 bitrate=N/A speed= 180x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/trailer-braam-hit/take-1.py",
+    "seconds": 2.51,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/trailer-braam-hit/take-1.wav\", \"samples\": 192000, \"lufs\": -14.00026513106073, \"true_peak_db\": -2.3377252170152656}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -25.7 LUFS\n\n  Loudness range:\n    LRA:         5.3 LU\n    Threshold: -35.8 LUFS\n    LRA low:   -20.0 LUFS\n    LRA high:  -14.8 LUFS\n\n  True peak:\n    Peak:       -2.3 dBFS\n[out#0/null @ 0x74f0c1c240] video:0KiB audio:750KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:04.00 bitrate=N/A speed= 194x elapsed=0:00:00.02    \n\n"
+  },
+  {
+    "script": "hero8/trailer-braam-hit/take-2.py",
+    "seconds": 2.47,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/trailer-braam-hit/take-2.wav\", \"samples\": 192000, \"lufs\": -14.000266000796783, \"true_peak_db\": -1.2932545608171298}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -26.0 LUFS\n\n  Loudness range:\n    LRA:         3.6 LU\n    Threshold: -35.9 LUFS\n    LRA low:   -18.7 LUFS\n    LRA high:  -15.1 LUFS\n\n  True peak:\n    Peak:       -1.3 dBFS\n[out#0/null @ 0x7ace810240] video:0KiB audio:750KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:04.00 bitrate=N/A speed= 202x elapsed=0:00:00.01    \n\n"
+  },
+  {
+    "script": "hero8/trailer-braam-hit/take-3.py",
+    "seconds": 4.81,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/trailer-braam-hit/take-3.wav\", \"samples\": 192000, \"lufs\": -14.000266029470236, \"true_peak_db\": -1.9566951177753389}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.3 LUFS\n\n  Loudness range:\n    LRA:         3.3 LU\n    Threshold: -34.3 LUFS\n    LRA low:   -16.8 LUFS\n    LRA high:  -13.5 LUFS\n\n  True peak:\n    Peak:       -2.0 dBFS\n[out#0/null @ 0x78470046c0] video:0KiB audio:750KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:04.00 bitrate=N/A speed= 196x elapsed=0:00:00.02    \n\n"
+  },
+  {
+    "script": "hero8/ui-cozy-sprite/take-1.py",
+    "seconds": 0.96,
+    "returncode": 0,
+    "output": "}, {\"slot\": 3, \"name\": \"toggle-off\", \"start_sample\": 48000, \"end_sample\": 61920}, {\"slot\": 4, \"name\": \"bubble-pop\", \"start_sample\": 72000, \"end_sample\": 85920}, {\"slot\": 5, \"name\": \"success\", \"start_sample\": 96000, \"end_sample\": 109920}, {\"slot\": 6, \"name\": \"error\", \"start_sample\": 120000, \"end_sample\": 133920}, {\"slot\": 7, \"name\": \"notification\", \"start_sample\": 144000, \"end_sample\": 157920}, {\"slot\": 8, \"name\": \"delete-swoosh\", \"start_sample\": 168000, \"end_sample\": 181920}]\n{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/ui-cozy-sprite/take-1.wav\", \"samples\": 192000, \"lufs\": -17.00026872973267, \"true_peak_db\": -2.078802769422961}\nSummary:\n\n  Integrated loudness:\n    I:         -17.0 LUFS\n    Threshold: -27.6 LUFS\n\n  Loudness range:\n    LRA:         0.5 LU\n    Threshold: -37.6 LUFS\n    LRA low:   -17.9 LUFS\n    LRA high:  -17.4 LUFS\n\n  True peak:\n    Peak:       -2.1 dBFS\n[out#0/null @ 0x74acc1c240] video:0KiB audio:750KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:04.00 bitrate=N/A speed= 192x elapsed=0:00:00.02    \n\n"
+  },
+  {
+    "script": "hero8/ui-cozy-sprite/take-2.py",
+    "seconds": 0.96,
+    "returncode": 0,
+    "output": " {\"slot\": 3, \"name\": \"toggle-off\", \"start_sample\": 48000, \"end_sample\": 61920}, {\"slot\": 4, \"name\": \"bubble-pop\", \"start_sample\": 72000, \"end_sample\": 85920}, {\"slot\": 5, \"name\": \"success\", \"start_sample\": 96000, \"end_sample\": 109920}, {\"slot\": 6, \"name\": \"error\", \"start_sample\": 120000, \"end_sample\": 133920}, {\"slot\": 7, \"name\": \"notification\", \"start_sample\": 144000, \"end_sample\": 157920}, {\"slot\": 8, \"name\": \"delete-swoosh\", \"start_sample\": 168000, \"end_sample\": 181920}]\n{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/ui-cozy-sprite/take-2.wav\", \"samples\": 192000, \"lufs\": -17.000262710980753, \"true_peak_db\": -1.6067306218683177}\nSummary:\n\n  Integrated loudness:\n    I:         -17.0 LUFS\n    Threshold: -27.8 LUFS\n\n  Loudness range:\n    LRA:         0.4 LU\n    Threshold: -37.7 LUFS\n    LRA low:   -18.0 LUFS\n    LRA high:  -17.5 LUFS\n\n  True peak:\n    Peak:       -1.6 dBFS\n[out#0/null @ 0x75e8810240] video:0KiB audio:750KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:04.00 bitrate=N/A speed= 197x elapsed=0:00:00.02    \n\n"
+  },
+  {
+    "script": "hero8/ui-cozy-sprite/take-3.py",
+    "seconds": 0.96,
+    "returncode": 0,
+    "output": ", {\"slot\": 3, \"name\": \"toggle-off\", \"start_sample\": 48000, \"end_sample\": 61920}, {\"slot\": 4, \"name\": \"bubble-pop\", \"start_sample\": 72000, \"end_sample\": 85920}, {\"slot\": 5, \"name\": \"success\", \"start_sample\": 96000, \"end_sample\": 109920}, {\"slot\": 6, \"name\": \"error\", \"start_sample\": 120000, \"end_sample\": 133920}, {\"slot\": 7, \"name\": \"notification\", \"start_sample\": 144000, \"end_sample\": 157920}, {\"slot\": 8, \"name\": \"delete-swoosh\", \"start_sample\": 168000, \"end_sample\": 181920}]\n{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/ui-cozy-sprite/take-3.wav\", \"samples\": 192000, \"lufs\": -17.00026452393214, \"true_peak_db\": -2.6408637385279037}\nSummary:\n\n  Integrated loudness:\n    I:         -17.0 LUFS\n    Threshold: -27.6 LUFS\n\n  Loudness range:\n    LRA:         0.5 LU\n    Threshold: -37.6 LUFS\n    LRA low:   -17.9 LUFS\n    LRA high:  -17.4 LUFS\n\n  True peak:\n    Peak:       -2.7 dBFS\n[out#0/null @ 0x7cd90046c0] video:0KiB audio:750KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:04.00 bitrate=N/A speed= 202x elapsed=0:00:00.01    \n\n"
+  },
+  {
+    "script": "hero8/wah-wah-fail/take-1.py",
+    "seconds": 0.98,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/wah-wah-fail/take-1.wav\", \"samples\": 134400, \"lufs\": -14.000265573803606, \"true_peak_db\": -5.047386532565509}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.2 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -5.0 dBFS\n[out#0/null @ 0x752ec1c240] video:0KiB audio:525KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:02.80 bitrate=N/A speed= 198x elapsed=0:00:00.01    \n\n"
+  },
+  {
+    "script": "hero8/wah-wah-fail/take-2.py",
+    "seconds": 0.99,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/wah-wah-fail/take-2.wav\", \"samples\": 134400, \"lufs\": -14.000264921233539, \"true_peak_db\": -3.064384017094055}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.0 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -3.1 dBFS\n[out#0/null @ 0x7786c1c240] video:0KiB audio:525KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:02.80 bitrate=N/A speed= 190x elapsed=0:00:00.01    \n\n"
+  },
+  {
+    "script": "hero8/wah-wah-fail/take-3.py",
+    "seconds": 0.98,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/wah-wah-fail/take-3.wav\", \"samples\": 134400, \"lufs\": -14.000263856315087, \"true_peak_db\": -5.278983132726655}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -24.2 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -5.3 dBFS\n[out#0/null @ 0x785a80c240] video:0KiB audio:525KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:02.80 bitrate=N/A speed= 187x elapsed=0:00:00.01    \n\n"
+  },
+  {
+    "script": "hero8/whoosh-pass-by/take-1.py",
+    "seconds": 0.91,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/whoosh-pass-by/take-1.wav\", \"samples\": 57600, \"lufs\": -14.000264982348249, \"true_peak_db\": -2.6319289550233997}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -25.0 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -2.6 dBFS\n[out#0/null @ 0x789ec1c240] video:0KiB audio:225KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.20 bitrate=N/A speed= 174x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/whoosh-pass-by/take-2.py",
+    "seconds": 0.91,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/whoosh-pass-by/take-2.wav\", \"samples\": 57600, \"lufs\": -14.000269301238943, \"true_peak_db\": -2.1716459062202507}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -25.1 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -2.2 dBFS\n[out#0/null @ 0x7998c1c240] video:0KiB audio:225KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.20 bitrate=N/A speed= 175x elapsed=0:00:00.00    \n\n"
+  },
+  {
+    "script": "hero8/whoosh-pass-by/take-3.py",
+    "seconds": 0.95,
+    "returncode": 0,
+    "output": "{\"file\": \"/Users/thomasguntenaar/Developer/personal/hero8/whoosh-pass-by/take-3.wav\", \"samples\": 57600, \"lufs\": -14.000270008313109, \"true_peak_db\": -3.2093964316470314}\nSummary:\n\n  Integrated loudness:\n    I:         -14.0 LUFS\n    Threshold: -25.7 LUFS\n\n  Loudness range:\n    LRA:         0.0 LU\n    Threshold:   0.0 LUFS\n    LRA low:     0.0 LUFS\n    LRA high:    0.0 LUFS\n\n  True peak:\n    Peak:       -3.2 dBFS\n[out#0/null @ 0x79b4c20240] video:0KiB audio:225KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown\nsize=N/A time=00:00:01.20 bitrate=N/A speed= 177x elapsed=0:00:00.00    \n\n"
+  }
+]

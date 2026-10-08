@@ -1,0 +1,10 @@
+{
+  "generator": "OpenAI Codex",
+  "method": "Local procedural Python synthesis; no Anthropic API or audio samples",
+  "status": "awaiting-listening-selection",
+  "date": "2026-10-08",
+  "selected_takes": {},
+  "catalog_updated": false,
+  "takes": 27,
+  "sounds": 9
+}

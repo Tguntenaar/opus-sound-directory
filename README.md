@@ -174,6 +174,8 @@ curl -s -H "Authorization: Bearer $SPONSOR_ADMIN_TOKEN" https://your-worker.exam
 
 ## Adding an entry
 
+**Pending sound candidates:** [Codex Hero8 collection](provenance/codex-generations/README.md) contains 27 takes for nine sounds, with an offline listening page and measured QA. These await listening selection and are not part of the live catalog.
+
 1. Copy an existing file in `content/entries/*.json` and edit `id`, `slug`, `title`, `category`, `prompt`, `timing`, and `cues`.
 2. Run the runner (mock mode fills assets and metrics):
 
