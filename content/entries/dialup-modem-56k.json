@@ -1,0 +1,51 @@
+{
+  "id": "dialup-modem-56k",
+  "slug": "dialup-modem-56k",
+  "title": "56k modem handshake",
+  "category": "retro-tech",
+  "tags": [
+    "12s",
+    "dial-up",
+    "modem",
+    "retro",
+    "nostalgia",
+    "telephone"
+  ],
+  "prompt": "A 12-second 56k dial-up modem connection, 576,000 samples, 30 fps, everything band-limited to a 300-3,400 Hz telephone line with faint line hiss and slight 2nd-harmonic distortion. Timeline: 0-1.0 s off-hook dial tone (350 + 440 Hz); 1.0-2.4 s seven DTMF digits (standard row/column pairs, 100 ms tone / 100 ms gap); 2.6-3.6 s one ringback burst (440 + 480 Hz); 3.8-6.0 s answer tone 2,100 Hz with 180 degree phase reversals every 450 ms and 15 Hz amplitude modulation; 6.0-7.0 s V.21-style FSK bursts (1,650/1,850 Hz at 300 baud, random bits) answered by the other side; 7.0-9.0 s V.34-style line probing: a comb of tones every 150 Hz from 150 to 3,750 Hz with phase reversals (the \"bong\" chirps), then 9.0-12.0 s loud scrambled training noise in rhythmic bursts with a rising hiss, cutting to dead silence through a 3 ms fade ending exactly on frame 360 (\"connected\"). Mono-centred with slight width. Tame 2-3 kHz harshness.\n\nTake angle 2 (gritty handset): same protocol timeline, heard through an old handset: carbon-mic-style nonlinearity, a slightly narrower line (400-3,200 Hz), a little 60 Hz-free crackle, and extra emphasis on the V.34 probing 'bongs' and the warbling V.8 / V.90 negotiation between 7 and 9 s; the training section is grainier with stuttering bursts.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-08",
+  "seed": 43,
+  "timing": {
+    "fps": 30,
+    "durationSec": 12.0,
+    "samples": 576000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 360,
+      "label": "connected (cut to silence)"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -3.76,
+    "durationSec": 12.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/dialup-modem-56k/out.wav",
+    "mp3": "/assets/dialup-modem-56k/out.mp3",
+    "spectrogram": "/assets/dialup-modem-56k/spectrogram.png",
+    "code": "/assets/dialup-modem-56k/generate.py"
+  },
+  "notes": "Full dial-up timeline on a narrow 400–3200 Hz handset line: dial tone, seven decodable DTMF digits, ringback, a 2100 Hz answer tone with phase reversals every 450 ms, V.21-style FSK both ways, V.34-style 150 Hz-comb probing \"bongs\" with V.90 warbles, then grainy stuttering training noise.\nCarbon-mic nonlinearity and faint crackle; the training cuts to dead silence through a 3 ms fade ending exactly on frame 360.\nTake 2 of 3 (gritty handset), picked as the most \"remembered\" dial-up; the narrow line weakens the 350 Hz half of the dial tone by ~7 dB.",
+  "mood": [
+    "energetic"
+  ],
+  "tempo": "fast"
+}
