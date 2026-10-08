@@ -142,6 +142,82 @@ export const CATEGORY_SEO: Record<string, CategorySeoContent> = {
       },
     ],
   },
+  meme: {
+    h1: "Free Meme & Reaction Sound Effects",
+    intro:
+      "Original shock booms, wah-wah fails and comedic stings for reaction cuts and memes — synthesised from scratch in Python, never sampled from a viral clip.",
+    faq: [
+      {
+        q: "Are these the original meme sounds?",
+        a: "No. Each one is an original synthesis written as code, built to feel familiar without copying any existing recording.",
+      },
+      {
+        q: "Can I use them in YouTube, TikTok or Reels videos?",
+        a: "Yes. Sounds are CC0 (public domain), so you can use them commercially without attribution.",
+      },
+      {
+        q: "How do I make my own variation?",
+        a: "Copy the prompt and code on any entry and ask Claude to change the pitch, length or texture.",
+      },
+    ],
+  },
+  gaming: {
+    h1: "Free Retro Game & Arcade Sound Effects",
+    intro:
+      "Original chiptune jingles and arcade effects built from band-limited oscillators on a 60 Hz frame clock — no game's melody copied, all royalty-free.",
+    faq: [
+      {
+        q: "Are these copied from classic games?",
+        a: "No. Every contour is original; the code only borrows the style of early sound chips.",
+      },
+      {
+        q: "Will they alias like cheap chiptune plugins?",
+        a: "No. Oscillators are band-limited (additive), so there are no aliasing artefacts.",
+      },
+      {
+        q: "Can I use them in my game?",
+        a: "Yes. They are CC0: commercial use, no attribution needed.",
+      },
+    ],
+  },
+  cinematic: {
+    h1: "Free Cinematic Braams & Trailer Hits",
+    intro:
+      "Trailer-style braams and heavy impacts with sub, crack and dark hall tails — frame-locked hits you can drop on a cut.",
+    faq: [
+      {
+        q: "Does the braam copy any famous sound mark?",
+        a: "No. It is a hard original hit — no converging glissando and no resolution modelled on a registered sound mark.",
+      },
+      {
+        q: "Where does the hit land?",
+        a: "Each entry lists the cue frame at 30 fps; the hit lands within 5 ms of it.",
+      },
+      {
+        q: "Are they royalty-free?",
+        a: "Yes — CC0 synthesised audio with no attribution required.",
+      },
+    ],
+  },
+  "retro-tech": {
+    h1: "Free Retro Tech Sounds: Dial-Up Modem & More",
+    intro:
+      "Nostalgic machine sounds rebuilt from the protocols up — dial tones, DTMF and a full 56k modem handshake, all synthesised in code.",
+    faq: [
+      {
+        q: "Is the modem sound a recording?",
+        a: "No. It is synthesised from the real signalling: dial tone, DTMF, answer tone with phase reversals, FSK, line probing and training.",
+      },
+      {
+        q: "Can I use it commercially?",
+        a: "Yes. Sounds are CC0 (public domain).",
+      },
+      {
+        q: "Why does it sound like a phone line?",
+        a: "Everything is band-limited to a 300–3,400 Hz telephone line with line hiss, as the original was.",
+      },
+    ],
+  },
 };
 
 export function isValidCategorySlug(slug: string): boolean {

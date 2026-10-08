@@ -30,6 +30,22 @@ export const CATEGORIES: Record<
     label: "Ambient beds",
     description: "Background textures and loop-friendly pads.",
   },
+  meme: {
+    label: "Meme & reaction",
+    description: "Booms, fails and comedic stings for reaction edits.",
+  },
+  gaming: {
+    label: "Game sounds",
+    description: "Arcade, chiptune and game-feel effects.",
+  },
+  cinematic: {
+    label: "Cinematic hits",
+    description: "Trailer braams, booms and big-screen impacts.",
+  },
+  "retro-tech": {
+    label: "Retro tech",
+    description: "Nostalgic machine sounds: modems, dial tones and old hardware.",
+  },
 };
 
 export const CATEGORY_ORDER = [
@@ -40,4 +56,8 @@ export const CATEGORY_ORDER = [
   "ui-sounds",
   "logo-stings",
   "ambient",
+  "meme",
+  "gaming",
+  "cinematic",
+  "retro-tech",
 ] as const;
