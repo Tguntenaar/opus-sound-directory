@@ -1,0 +1,81 @@
+{
+  "id": "ui-cozy-sprite",
+  "slug": "ui-cozy-sprite",
+  "title": "Cozy UI kit (8-sound sprite)",
+  "category": "ui-sounds",
+  "tags": [
+    "ui",
+    "4s",
+    "sprite",
+    "kit",
+    "marimba",
+    "kalimba"
+  ],
+  "prompt": "A 4.0-second UI sound sprite, 192,000 samples, eight sounds each starting exactly on frames 0, 15, 30, 45, 60, 75, 90, 105 (every 0.5 s) and each fully silent before the next slot, so each can be sliced: 1 tap, 2 toggle-on, 3 toggle-off, 4 bubble pop, 5 success, 6 error, 7 notification, 8 delete swoosh. Cozy, rounded and bubbly; all pitched material in F major pentatonic so the set feels like one product. Each sound <= 300 ms: soft bodies with a 1-2 ms transient, gentle pitch glides (up for positive actions, down for toggle-off and delete), a felt-like low-passed error (two notes falling a minor third), and a pop built from a fast-rising resonant band-pass blip. Nothing above 9 kHz, nothing harsh, pleasant on the hundredth repeat; low end mono. Roughly equal perceived loudness per slot. Also print a JSON cue map (slot, name, start sample, end sample) to stdout.\n\nTake angle 2 (wooden mallets): build the pitched sounds from modal mallet synthesis (marimba/kalimba-like bar modes, e.g. 1 : 3.99 : 9.83 and 1 : 2.76 : 5.40 with fast high-mode decay), soft felt attacks, a tiny wooden 'tock' for tap, still F major pentatonic and cozy.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-08",
+  "seed": 43,
+  "timing": {
+    "fps": 30,
+    "durationSec": 4.0,
+    "samples": 192000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "1 tap"
+    },
+    {
+      "frame": 15,
+      "label": "2 toggle-on"
+    },
+    {
+      "frame": 30,
+      "label": "3 toggle-off"
+    },
+    {
+      "frame": 45,
+      "label": "4 bubble pop"
+    },
+    {
+      "frame": 60,
+      "label": "5 success"
+    },
+    {
+      "frame": 75,
+      "label": "6 error"
+    },
+    {
+      "frame": 90,
+      "label": "7 notification"
+    },
+    {
+      "frame": 105,
+      "label": "8 delete swoosh"
+    }
+  ],
+  "master": {
+    "targetLufs": -17.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -17.0,
+    "truePeak": -2.13,
+    "durationSec": 4.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/ui-cozy-sprite/out.wav",
+    "mp3": "/assets/ui-cozy-sprite/out.mp3",
+    "spectrogram": "/assets/ui-cozy-sprite/spectrogram.png",
+    "code": "/assets/ui-cozy-sprite/generate.py"
+  },
+  "notes": "Eight UI sounds, one every 0.5 s (frames 0–105), each fully silent before the next slot so the file can be sliced; the script prints a JSON cue map (slot, name, start/end sample).\nModal mallet synthesis in F major pentatonic: marimba bars (1 : 3.99 : 9.83), kalimba tines (1 : 2.76 : 5.40) for the notification, a felt F4→D4 error and a falling marimba roll for delete; nothing above 9 kHz, mono low end, slots balanced on 400 ms momentary loudness.\nTake 2 of 3 (wooden mallets), picked as the coziest, most coherent set; longer bar rings are damped by the ~295 ms slot fade.",
+  "mood": [
+    "calm",
+    "happy",
+    "bright"
+  ],
+  "tempo": "fast"
+}
