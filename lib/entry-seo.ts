@@ -12,6 +12,10 @@ const CATEGORY_NOUN: Record<string, string> = {
   risers: "Riser Sound Effect",
   "chaos-calm": "Transition Bed",
   ambient: "Ambient Bed",
+  meme: "Meme Sound Effect",
+  gaming: "Game Sound Effect",
+  cinematic: "Cinematic Sound Effect",
+  "retro-tech": "Retro Tech Sound Effect",
 };
 
 const USE_CASE: Record<string, string> = {
@@ -22,6 +26,10 @@ const USE_CASE: Record<string, string> = {
   risers: "hooks and reveal moments",
   "chaos-calm": "story arc edits",
   ambient: "underscoring and B-roll",
+  meme: "reaction edits and comedy beats",
+  gaming: "games, streams and gaming edits",
+  cinematic: "trailers and big reveals",
+  "retro-tech": "nostalgia edits and throwback intros",
 };
 
 export function categoryNoun(category: string): string {
