@@ -1,0 +1,52 @@
+{
+  "id": "endless-riser-shepard",
+  "slug": "endless-riser-shepard",
+  "title": "Endless riser (Shepard + Risset)",
+  "category": "risers",
+  "tags": [
+    "12s",
+    "loop",
+    "shepard tone",
+    "risset rhythm",
+    "tension",
+    "strings"
+  ],
+  "prompt": "A 12-second seamless endless riser, 576,000 samples, loopable sample-for-sample. (1) A Shepard-Risset glissando: ten octave-spaced partials under a raised-cosine log-frequency window centred near 440 Hz, gliding up exactly two octaves in 12 s, so at the loop point the partial set maps onto itself; integrate phase so there is no discontinuity. (2) A Risset rhythm: a low felt-kick pulse in two tempo layers an octave apart that speeds up continuously while the faster layer fades in and the slower one fades out, so it seems to accelerate forever and also loops. (3) A soft ticking clock (band-passed clicks) locked to the faster pulse layer. Render circularly (three cycles, keep the middle) so reverb and limiting wrap. Dark-to-bright constant tension, no climax. Mono below 120 Hz. The last sample must join the first sample seamlessly (no click when out.wav + out.wav are concatenated); do NOT fade in or out.\n\nTake angle 2 (dark orchestral): each Shepard partial is a soft band-limited saw/string-like tone (a few harmonics, slow vibrato, gentle chorus) through a warm low-pass, so it sounds like an endlessly rising string section; Risset rhythm on a low tom-like pulse plus a quiet pulsing sub; no clock - use a muted hi-hat tick instead.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-08",
+  "seed": 43,
+  "timing": {
+    "fps": 30,
+    "durationSec": 12.0,
+    "samples": 576000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "loop start"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -2.28,
+    "durationSec": 12.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/endless-riser-shepard/out.wav",
+    "mp3": "/assets/endless-riser-shepard/out.mp3",
+    "spectrogram": "/assets/endless-riser-shepard/spectrogram.png",
+    "code": "/assets/endless-riser-shepard/generate.py"
+  },
+  "notes": "Seamless 12 s loop: a Shepard–Risset glissando of soft band-limited string-like partials rises two octaves under a raised-cosine window, so the partial set maps onto itself at the seam, over a Risset-rhythm tom pulse, a swelling sub and a muted hi-hat tick.\nRendered as three identical cycles keeping the middle one, with a wrap-around hall and limiter, no fades; seam step 0.017 (below the in-file p99.9 step). The Risset fade runs the standard way (too-fast layer out, half-tempo layer in) so it can loop.\nTake 2 of 3 (dark orchestral), picked as the most cinematic; the pulse may sit a little loud against the riser.",
+  "mood": [
+    "dark",
+    "energetic"
+  ],
+  "tempo": "medium"
+}
