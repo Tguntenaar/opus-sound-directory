@@ -1,0 +1,17 @@
+{"file": "/Users/thomasguntenaar/Developer/personal/hero8/whoosh-pass-by/take-1.wav", "samples": 57600, "lufs": -14.000264982348249, "true_peak_db": -2.6319289550233997}
+Summary:
+
+  Integrated loudness:
+    I:         -14.0 LUFS
+    Threshold: -25.0 LUFS
+
+  Loudness range:
+    LRA:         0.0 LU
+    Threshold:   0.0 LUFS
+    LRA low:     0.0 LUFS
+    LRA high:    0.0 LUFS
+
+  True peak:
+    Peak:       -2.6 dBFS
+[out#0/null @ 0x789ec1c240] video:0KiB audio:225KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:00:01.20 bitrate=N/A speed= 174x elapsed=0:00:00.00

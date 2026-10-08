@@ -1,0 +1,17 @@
+{"file": "/Users/thomasguntenaar/Developer/personal/hero8/trailer-braam-hit/take-2.wav", "samples": 192000, "lufs": -14.000266000796783, "true_peak_db": -1.2932545608171298}
+Summary:
+
+  Integrated loudness:
+    I:         -14.0 LUFS
+    Threshold: -26.0 LUFS
+
+  Loudness range:
+    LRA:         3.6 LU
+    Threshold: -35.9 LUFS
+    LRA low:   -18.7 LUFS
+    LRA high:  -15.1 LUFS
+
+  True peak:
+    Peak:       -1.3 dBFS
+[out#0/null @ 0x7ace810240] video:0KiB audio:750KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:00:04.00 bitrate=N/A speed= 202x elapsed=0:00:00.01

@@ -1,0 +1,17 @@
+{"file": "/Users/thomasguntenaar/Developer/personal/hero8/dialup-modem-56k/take-3.wav", "samples": 576000, "lufs": -14.000265355099708, "true_peak_db": -4.05019400115067}
+Summary:
+
+  Integrated loudness:
+    I:         -14.0 LUFS
+    Threshold: -24.0 LUFS
+
+  Loudness range:
+    LRA:         5.7 LU
+    Threshold: -34.1 LUFS
+    LRA low:   -17.6 LUFS
+    LRA high:  -11.9 LUFS
+
+  True peak:
+    Peak:       -4.1 dBFS
+[out#0/null @ 0x76ccc20240] video:0KiB audio:2250KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:00:12.00 bitrate=N/A speed= 183x elapsed=0:00:00.06

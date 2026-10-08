@@ -1,0 +1,17 @@
+{"file": "/Users/thomasguntenaar/Developer/personal/hero8/endless-riser-shepard/take-2.wav", "samples": 576000, "lufs": -14.000264359698901, "true_peak_db": -6.3705535884215365}
+Summary:
+
+  Integrated loudness:
+    I:         -14.0 LUFS
+    Threshold: -24.0 LUFS
+
+  Loudness range:
+    LRA:         0.1 LU
+    Threshold: -34.0 LUFS
+    LRA low:   -14.0 LUFS
+    LRA high:  -14.0 LUFS
+
+  True peak:
+    Peak:       -6.4 dBFS
+[out#0/null @ 0x77ecc1c240] video:0KiB audio:2250KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:00:12.00 bitrate=N/A speed= 206x elapsed=0:00:00.05

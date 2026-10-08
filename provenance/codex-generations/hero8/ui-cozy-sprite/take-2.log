@@ -1,0 +1,18 @@
+[{"slot": 1, "name": "tap", "start_sample": 0, "end_sample": 13920}, {"slot": 2, "name": "toggle-on", "start_sample": 24000, "end_sample": 37920}, {"slot": 3, "name": "toggle-off", "start_sample": 48000, "end_sample": 61920}, {"slot": 4, "name": "bubble-pop", "start_sample": 72000, "end_sample": 85920}, {"slot": 5, "name": "success", "start_sample": 96000, "end_sample": 109920}, {"slot": 6, "name": "error", "start_sample": 120000, "end_sample": 133920}, {"slot": 7, "name": "notification", "start_sample": 144000, "end_sample": 157920}, {"slot": 8, "name": "delete-swoosh", "start_sample": 168000, "end_sample": 181920}]
+{"file": "/Users/thomasguntenaar/Developer/personal/hero8/ui-cozy-sprite/take-2.wav", "samples": 192000, "lufs": -17.000262710980753, "true_peak_db": -1.6067306218683177}
+Summary:
+
+  Integrated loudness:
+    I:         -17.0 LUFS
+    Threshold: -27.8 LUFS
+
+  Loudness range:
+    LRA:         0.4 LU
+    Threshold: -37.7 LUFS
+    LRA low:   -18.0 LUFS
+    LRA high:  -17.5 LUFS
+
+  True peak:
+    Peak:       -1.6 dBFS
+[out#0/null @ 0x75e8810240] video:0KiB audio:750KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:00:04.00 bitrate=N/A speed= 197x elapsed=0:00:00.02

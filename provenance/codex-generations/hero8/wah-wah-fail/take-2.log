@@ -1,0 +1,17 @@
+{"file": "/Users/thomasguntenaar/Developer/personal/hero8/wah-wah-fail/take-2.wav", "samples": 134400, "lufs": -14.000264921233539, "true_peak_db": -3.064384017094055}
+Summary:
+
+  Integrated loudness:
+    I:         -14.0 LUFS
+    Threshold: -24.0 LUFS
+
+  Loudness range:
+    LRA:         0.0 LU
+    Threshold:   0.0 LUFS
+    LRA low:     0.0 LUFS
+    LRA high:    0.0 LUFS
+
+  True peak:
+    Peak:       -3.1 dBFS
+[out#0/null @ 0x7786c1c240] video:0KiB audio:525KiB subtitle:0KiB other streams:0KiB global headers:0KiB muxing overhead: unknown
+size=N/A time=00:00:02.80 bitrate=N/A speed= 190x elapsed=0:00:00.01

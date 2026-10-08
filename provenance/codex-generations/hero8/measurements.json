@@ -1,0 +1,254 @@
+[
+  {
+    "slug": "heavy-boom-meme",
+    "take": 1,
+    "duration": 1.5,
+    "samples": 72000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -2.379,
+    "sample_peak_dbfs": -2.385
+  },
+  {
+    "slug": "heavy-boom-meme",
+    "take": 2,
+    "duration": 1.5,
+    "samples": 72000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -2.212,
+    "sample_peak_dbfs": -2.217
+  },
+  {
+    "slug": "heavy-boom-meme",
+    "take": 3,
+    "duration": 1.5,
+    "samples": 72000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -1.525,
+    "sample_peak_dbfs": -1.53
+  },
+  {
+    "slug": "whoosh-pass-by",
+    "take": 1,
+    "duration": 1.2,
+    "samples": 57600,
+    "lufs": -14.0,
+    "true_peak_dbtp": -2.632,
+    "sample_peak_dbfs": -2.712
+  },
+  {
+    "slug": "whoosh-pass-by",
+    "take": 2,
+    "duration": 1.2,
+    "samples": 57600,
+    "lufs": -14.0,
+    "true_peak_dbtp": -2.172,
+    "sample_peak_dbfs": -2.177
+  },
+  {
+    "slug": "whoosh-pass-by",
+    "take": 3,
+    "duration": 1.2,
+    "samples": 57600,
+    "lufs": -14.0,
+    "true_peak_dbtp": -3.209,
+    "sample_peak_dbfs": -3.215
+  },
+  {
+    "slug": "ui-cozy-sprite",
+    "take": 1,
+    "duration": 4.0,
+    "samples": 192000,
+    "lufs": -17.0,
+    "true_peak_dbtp": -2.079,
+    "sample_peak_dbfs": -2.092
+  },
+  {
+    "slug": "ui-cozy-sprite",
+    "take": 2,
+    "duration": 4.0,
+    "samples": 192000,
+    "lufs": -17.0,
+    "true_peak_dbtp": -1.607,
+    "sample_peak_dbfs": -1.661
+  },
+  {
+    "slug": "ui-cozy-sprite",
+    "take": 3,
+    "duration": 4.0,
+    "samples": 192000,
+    "lufs": -17.0,
+    "true_peak_dbtp": -2.641,
+    "sample_peak_dbfs": -2.66
+  },
+  {
+    "slug": "endless-riser-shepard",
+    "take": 1,
+    "duration": 12.0,
+    "samples": 576000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -5.693,
+    "sample_peak_dbfs": -5.698,
+    "loop_seam_step": 0.01226806640625,
+    "step_99_9_percentile": 0.03521728515625,
+    "loop_seam_second_difference": 0.0015869140625
+  },
+  {
+    "slug": "endless-riser-shepard",
+    "take": 2,
+    "duration": 12.0,
+    "samples": 576000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -6.371,
+    "sample_peak_dbfs": -6.376,
+    "loop_seam_step": 0.016845703125,
+    "step_99_9_percentile": 0.05145272827148517,
+    "loop_seam_second_difference": 0.005950927734375
+  },
+  {
+    "slug": "endless-riser-shepard",
+    "take": 3,
+    "duration": 12.0,
+    "samples": 576000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -5.589,
+    "sample_peak_dbfs": -5.595,
+    "loop_seam_step": 0.015045166015625,
+    "step_99_9_percentile": 0.05142221069336017,
+    "loop_seam_second_difference": 0.00244140625
+  },
+  {
+    "slug": "dialup-modem-56k",
+    "take": 1,
+    "duration": 12.0,
+    "samples": 576000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -1.475,
+    "sample_peak_dbfs": -1.556
+  },
+  {
+    "slug": "dialup-modem-56k",
+    "take": 2,
+    "duration": 12.0,
+    "samples": 576000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -5.823,
+    "sample_peak_dbfs": -5.854
+  },
+  {
+    "slug": "dialup-modem-56k",
+    "take": 3,
+    "duration": 12.0,
+    "samples": 576000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -4.05,
+    "sample_peak_dbfs": -4.056
+  },
+  {
+    "slug": "wah-wah-fail",
+    "take": 1,
+    "duration": 2.8,
+    "samples": 134400,
+    "lufs": -14.0,
+    "true_peak_dbtp": -5.047,
+    "sample_peak_dbfs": -5.057
+  },
+  {
+    "slug": "wah-wah-fail",
+    "take": 2,
+    "duration": 2.8,
+    "samples": 134400,
+    "lufs": -14.0,
+    "true_peak_dbtp": -3.064,
+    "sample_peak_dbfs": -3.07
+  },
+  {
+    "slug": "wah-wah-fail",
+    "take": 3,
+    "duration": 2.8,
+    "samples": 134400,
+    "lufs": -14.0,
+    "true_peak_dbtp": -5.279,
+    "sample_peak_dbfs": -5.285
+  },
+  {
+    "slug": "arcade-game-over",
+    "take": 1,
+    "duration": 1.8,
+    "samples": 86400,
+    "lufs": -14.0,
+    "true_peak_dbtp": -2.032,
+    "sample_peak_dbfs": -2.038
+  },
+  {
+    "slug": "arcade-game-over",
+    "take": 2,
+    "duration": 1.8,
+    "samples": 86400,
+    "lufs": -14.0,
+    "true_peak_dbtp": -3.211,
+    "sample_peak_dbfs": -3.217
+  },
+  {
+    "slug": "arcade-game-over",
+    "take": 3,
+    "duration": 1.8,
+    "samples": 86400,
+    "lufs": -14.0,
+    "true_peak_dbtp": -2.578,
+    "sample_peak_dbfs": -2.584
+  },
+  {
+    "slug": "trailer-braam-hit",
+    "take": 1,
+    "duration": 4.0,
+    "samples": 192000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -2.338,
+    "sample_peak_dbfs": -2.343
+  },
+  {
+    "slug": "trailer-braam-hit",
+    "take": 2,
+    "duration": 4.0,
+    "samples": 192000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -1.293,
+    "sample_peak_dbfs": -1.299
+  },
+  {
+    "slug": "trailer-braam-hit",
+    "take": 3,
+    "duration": 4.0,
+    "samples": 192000,
+    "lufs": -14.0,
+    "true_peak_dbtp": -1.957,
+    "sample_peak_dbfs": -1.962
+  },
+  {
+    "slug": "game-coin-pickup",
+    "take": 1,
+    "duration": 0.5,
+    "samples": 24000,
+    "lufs": -17.0,
+    "true_peak_dbtp": -4.802,
+    "sample_peak_dbfs": -4.944
+  },
+  {
+    "slug": "game-coin-pickup",
+    "take": 2,
+    "duration": 0.5,
+    "samples": 24000,
+    "lufs": -17.0,
+    "true_peak_dbtp": -2.686,
+    "sample_peak_dbfs": -2.752
+  },
+  {
+    "slug": "game-coin-pickup",
+    "take": 3,
+    "duration": 0.5,
+    "samples": 24000,
+    "lufs": -17.0,
+    "true_peak_dbtp": -5.878,
+    "sample_peak_dbfs": -5.884
+  }
+]
