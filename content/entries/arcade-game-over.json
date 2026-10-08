@@ -1,0 +1,50 @@
+{
+  "id": "arcade-game-over",
+  "slug": "arcade-game-over",
+  "title": "Arcade game over",
+  "category": "gaming",
+  "tags": [
+    "game",
+    "1.8s",
+    "chiptune",
+    "game over",
+    "arcade"
+  ],
+  "prompt": "A 1.8-second arcade \"game over\", 86,400 samples, 30 fps, in the style of an early 1980s arcade sound chip but with an ORIGINAL contour (do not reproduce any existing game's death or game-over melody, e.g. Pac-Man, Mario, Galaga, Donkey Kong, Tetris). Band-limited oscillators (no aliasing), volume steps on a 60 Hz frame clock (16 levels, each step smoothed over 1 ms), console-style first-order high-pass at 90 Hz and low-pass at 12 kHz. No reverb. Silent by the end.\n\nTake angle 2 (two-channel chip jingle): an original short descending minor-mode phrase on a 50 % pulse lead (e.g. G5, Eb5, C5, B4, then a held G4 with vibrato), a 12.5 % pulse harmony a sixth below, a triangle bass (C3, G2, C2) and a final noise-channel 'thud'; quantised to 1/60 s frames, slightly sad, clearly 'you lost'.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-08",
+  "seed": 43,
+  "timing": {
+    "fps": 30,
+    "durationSec": 1.8,
+    "samples": 86400,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "start"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -2.67,
+    "durationSec": 1.8,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/arcade-game-over/out.wav",
+    "mp3": "/assets/arcade-game-over/out.mp3",
+    "spectrogram": "/assets/arcade-game-over/spectrogram.png",
+    "code": "/assets/arcade-game-over/generate.py"
+  },
+  "notes": "Original C-minor chip jingle (not any game's melody): a 50 % pulse lead plays G5, Eb5, C5, B4 and a held G4 with frame-stepped vibrato, a 12.5 % pulse harmonises a sixth below, a triangle bass walks C3, G2, C2, and a soft noise-channel thud closes it.\nAdditive band-limited oscillators (no aliasing), volume on a 60 Hz frame clock with 16 levels smoothed over 1 ms, console-style 90 Hz high-pass and 12 kHz low-pass, no reverb.\nTake 2 of 3 (two-channel chip jingle), picked as the most original and clearly \"you lost\".",
+  "mood": [
+    "sad"
+  ],
+  "tempo": "medium"
+}
