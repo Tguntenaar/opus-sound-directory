@@ -1,0 +1,51 @@
+{
+  "id": "heavy-boom-meme",
+  "slug": "heavy-boom-meme",
+  "title": "Shock boom",
+  "category": "drops",
+  "tags": [
+    "meme",
+    "1.5s",
+    "boom",
+    "reaction",
+    "impact"
+  ],
+  "prompt": "A 1.5-second heavy \"shock\" boom for reaction cuts and zoom-ins: exactly 72,000 samples at 48 kHz stereo, 30 fps, and the hit lands on sample 0 (frame 0) with no pre-roll. Layers: (1) a mono sub thump, a sine falling from ~110 Hz to ~42 Hz in 120 ms, soft tanh drive and an 84 Hz second harmonic so it still reads on phone speakers; (2) a dull metallic body of six inharmonic modes (~95 Hz x 1, 1.59, 2.14, 2.65, 3.17, 3.89) decaying in 0.3-0.6 s; (3) a 4 ms noise click on the attack; (4) a wide, dark hall tail (~1.1 s, low-passed at 3 kHz) that gives the \"boom... oom\" echo. Loudest in the first 80 ms; true silence by 1.45 s. Only the sub sits below 120 Hz, mono. Original sound, not modelled on any specific recording (never sample, trace or recreate any existing meme recording).\n\nTake angle 1 (faithful): implement the brief exactly as written; polish the balance between sub, metal body and hall.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-08",
+  "seed": 42,
+  "timing": {
+    "fps": 30,
+    "durationSec": 1.5,
+    "samples": 72000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "boom"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.02,
+    "truePeak": -1.4,
+    "durationSec": 1.5,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/heavy-boom-meme/out.wav",
+    "mp3": "/assets/heavy-boom-meme/out.mp3",
+    "spectrogram": "/assets/heavy-boom-meme/spectrogram.png",
+    "code": "/assets/heavy-boom-meme/generate.py"
+  },
+  "notes": "Tanh-driven sub drop (110→42 Hz + 84 Hz harmonic) under a dull six-mode inharmonic metal body, a 4 ms noise click and a wide, dark 3 kHz-low-passed hall for the \"boom... oom\".\nLoudest in the first 40–60 ms, true silence by 1.45 s; everything below 120 Hz is mono (side high-passed at 120 Hz, 8th order). Original synthesis, not modelled on any meme recording.\nTake 1 of 3 (faithful), picked as the most balanced shock boom; the hall leans ~3 dB right at 0.3–0.6 s.",
+  "mood": [
+    "dark",
+    "energetic"
+  ],
+  "tempo": "fast"
+}
