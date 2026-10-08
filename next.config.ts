@@ -1,4 +1,16 @@
 import type { NextConfig } from "next";
+import { ALL_ENTRIES } from "./lib/entries.generated";
+import type { SoundEntry } from "./lib/entries-types";
+
+function hiddenEntryRedirects() {
+  return ALL_ENTRIES
+    .filter((e: SoundEntry) => e.hidden)
+    .map((e) => ({
+      source: `/e/${e.slug}`,
+      destination: `/c/${e.category}`,
+      permanent: true,
+    }));
+}
 
 const nextConfig: NextConfig = {
   /**
@@ -16,6 +28,7 @@ const nextConfig: NextConfig = {
         destination: "/e/:id",
         permanent: true,
       },
+      ...hiddenEntryRedirects(),
     ];
   },
   // www → apex handled in middleware.ts (301 + canonical host)

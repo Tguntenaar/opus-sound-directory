@@ -1,5 +1,6 @@
 {
   "id": "ui-camera-shutter",
+  "hidden": true,
   "slug": "ui-camera-shutter",
   "title": "Camera shutter",
   "category": "ui-sounds",

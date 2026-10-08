@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, it } from "node:test";
 import type { SoundEntry } from "../entries-types.ts";
+import { isEntryHidden } from "../entry-visibility.ts";
 import { scoreEntry } from "./search-scoring.ts";
 
 const entriesDir = path.join(import.meta.dirname, "../../content/entries");
@@ -11,7 +12,8 @@ function loadCatalog(): SoundEntry[] {
   return fs
     .readdirSync(entriesDir)
     .filter((f) => f.endsWith(".json"))
-    .map((f) => JSON.parse(fs.readFileSync(path.join(entriesDir, f), "utf8")) as SoundEntry);
+    .map((f) => JSON.parse(fs.readFileSync(path.join(entriesDir, f), "utf8")) as SoundEntry)
+    .filter((e) => !isEntryHidden(e));
 }
 
 const CATALOG = loadCatalog();

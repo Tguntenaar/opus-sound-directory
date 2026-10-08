@@ -42,6 +42,8 @@ export type SoundEntry = {
     code: string;
   };
   notes: string;
+  /** Omitted from browse, search, sitemap, MCP, and direct entry pages (assets stay in repo). */
+  hidden?: boolean;
   /** KV-backed community publish */
   isCommunity?: boolean;
   submissionId?: string;

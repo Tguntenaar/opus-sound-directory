@@ -122,7 +122,7 @@ Use the [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Aud
 
 Short interface sounds, such as a camera shutter for a capture button, make a good first test because you can hear right away whether an envelope clicks:
 
-[Camera shutter](/e/ui-camera-shutter)
+[Toggle on](/e/ui-toggle-on)
 
 If you need a file from browser code, an [OfflineAudioContext](https://developer.mozilla.org/en-US/docs/Web/API/OfflineAudioContext) renders the graph to a buffer faster than real time. Libraries like [Tone.js](https://tonejs.github.io/) add instruments and scheduling on top.
 

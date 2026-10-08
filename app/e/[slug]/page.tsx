@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { getAllEntriesMerged, getEntryBySlugMerged } from "@/lib/entries";
+import {
+  getAllEntriesMerged,
+  getEntryBySlugMerged,
+  isEntryHidden,
+} from "@/lib/entries";
 import { isCommunityEntry } from "@/lib/community-types";
 import { canonicalForPath } from "@/lib/site-metadata";
 import { SITE_NAME } from "@/lib/site-url";
@@ -40,9 +44,12 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const entry = await getEntryBySlugMerged(slug);
+  const entry = await getEntryBySlugMerged(slug, true);
   if (!entry) {
     return { title: "Not found" };
+  }
+  if (isEntryHidden(entry)) {
+    redirect(`/c/${entry.category}`);
   }
   const description = entryMetaDescription(entry);
   const title = entryPageTitle(entry);
@@ -83,8 +90,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EntryPage({ params }: Props) {
   const { slug } = await params;
-  const entry = await getEntryBySlugMerged(slug);
+  const entry = await getEntryBySlugMerged(slug, true);
   if (!entry) notFound();
+  if (isEntryHidden(entry)) {
+    redirect(`/c/${entry.category}`);
+  }
 
   const community = isCommunityEntry(entry);
   const hasAudio = community ? entry.hasRenderedAudio && Boolean(entry.assets.mp3) : true;

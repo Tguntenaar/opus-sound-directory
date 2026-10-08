@@ -1,4 +1,4 @@
-import { getEntryById, getEntryBySlug } from "@/lib/entries";
+import { getEntryById, getEntryBySlug, isEntryHidden } from "@/lib/entries";
 import { getCommunityCode, getCommunityEntryBySlug } from "@/lib/community-kv";
 import type { SoundEntry } from "@/lib/entries-types";
 import { getSiteUrl } from "@/lib/site-url";
@@ -27,9 +27,13 @@ export async function resolveSoundEntry(idOrSlug: string): Promise<SoundEntry | 
   return null;
 }
 
+function isPublicCatalogEntry(entry: SoundEntry): boolean {
+  return !isEntryHidden(entry);
+}
+
 export async function getSoundDetail(id: string) {
   const entry = await resolveSoundEntry(id);
-  if (!entry) return null;
+  if (!entry || !isPublicCatalogEntry(entry)) return null;
   const base = getSiteUrl();
   let codeInline: string | undefined;
   let codeUrl: string | undefined;
