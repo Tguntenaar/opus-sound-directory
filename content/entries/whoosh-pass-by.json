@@ -1,0 +1,50 @@
+{
+  "id": "whoosh-pass-by",
+  "slug": "whoosh-pass-by",
+  "title": "Pass-by whoosh",
+  "category": "drops",
+  "tags": [
+    "1.2s",
+    "whoosh",
+    "pass-by",
+    "doppler",
+    "transition"
+  ],
+  "prompt": "A 1.2-second cinematic pass-by whoosh, 57,600 samples, 30 fps, closest approach exactly on frame 18 (0.6 s). Pink noise through two decorrelated band-passes whose centre rises from 300 Hz to 3.5 kHz into the pass and falls to 900 Hz after it; a faint airy tonal partial (~700 Hz) carries a true Doppler bend (+3 semitones approaching, -3 receding); the pan moves left to right with a 0.4 ms interaural delay at the pass; a light comb flange (notches sweeping up) adds motion; distance is modelled as a low-pass that opens to 9 kHz at the pass and closes after. Smooth fade-in from silence, ~0.4 s tail to true silence. No low end below 80 Hz.\n\nTake angle 1 (faithful): implement the brief exactly as written.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-08",
+  "seed": 42,
+  "timing": {
+    "fps": 30,
+    "durationSec": 1.2,
+    "samples": 57600,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 18,
+      "label": "pass (closest approach)"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -1.56,
+    "durationSec": 1.2,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/whoosh-pass-by/out.wav",
+    "mp3": "/assets/whoosh-pass-by/out.mp3",
+    "spectrogram": "/assets/whoosh-pass-by/spectrogram.png",
+    "code": "/assets/whoosh-pass-by/generate.py"
+  },
+  "notes": "Two decorrelated pink-noise band-passes sweep ~300 Hz → 3.5 kHz into frame 18 and fall to ~900 Hz after; a faint 700 Hz partial carries a physical Doppler bend (+3.3 / −2.7 st), with a distance low-pass opening to 9 kHz at the pass.\nHard left-to-right pan with an interaural delay of 0.4 ms × sin(azimuth), a light upward comb flange, loudest 20 ms at 605 ms; silent by ~0.97 s, nothing below 80 Hz.\nTake 1 of 3 (faithful), picked as the clearest, most complete pass-by.",
+  "mood": [
+    "energetic"
+  ],
+  "tempo": "fast"
+}
