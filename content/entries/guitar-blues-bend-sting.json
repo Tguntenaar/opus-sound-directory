@@ -1,0 +1,56 @@
+{
+  "id": "guitar-blues-bend-sting",
+  "slug": "guitar-blues-bend-sting",
+  "title": "Blues bend guitar sting",
+  "category": "guitar",
+  "tags": [
+    "4s",
+    "overdrive",
+    "blues",
+    "bend",
+    "lead guitar",
+    "sting"
+  ],
+  "prompt": "A four-second singing blues-lead stinger in A minor pentatonic, played on a solid-body electric through a warm low-gain tube overdrive into a 1x12 open-back cab, with a short slapback and a small plate. From frame 0 a quick three-note slurred pickup climbs the G string: a picked A, a hammer-on to C and a slide up to D. It lands exactly on frame 30 (1.0 s) on a hard-picked E on the B string that is bent a full step and a half up to G. The bend is one continuous push that arrives a hair flat and settles in tune. The held note then gets a wide finger vibrato that starts slow and speeds up. A slight release-and-rebend dip follows, and then the note blooms into a soft octave-harmonic feedback swell that fades to silence by about 3.9 s. The strings are physically modelled. Each string is additive, with integrated-phase pitch so that bends, slides and vibrato stay continuous. The model adds stiffness inharmonicity, faster decay for higher partials, pick- and pickup-position combs, and a resonant pickup. The amp is 4x oversampled, and the cab rolls off everything above about 6 kHz, so the drive stays warm with no fizz.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 4030,
+  "timing": {
+    "fps": 30,
+    "durationSec": 4.0,
+    "samples": 192000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "pickup"
+    },
+    {
+      "frame": 30,
+      "label": "bend"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -7.88,
+    "durationSec": 4.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/guitar-blues-bend-sting/out.wav",
+    "mp3": "/assets/guitar-blues-bend-sting/out.mp3",
+    "spectrogram": "/assets/guitar-blues-bend-sting/spectrogram.png",
+    "code": "/assets/guitar-blues-bend-sting/generate.py"
+  },
+  "notes": "Physically modelled electric lead: each string is an additive bank with integrated-phase pitch (continuous hammer-on, fret-quantised slide, 1.5-step bend, accelerating 3.9->6.4 Hz finger vibrato under the bent pitch, release-and-rebend dip), stiffness inharmonicity, per-partial b1+b3*f^2 decay, pick- and moving neck-pickup-position combs, a resonant pickup, pick scrape, slide squeak and fret-rub noise. The octave feedback bloom swells partial 2 while the other partials give way.\nArc: picked A, hammer C, slide D (pickup from frame 0, ~-17 LUFS), a short finger mute, then the struck E bent to G exactly on frame 30 (loudest, -12), a singing vibrato hold, a dip at 2.4 s, the octave bloom (2.6-3.3 s), and a fade to silence by 3.85 s.\nTwo-stage asymmetric tanh overdrive at 4x oversampling, tone stack, 1x12 open-back cab (steep roll-off, nothing above ~7 kHz), 112 ms slapback and a small noise-IR plate. The side is high-passed at 700 Hz (zero-phase) so the low end stays mono. No limiting was needed (-14 LUFS at -8 dBTP); TPDF dither.",
+  "mood": [
+    "energetic",
+    "sad"
+  ],
+  "tempo": "medium"
+}
