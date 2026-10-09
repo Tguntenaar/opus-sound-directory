@@ -218,6 +218,25 @@ export const CATEGORY_SEO: Record<string, CategorySeoContent> = {
       },
     ],
   },
+  guitar: {
+    h1: "Free Guitar Licks, Loops & Stings",
+    intro:
+      "Expressive guitar sounds built entirely in code — clean neo-soul licks, singing blues bends, fingerstyle acoustic loops and funk rhythm grooves, every string modelled from scratch.",
+    faq: [
+      {
+        q: "Are these guitar recordings or samples?",
+        a: "No. Every note is a physically modelled string (waveguide or additive synthesis) with pick, body, pickup, amp and cabinet models written in Python.",
+      },
+      {
+        q: "Do they copy any famous riff or player?",
+        a: "No. Every phrase is an original composition; only general genre idioms such as pentatonic licks and travis picking are used.",
+      },
+      {
+        q: "Can I use them commercially?",
+        a: "Yes. Sounds are CC0 (public domain), so you can use them without attribution.",
+      },
+    ],
+  },
 };
 
 export function isValidCategorySlug(slug: string): boolean {
