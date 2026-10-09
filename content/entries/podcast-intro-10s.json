@@ -1,25 +1,26 @@
 {
   "id": "podcast-intro-10s",
   "slug": "podcast-intro-10s",
-  "title": "Podcast intro (warm EP)",
+  "title": "Podcast intro (EP groove + hook)",
   "category": "ad-beds",
   "tags": [
     "podcast",
     "10s",
-    "96bpm",
+    "135bpm",
     "electric piano",
-    "brushes"
+    "hook",
+    "groove"
   ],
-  "prompt": "A friendly 10-second podcast intro in Bb major at 96 BPM, played by a small jazz trio. A tine electric piano (two-operator FM bark plus a short bell-like tine, pickup asymmetry and a 4.8 Hz stereo tremolo) comps rootless voicings in a Charleston rhythm and plays a swung, singable top melody. A round upright-style bass walks quarter notes (Bbmaj7 Gm7 | Cm7 F7 | Ebmaj7 Cm7 F7) under brushed snare swirls, taps on 2 and 4 and a feathered kick. It opens on a full-band hit with a brushed cymbal at frame 0. The last bar slows into a gentle ritardando and a quick triplet brush pickup, the band takes a short breath, and a Bb6/9 button (bass, piano chord, cymbal) lands exactly on frame 240 (8.0 s). It then rings out to silence over the final two seconds, leaving room for the host to start talking. Everything below 120 Hz is a mono bass and kick.",
+  "prompt": "A bright, friendly 10-second podcast intro in Bb major at 135 BPM. It opens on a full-band Bb hit at frame 0 with a soft splash, and a two-beat snare pickup and a two-note lead pickup lead into one balanced four-bar phrase (Ebmaj9 | Dm7 G13 | Cm9 | Cm9 F13) that resolves home on the button. A warm tine electric piano (FM bark plus a short bell tine, gentle stereo tremolo) comps with pushed off-beat stabs, a round finger-style electric bass plays a syncopated line with a chromatic walk-up, and a tight, dry kit (warm kick, snappy snare with a clap layer, swung hats) keeps it moving. A soft, whistle-like synth lead carries a singable hook in bar 1, answers it in bar 2 and restates it higher in bar 3. Bar 3 lifts with a short noise swell, a quiet string pad and a shaker. Bar 4 builds with a snare fill into an \"and-of-four\" band stab and a breath of silence. A Bb6/9 button (kick, bass, piano chord, lead on the tonic, splash) then lands exactly on frame 240 (8.0 s) and decays to true silence by 10 s, so the host can start talking over the ring-out. Everything below 120 Hz is a mono kick and bass.",
   "modelId": "claude-opus-5-5",
-  "generatedAt": "2026-10-06",
-  "seed": 960810,
+  "generatedAt": "2026-10-09",
+  "seed": 1200810,
   "timing": {
     "fps": 30,
     "durationSec": 10.0,
     "samples": 480000,
     "sampleRate": 48000,
-    "bpm": 96
+    "bpm": 135
   },
   "cues": [
     {
@@ -36,11 +37,11 @@
     "truePeakDbTp": -1
   },
   "metrics": {
-    "lufs": -14.0,
-    "truePeak": -7.5,
+    "lufs": -14.01,
+    "truePeak": -1.3,
     "durationSec": 10.0,
     "passedChecks": true,
-    "lufsMomentaryMax": -11.6,
+    "lufsMomentaryMax": -11.9,
     "lufsShortTermMax": -13.3
   },
   "assets": {
@@ -49,11 +50,11 @@
     "spectrogram": "/assets/podcast-intro-10s/spectrogram.png",
     "code": "/assets/podcast-intro-10s/generate.py"
   },
-  "notes": "Jazz-trio podcast intro: FM tine EP (1:1 bark + 7x tine, pickup asymmetry, 4.8 Hz stereo tremolo) comping rootless Charleston voicings and a swung melody, walking upright-style bass, brush swirls/taps and a feathered kick. Bars 1-2 are strict 96 BPM; bar 3 ritards (beat intervals 0.64-0.88 s) so the Bb6/9 button lands exactly on frame 240, after a ~160 ms breath. 2 s ring-out to silence. Bass and kick are mono; side channel high-passed at 250 Hz.",
+  "notes": "Rewrite of the round-2 intro at 135 BPM: a 2-beat full-band Bb hit on frame 0 (snare + two-note lead pickup) then one balanced 4-bar phrase (Ebmaj9 | Dm7 G13 | Cm9 | Cm9 F13 -> Bb6/9), so 18 beats land the button exactly on frame 240 with no ritardando. A whistle-like additive lead carries a call/answer/restate hook over FM tine-EP comping, a syncopated finger bass with a chromatic walk-up, and a tight kit (warm kick, snare, swung hats). Bar 3 lifts with a noise swell, string pad, shaker, 16th hats and a clap layer; bar 4 fills into an and-of-4 band stab, and every dry bus is choked for ~100 ms so the button hits from near-silence. The ring-out decays to about -35 LUFS by 9.5 s. Bass ducks 3 dB under kicks; low end mono, side high-passed at 250 Hz.",
   "mood": [
-    "calm",
     "upbeat",
-    "happy"
+    "happy",
+    "bright"
   ],
   "tempo": "medium"
 }
