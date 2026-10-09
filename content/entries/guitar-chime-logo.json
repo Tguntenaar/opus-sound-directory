@@ -1,0 +1,55 @@
+{
+  "id": "guitar-chime-logo",
+  "slug": "guitar-chime-logo",
+  "title": "Chiming guitar logo",
+  "category": "guitar",
+  "tags": [
+    "logo",
+    "3s",
+    "clean electric",
+    "harmonics",
+    "chorus"
+  ],
+  "prompt": "A 3-second clean electric-guitar logo sting in A major. From frame 0 three bell-like natural harmonics ring out one beat apart in a rising figure, each on its own string so they overlap: A4 at the 7th fret of the D string, B4 at the 12th fret of the B string, then E5 at the 12th fret of the high E string. Each one is a picked string with a finger resting on a node, so only the partials that are multiples of 3 (7th fret) or 2 (12th fret) survive, after a tiny damped \"tick\" from the rest. On frame 45 (1.5 s) the fretting hand lands and a fast downstroke rolls an open-voiced A major add9 chord across all six strings (A2 E3 A3 C#4 B3 E4; the open B rubs against the fretted C#). A light touch of the tremolo arm adds a shimmer. The tone is a clean single-coil neck pickup, with a touch of the middle coil, into a light compressor and a clean tube amp with a 1x12 open-back cab, then a lush stereo chorus. A dotted-eighth ping-pong delay with a faint octave-up shimmer and a small plate fill the space. Everything rings out to silence by 3.0 s. Only the guitar's own low notes sit below 120 Hz, and they are mono.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 45903,
+  "timing": {
+    "fps": 30,
+    "durationSec": 3.0,
+    "samples": 144000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "harmonics"
+    },
+    {
+      "frame": 45,
+      "label": "chord"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.02,
+    "truePeak": -1.3,
+    "durationSec": 3.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/guitar-chime-logo/out.wav",
+    "mp3": "/assets/guitar-chime-logo/out.mp3",
+    "spectrogram": "/assets/guitar-chime-logo/spectrogram.png",
+    "code": "/assets/guitar-chime-logo/generate.py"
+  },
+  "notes": "Additive stiff-string guitar model: pick-position and magnetic-pickup combs, per-partial loss, two polarisations, attack pitch glide. Natural harmonics keep only modes that are multiples of 3 (7th fret) or 2 (12th fret), with a finger-width damping that relaxes the ping into a bell-like tone. Three harmonics (A4, B4, E5) rise one beat apart from frame 0. The fretting hand damps them 34 ms before frame 45, where a 6-string Aadd9 downstroke rolls in about 10 ms per string. Rig: compressor, clean tube amp at 4x oversampling, 1x12 cab, stereo chorus, dotted-eighth ping-pong delay with an octave-up shimmer send, and a small plate. The side is high-passed at 330 Hz. No special flags.",
+  "mood": [
+    "bright",
+    "happy"
+  ],
+  "tempo": "medium"
+}
