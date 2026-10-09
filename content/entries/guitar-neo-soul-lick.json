@@ -1,0 +1,57 @@
+{
+  "id": "guitar-neo-soul-lick",
+  "slug": "guitar-neo-soul-lick",
+  "title": "Neo-soul clean guitar lick",
+  "category": "guitar",
+  "tags": [
+    "9s",
+    "72bpm",
+    "clean electric",
+    "neo-soul",
+    "lick",
+    "double stops"
+  ],
+  "prompt": "A 9-second clean neo-soul electric guitar lick in E major at 72 BPM, played on a glassy single-coil guitar in the \"in-between\" neck+middle pickup position into a clean tube amp with light compression and a spring reverb. On frame 0 the fretting thumb holds a low A under a fingerpicked double stop whose lower note hammers up a whole step into a bright A-major shape. A second hammered double stop in thirds adds a lydian colour, the thumb walks down to G#, and a pair of sixths slides up the G and high-E strings with a little finger vibrato. One muted ghost \"chuck\" follows, then a quick pentatonic run that opens with a grace-note pull-off and lands over a thumbed C#. A 4th-to-3rd hammered double stop follows, then a singing whole-step bend over a B bass, held with a finger vibrato that starts slow and quickens before the bend eases back. After a short breath, frame 200 lands on a fast-rolled, lush Emaj9 chord that rings out with a soft chiming 7th-fret natural harmonic on top, and the spring tail fades to silence. Every note is modelled as a real string: an additive waveguide-style string with inharmonic partials, frequency-dependent decay, two polarisations, pluck-position and twin-pickup comb filtering, per-string voice stealing, fretted slides that step across the frets, and humanised timing.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 72009,
+  "timing": {
+    "fps": 30,
+    "durationSec": 9.0,
+    "samples": 432000,
+    "sampleRate": 48000,
+    "bpm": 72
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "lick"
+    },
+    {
+      "frame": 200,
+      "label": "resolve chord"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -1.3,
+    "durationSec": 9.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/guitar-neo-soul-lick/out.wav",
+    "mp3": "/assets/guitar-neo-soul-lick/out.mp3",
+    "spectrogram": "/assets/guitar-neo-soul-lick/spectrogram.png",
+    "code": "/assets/guitar-neo-soul-lick/generate.py"
+  },
+  "notes": "Additive physical string model (inharmonic partials, f^2-dependent decay, two polarisations, pluck-position and signed neck+middle pickup combs, per-string voice stealing, stepped fret slides, upward-only finger vibrato) into light compression, a 4x-oversampled clean tube stage, tone stack, 1x12 cab and a frequency-domain dispersive spring tank. Phrase: thumb-fretted bass under hammered double stops, sixths slide, ghost chuck, pentatonic run with grace pull-off, whole-step bend; frame 200 = rolled Emaj9 (0 7 6 8 7 x) plus a 7th-fret natural harmonic, faded to silence by a volume-knob ease.",
+  "mood": [
+    "calm",
+    "bright"
+  ],
+  "tempo": "slow"
+}
