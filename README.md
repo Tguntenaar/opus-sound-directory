@@ -23,6 +23,7 @@ An open directory of synthesized sound effects, music beds and loops for videos,
 
 ## Contents
 
+- [Who is this for?](#who-is-this-for)
 - [Explore by category](#explore-by-category)
 - [Start listening](#start-listening)
 - [What comes with a sound](#what-comes-with-a-sound)
@@ -30,6 +31,19 @@ An open directory of synthesized sound effects, music beds and loops for videos,
 - [Run locally](#run-locally)
 - [Contribute](#contribute)
 - [License](#license)
+
+## Who is this for?
+
+Anyone making something with sound—or just playing around with video, audio and LLMs. Download a sound and use it immediately, or explore the prompt and Python code to make it your own. **No coding is required to use the audio.**
+
+| If you’re… | Try this |
+| :--- | :--- |
+| **Experimenting with video, sound or LLMs** | Play with effects, ask an AI assistant for variations, and see how a prompt becomes a sound. |
+| **Creating or editing videos** | Find transitions, reaction effects, cinematic hits and short background beds. |
+| **Building an indie game** | Add collectible sounds, UI feedback, arcade effects and ambient loops. |
+| **Designing an app or product** | Choose taps, notifications, success and error sounds for everyday interactions. |
+| **Building with AI agents** | Use the skill and MCP connection to help your agent discover sounds and integrate assets. |
+| **Exploring sound design or creative coding** | Inspect the synthesis code, learn techniques and create your own variations. |
 
 ## Explore by category
 
