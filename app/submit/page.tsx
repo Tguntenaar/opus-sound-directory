@@ -6,7 +6,7 @@ import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 
 const title = "Submit";
 const description =
-  "Propose a synthesised sound for the directory — prompt, optional code, and contact details.";
+  "Propose a synthesised sound for the directory — prompt, synthesis code, and your contributor account.";
 
 export const metadata: Metadata = {
   title,
@@ -25,8 +25,8 @@ export default function SubmitPage() {
     <div className="mx-auto max-w-lg">
       <h1 className="text-3xl font-semibold text-zinc-50">Submit an entry</h1>
       <p className="mt-2 text-sm text-zinc-500">
-        Share a prompt and optional synthesis code. Submissions are screened, AI-reviewed, and safe
-        entries publish immediately as community sounds. For full control, you can also{" "}
+        Sign in with GitHub or Google to share a prompt and synthesis code. Track your submission
+        in your account. Submissions with concerns stay unpublished for review. For full control, you can also{" "}
         <Link
           href="https://github.com/Tguntenaar/opus-sound-directory"
           className="text-violet-400 hover:text-violet-300"

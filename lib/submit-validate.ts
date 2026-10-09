@@ -61,6 +61,7 @@ export function validateSubmitPayload(body: unknown): {
   return {
     ok: true,
     data: {
+      author_name: trimStr(b.author_name, 120) || undefined,
       title,
       prompt,
       email,

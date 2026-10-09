@@ -1,3 +1,6 @@
+import { mcpContributor } from "@/lib/auth";
+import { ownsSubmission } from "@/lib/submission-access";
+import { SubmissionRateLimitError } from "@/lib/submit-kv";
 import { McpServer } from "@modelcontextprotocol/server";
 import { z } from "zod";
 import { getHousePromptTemplate } from "@/lib/mcp/prompt-template";
@@ -5,10 +8,8 @@ import { getSoundDetail, resolveSoundEntry } from "@/lib/mcp/entry-detail";
 import { listCategoryCounts, searchSounds } from "@/lib/mcp/search";
 import { validateMcpSubmit } from "@/lib/mcp/submit-validate";
 import {
-  checkSubmitRateLimit,
   getSubmitEntry,
   saveSubmitEntry,
-  touchSubmitRateLimit,
 } from "@/lib/submit-kv";
 import { runSubmissionPipeline, submissionReviewUrl } from "@/lib/submit-pipeline";
 import { scheduleBackground } from "@/lib/schedule-background";
@@ -27,18 +28,10 @@ function toolText(summary: string, data: unknown) {
   };
 }
 
-function clientIp(request: Request): string {
-  return (
-    request.headers.get("cf-connecting-ip") ??
-    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    "unknown"
-  ).slice(0, 120);
-}
-
 export function createOpusMcpServer(request: Request) {
   const server = new McpServer({
     name: "opus-sounds",
-    version: "1.0.0",
+    version: "2.0.0",
   });
 
   server.registerTool(
@@ -121,7 +114,7 @@ export function createOpusMcpServer(request: Request) {
     "submit_sound",
     {
       description:
-        `Submit a community sound for automated screening + AI review. Auto-publishes when safe. Returns submissionId and status. ${MCP_SUBMIT_LICENSE_NOTE}`,
+        `Submit a community sound for automated screening + AI review. Requires an account token. Flagged or incomplete reviews stay unpublished. Returns submissionId and status. ${MCP_SUBMIT_LICENSE_NOTE}`,
       inputSchema: {
         title: z.string(),
         prompt: z.string(),
@@ -139,16 +132,20 @@ export function createOpusMcpServer(request: Request) {
     },
     async (args) =>
       instrumentMcpTool(request, "submit_sound", async () => {
-        const validated = validateMcpSubmit(args as Record<string, unknown>);
+        let owner;
+        try { owner = await mcpContributor(request, "create"); }
+        catch { return { ...toolText("Account service unavailable.", { error: "temporarily_unavailable" }), isError: true }; }
+        if (!owner) return { ...toolText("Create an agent token in your account and send it as a Bearer authorization header.", { error: "authentication_required", accountUrl: "https://opussounds.directory/account" }), isError: true };
+        if (!owner.emailVerified) return { ...toolText("Verify your sign-in email before submitting.", { error: "email_not_verified" }), isError: true };
+        const validated = validateMcpSubmit({ ...args, email: owner.email });
         if (!validated.ok) {
           return toolText("Validation failed.", { error: validated.error });
         }
-        const fingerprint = clientIp(request);
-        if (!(await checkSubmitRateLimit(fingerprint))) {
-          return toolText("Rate limited.", { error: "rate_limited" });
+        let entry;
+        try { entry = await saveSubmitEntry(validated.data, "mcp", owner); }
+        catch (error) {
+          return { ...toolText(error instanceof SubmissionRateLimitError ? "Try again in an hour." : "Submission service unavailable.", { error: error instanceof SubmissionRateLimitError ? "rate_limited" : "temporarily_unavailable" }), isError: true };
         }
-        const entry = await saveSubmitEntry(validated.data, "mcp");
-        await touchSubmitRateLimit(fingerprint);
         scheduleBackground(runSubmissionPipeline(entry.id));
         const payload = {
           submissionId: entry.id,
@@ -162,13 +159,17 @@ export function createOpusMcpServer(request: Request) {
   server.registerTool(
     "get_submission_status",
     {
-      description: "Check a submission: scanning | live | pending_review | rejected.",
+      description: "Check your own submission using an account token: scanning | live | pending_review | rejected.",
       inputSchema: { submissionId: z.string() },
     },
     async ({ submissionId }) =>
       instrumentMcpTool(request, "get_submission_status", async () => {
+        let owner;
+        try { owner = await mcpContributor(request, "read-own"); }
+        catch { return { ...toolText("Account service unavailable.", { error: "temporarily_unavailable" }), isError: true }; }
+        if (!owner) return { ...toolText("An account token is required.", { error: "authentication_required" }), isError: true };
         const entry = await getSubmitEntry(submissionId);
-        if (!entry) return toolText("Not found.", { error: "not_found" });
+        if (!entry || !ownsSubmission(entry.ownerId, owner.id)) return toolText("Not found.", { error: "not_found" });
         const payload = {
           submissionId: entry.id,
           status: entry.status,

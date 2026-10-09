@@ -151,6 +151,8 @@ Open **[localhost:43123](http://127.0.0.1:43123)**.
 
 ## Contribute
 
+Sign in with GitHub or Google to submit a sound and track its review in [your account](https://opussounds.directory/account). Browsing, downloads, and MCP search remain open. Agent submissions use revocable account tokens; your sign-in email stays private.
+
 Have a sound idea, a better synthesis approach or a fix? [Open an issue](https://github.com/Tguntenaar/opus-sound-directory/issues/new), [submit a sound](https://opussounds.directory/submit), or send a pull request.
 
 Read the [contribution guide](CONTRIBUTING.md) for audio requirements, attribution and licensing. If the directory helps your work, a GitHub star helps others find it.

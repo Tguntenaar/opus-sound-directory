@@ -1,9 +1,9 @@
+import { authUnavailable, sessionContributor, sameOriginMutation } from "@/lib/auth";
+import { SubmissionRateLimitError } from "@/lib/submit-kv";
 import { NextResponse } from "next/server";
 import { scheduleBackground } from "@/lib/schedule-background";
 import {
-  checkSubmitRateLimit,
   saveSubmitEntry,
-  touchSubmitRateLimit,
 } from "@/lib/submit-kv";
 import { isSubmitHoneypotDiscard, validateSubmitPayload } from "@/lib/submit-validate";
 import { captureServerEvent, hashDistinctSuffix } from "@/lib/posthog-server";
@@ -17,6 +17,11 @@ function clientFingerprint(request: Request): string {
 }
 
 export async function POST(request: Request) {
+  if (!sameOriginMutation(request)) return NextResponse.json({ error: "Invalid origin" }, { status: 403 });
+  let owner;
+  try { owner = await sessionContributor(request); } catch { return authUnavailable(); }
+  if (!owner) return NextResponse.json({ error: "Sign in to submit a sound." }, { status: 401 });
+  if (!owner.emailVerified) return NextResponse.json({ error: "Verify your email with your sign-in provider before submitting." }, { status: 403 });
   let body: unknown;
   try {
     body = await request.json();
@@ -24,7 +29,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
 
-  const result = validateSubmitPayload(body);
+  const result = validateSubmitPayload({ ...(body && typeof body === "object" ? body : {}), email: owner.email });
   if (!result.ok) {
     return NextResponse.json({ ok: false, error: result.error }, { status: 400 });
   }
@@ -34,16 +39,12 @@ export async function POST(request: Request) {
   }
 
   const fingerprint = clientFingerprint(request);
-  const allowed = await checkSubmitRateLimit(fingerprint);
-  if (!allowed) {
-    return NextResponse.json(
-      { ok: false, error: "Too many submissions — try again in an hour." },
-      { status: 429 },
-    );
+  let entry;
+  try { entry = await saveSubmitEntry(result.data, "web", owner); }
+  catch (error) {
+    if (error instanceof SubmissionRateLimitError) return NextResponse.json({ error: "Too many submissions — try again in an hour." }, { status: 429 });
+    return authUnavailable();
   }
-
-  const entry = await saveSubmitEntry(result.data, "web");
-  await touchSubmitRateLimit(fingerprint);
   const { runSubmissionPipeline } = await import("@/lib/submit-pipeline");
   scheduleBackground(runSubmissionPipeline(entry.id));
 

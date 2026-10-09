@@ -1,0 +1,12 @@
+// Migration-only configuration. Deploy the website with cloudflare.config.ts.
+{
+  "name": "opus-sounds-account-migrations",
+  "d1_databases": [
+    {
+      "binding": "ACCOUNTS_DB",
+      "database_name": "opus-sounds-accounts",
+      "database_id": "ec780306-8301-4ab1-b1bf-ffe299c7c506",
+      "migrations_dir": "migrations/accounts"
+    }
+  ]
+}

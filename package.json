@@ -7,9 +7,11 @@
   },
   "packageManager": "npm@10.9.7",
   "dependencies": {
+    "@better-auth/api-key": "^1.7.7",
     "@modelcontextprotocol/sdk": "^1.30.0",
     "@vinext/cloudflare": "^1.0.1",
     "agents": "^0.26.0",
+    "better-auth": "^1.7.7",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.52.0",
@@ -49,7 +51,8 @@
     "start": "vite preview",
     "deploy": "vinext-cloudflare deploy",
     "generate:icons": "node scripts/generate-brand-icons.mjs",
-    "test": "node --experimental-strip-types --test lib/entries.test.ts lib/mcp/search.test.ts lib/mcp/should-serve-info-page.test.ts lib/stats-display.test.ts lib/sponsors.test.ts lib/sponsor-notify.test.ts lib/sponsor-packages.test.ts",
-    "test:e2e": "playwright test"
+    "test": "node --experimental-strip-types --test lib/entries.test.ts lib/mcp/search.test.ts lib/mcp/should-serve-info-page.test.ts lib/stats-display.test.ts lib/sponsors.test.ts lib/sponsor-notify.test.ts lib/sponsor-packages.test.ts lib/accounts.test.ts lib/submit-review-policy.test.ts",
+    "test:e2e": "playwright test",
+    "accounts:schema": "node --experimental-strip-types scripts/generate-account-schema.mjs"
   }
 }

@@ -72,8 +72,9 @@ export function mcpInfoHtml(): string {
     <div class="card">
       <h1>MCP server</h1>
       <p><a class="home" href="/agents">Install the skill and connect your agent →</a></p>
-      <p>Public streamable HTTP endpoint for ${SITE_NAME}. Submissions are screened and AI-reviewed; safe entries auto-publish as community sounds.</p>
+      <p>Public streamable HTTP endpoint for ${SITE_NAME}. Search and downloads are open to everyone. Sign in to submit sounds and follow their review.</p>
       <p>${MCP_SUBMIT_LICENSE_NOTE.replace(/</g, "&lt;")}</p>
+      <p>For submissions, create a revocable agent token in <a href="/account" style="color:#c4b5fd">your account</a> and configure your MCP client with the HTTP header <code>Authorization: Bearer YOUR_TOKEN</code>. Keep tokens in your client’s private secret settings. Tokens allow submission and access to your own status; browser sign-in is separate.</p>
       <p class="endpoint"><code>${endpoint}</code></p>
       <section>
         <div class="row"><strong>Cursor (.cursor/mcp.json)</strong><button type="button" onclick="copy('c1')">Copy</button></div>

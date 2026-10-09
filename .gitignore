@@ -9,3 +9,8 @@ next-env.d.ts
 .cloudflare/
 *.zip
 artifacts/
+
+# Local Worker secrets and TypeScript build cache
+.dev.vars
+.dev.vars.*
+*.tsbuildinfo

@@ -10,7 +10,6 @@ const BANNED_PATTERNS: { re: RegExp; label: string }[] = [
   { re: /\b__import__\s*\(/i, label: "__import__(" },
   { re: /\burllib\.request\b/i, label: "urllib.request" },
   { re: /\bhttpx\b/i, label: "httpx" },
-  { re: /\bopen\s*\([^)]*["']wb["']/i, label: "binary write" },
 ];
 
 const OPUS_CLAIM_RE =

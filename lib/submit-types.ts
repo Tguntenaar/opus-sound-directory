@@ -18,6 +18,8 @@ export type AiReviewResult = {
   quality: number;
   reasons: string[];
   categoryFit: boolean;
+  complete: boolean;
+  rightsConcerns: string[];
   model: string;
   reviewedAt: string;
 };
@@ -41,6 +43,8 @@ export type SubmitEntryInput = {
 };
 
 export type SubmitEntry = SubmitEntryInput & {
+  /** Server-assigned account ID; absent only on legacy submissions. Never public. */
+  ownerId?: string;
   id: string;
   createdAt: string;
   source: SubmissionSource;
@@ -48,6 +52,7 @@ export type SubmitEntry = SubmitEntryInput & {
   screening?: ScreeningFlags;
   aiReview?: AiReviewResult;
   reviewerNote?: string;
+  notification?: { status: "sent" | "failed" | "unconfigured"; attemptedAt: string };
   /** Published community slug when status is live */
   communitySlug?: string;
   /** Resolved generate.py stored for review (web MCP) */

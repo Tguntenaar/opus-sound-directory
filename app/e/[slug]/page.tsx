@@ -96,8 +96,8 @@ export default async function EntryPage({ params }: Props) {
     redirect(`/c/${entry.category}`);
   }
 
-  const community = isCommunityEntry(entry);
-  const hasAudio = community ? entry.hasRenderedAudio && Boolean(entry.assets.mp3) : true;
+  const community = isCommunityEntry(entry) ? entry : null;
+  const hasAudio = community ? community.hasRenderedAudio && Boolean(entry.assets.mp3) : true;
   const all = await getAllEntriesMerged();
   const catLabel = CATEGORIES[entry.category]?.label ?? entry.category;
   const related = relatedEntries(entry, all);

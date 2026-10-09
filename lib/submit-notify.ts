@@ -1,82 +1,43 @@
 import type { SubmitEntry } from "@/lib/submit-types";
-import { CATEGORIES } from "@/lib/categories";
-import { formatMood } from "@/lib/mood";
-import { SITE_NAME } from "@/lib/site-url";
+import { getSiteUrl, SITE_NAME } from "@/lib/site-url";
 
-const DEFAULT_NOTIFY_TO = "thomas@guntenaar.org";
-
-type EmailSender = {
-  send: (message: {
-    from: { email: string; name?: string };
-    to: { email: string }[];
-    subject: string;
-    text: string;
-    html?: string;
-    replyTo?: { email: string; name?: string };
-  }) => Promise<unknown>;
-};
-
-type MailEnv = {
-  SPONSOR_SEND_EMAIL?: EmailSender;
-  SPONSOR_MAIL_FROM?: string;
-  SPONSOR_MAIL_TO?: string;
-};
-
-async function readMailEnv(): Promise<MailEnv> {
-  try {
-    const { env } = await import("cloudflare:workers");
-    return env as MailEnv;
-  } catch {
-    return {
-      SPONSOR_MAIL_FROM: process.env.SPONSOR_MAIL_FROM,
-      SPONSOR_MAIL_TO: process.env.SPONSOR_MAIL_TO,
-    };
-  }
+export function submissionWarningText(entry: SubmitEntry): string {
+  return [
+    `Sound submission needs attention: ${entry.title}`,
+    `Submission: ${entry.id}`,
+    `Status: ${entry.status}`,
+    `Account: ${entry.ownerId || "legacy submission without an account"}`,
+    `Contact: ${entry.email}`,
+    `Review: ${getSiteUrl()}/admin/review`,
+    `Reason: ${entry.reviewerNote || "Review required"}`,
+    ...(entry.aiReview?.reasons || []),
+    ...(entry.aiReview?.rightsConcerns || []).map(reason => `Rights concern: ${reason}`),
+    ...(entry.screening?.bannedPatterns || []).map(reason => `Code flag: ${reason}`),
+    ...(entry.screening?.suspiciousClaims || []).map(reason => `Claim flag: ${reason}`),
+    "Automated flags are review signals, not a determination of illegality.",
+    "", "Submitted prompt (untrusted content):", entry.prompt,
+  ].join("\n");
 }
 
-/** Best-effort alert; never throws. */
-export async function notifySubmitEntry(entry: SubmitEntry): Promise<void> {
+/** Reports delivery state so missing configuration never looks like a delivered warning. */
+export async function notifySubmitEntry(entry: SubmitEntry): Promise<NonNullable<SubmitEntry["notification"]>> {
+  const attemptedAt = new Date().toISOString();
   try {
-    const env = await readMailEnv();
-    const sender = env.SPONSOR_SEND_EMAIL;
-    const from = env.SPONSOR_MAIL_FROM?.trim();
-    if (!sender || !from) return;
-
-    const to = (env.SPONSOR_MAIL_TO?.trim() || DEFAULT_NOTIFY_TO).toLowerCase();
-    const cat = CATEGORIES[entry.category]?.label ?? entry.category;
-    const moods = entry.mood.map(formatMood).join(", ");
-    const subject = `Sound submission: ${entry.title} [${entry.status}]`;
-    const text = [
-      `Directory submission (${entry.id}) — ${entry.status}`,
-      entry.communitySlug ? `Live: /e/${entry.communitySlug}` : null,
-      ``,
-      `Title: ${entry.title}`,
-      `Source: ${entry.source}`,
-      `Category: ${cat}`,
-      `Mood: ${moods}`,
-      `Email: ${entry.email}`,
-      entry.codeUrl ? `Code link: ${entry.codeUrl}` : null,
-      entry.codeSnippet ? `Code snippet: ${entry.codeSnippet.length} chars (see KV)` : null,
-      ``,
-      `Prompt:`,
-      entry.prompt,
-      ``,
-      `Submitted: ${entry.createdAt}`,
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    const html = `<pre style="font-family:ui-monospace,monospace;font-size:13px">${text.replace(/</g, "&lt;")}</pre>`;
-
-    await sender.send({
-      from: { email: from, name: SITE_NAME },
-      to: [{ email: to }],
-      replyTo: { email: entry.email },
-      subject,
-      text,
-      html,
+    const { env } = await import("cloudflare:workers");
+    const config = env as typeof env & { SUBMIT_MAIL_TO?: string; SUBMIT_MAIL_FROM?: string; SPONSOR_MAIL_FROM?: string };
+    const sender = config.SPONSOR_SEND_EMAIL;
+    const from = config.SUBMIT_MAIL_FROM || config.SPONSOR_MAIL_FROM;
+    const to = config.SUBMIT_MAIL_TO;
+    if (!sender || !from || !to) return { status: "unconfigured", attemptedAt };
+    const result = await sender.send({
+      from: { email: from, name: SITE_NAME }, to: to.split(/[,;]/).map(value => value.trim()).filter(Boolean),
+      subject: `Submission needs review [${entry.status}]: ${entry.title.replace(/[\r\n]/g, " ").slice(0, 120)}`,
+      text: submissionWarningText(entry),
     });
-  } catch (err) {
-    console.error("submit notify email failed", err);
+    if (!result?.messageId) return { status: "failed", attemptedAt };
+    return { status: "sent", attemptedAt };
+  } catch {
+    console.error("Submission warning delivery failed", { submissionId: entry.id });
+    return { status: "failed", attemptedAt };
   }
 }
