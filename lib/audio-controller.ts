@@ -17,7 +17,7 @@ export function registerAudioElement(id: string, el: HTMLAudioElement) {
 export function subscribePlayback(listener: (id: string | null) => void) {
   listeners.add(listener);
   listener(currentId);
-  return () => listeners.delete(listener);
+  return () => { listeners.delete(listener); };
 }
 
 function notify() {

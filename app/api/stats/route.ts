@@ -12,18 +12,25 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  let body: { id?: string; event?: string };
+  let body: unknown;
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { id, event } = body;
-  if (!id || !event || !isValidEntryId(id) || !isValidEvent(event)) {
+  if (!body || typeof body !== "object") {
+    return NextResponse.json({ error: "Invalid id or event" }, { status: 400 });
+  }
+  const { id, event } = body as { id?: unknown; event?: unknown };
+  if (typeof id !== "string" || typeof event !== "string" || !isValidEvent(event) || !(await isValidEntryId(id))) {
     return NextResponse.json({ error: "Invalid id or event" }, { status: 400 });
   }
 
-  const stats = await incrementStat(id, event);
-  return NextResponse.json({ id, stats });
+  try {
+    const stats = await incrementStat(id, event);
+    return NextResponse.json({ id, stats });
+  } catch {
+    return NextResponse.json({ error: "Statistics unavailable" }, { status: 503 });
+  }
 }

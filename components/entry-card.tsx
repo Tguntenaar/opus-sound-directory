@@ -21,7 +21,8 @@ import { WaveformScrubber } from "@/components/waveform-scrubber";
 import { CardQuickActions } from "@/components/card-quick-actions";
 import { cn } from "@/lib/utils";
 import { useSoundPlaybackAnalytics } from "@/lib/use-sound-playback-analytics";
-import type { AnalyticsSource } from "@/lib/analytics";
+import { soundEventProps, type AnalyticsSource } from "@/lib/analytics";
+import { captureEvent } from "@/lib/analytics-client";
 
 type Props = {
   entry: SoundEntry;
@@ -30,6 +31,8 @@ type Props = {
 };
 
 export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) {
+  const cardRef = useRef<HTMLAnchorElement>(null);
+  const impressionSent = useRef(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -37,6 +40,21 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
   const analyticsSource: AnalyticsSource = featured ? "featured" : "card";
 
   useSoundPlaybackAnalytics(entry, analyticsSource, audioRef, playing);
+
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!card || impressionSent.current || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(([visible]) => {
+      if (!visible?.isIntersecting || impressionSent.current) return;
+      impressionSent.current = true;
+      captureEvent("sound_impression", {
+        ...soundEventProps(entry, analyticsSource), position: staggerIndex + 1,
+      });
+      observer.disconnect();
+    }, { threshold: 0.5 });
+    observer.observe(card);
+    return () => observer.disconnect();
+  }, [entry, analyticsSource, staggerIndex]);
 
   useEffect(() => {
     const el = audioRef.current;
@@ -114,6 +132,8 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
 
   return (
     <Link
+      ref={cardRef}
+      onClick={() => captureEvent("sound_detail_click", { ...soundEventProps(entry, analyticsSource), position: staggerIndex + 1 })}
       href={`/e/${entry.slug}`}
       data-sound-card
       data-entry-id={audioId}

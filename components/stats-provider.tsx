@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -16,6 +17,7 @@ import { PosthogPageviews } from "@/components/posthog-pageviews";
 
 type StatsContextValue = {
   stats: StatsMap;
+  rankingStats: StatsMap;
   track: (entryId: string, event: StatEvent) => void;
   getEntryStats: (entryId: string) => EntryStats;
 };
@@ -23,7 +25,9 @@ type StatsContextValue = {
 const StatsContext = createContext<StatsContextValue | null>(null);
 
 export function StatsProvider({ children }: { children: ReactNode }) {
+  const trackedPlays = useRef(new Set<string>());
   const [stats, setStats] = useState<StatsMap>({});
+  const [rankingStats, setRankingStats] = useState<StatsMap>({});
 
   useEffect(() => {
     void getPosthogWhenReady();
@@ -32,9 +36,12 @@ export function StatsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let cancelled = false;
     fetch("/api/stats")
-      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((r) => (r.ok ? r.json() as Promise<{ stats: StatsMap }> : Promise.reject()))
       .then((data: { stats: StatsMap }) => {
-        if (!cancelled) setStats(data.stats ?? {});
+        if (!cancelled) {
+          setStats(data.stats ?? {});
+          setRankingStats(data.stats ?? {});
+        }
       })
       .catch(() => {
         if (!cancelled) setStats({});
@@ -45,19 +52,25 @@ export function StatsProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const track = useCallback((entryId: string, event: StatEvent) => {
+    // Public popularity counts at most one play per sound per page session.
+    if (event === "play") {
+      if (trackedPlays.current.has(entryId)) return;
+      trackedPlays.current.add(entryId);
+    }
     setStats((prev) => {
       const cur = prev[entryId] ?? { ...EMPTY_STATS };
       return {
         ...prev,
-        [entryId]: { ...cur, [event]: cur[event] + 1 },
+        [entryId]: { ...cur, [event]: (cur[event] ?? 0) + 1 },
       };
     });
     void fetch("/api/stats", {
       method: "POST",
+      keepalive: true,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: entryId, event }),
     })
-      .then((r) => (r.ok ? r.json() : null))
+      .then((r) => (r.ok ? r.json() as Promise<{ stats: EntryStats }> : null))
       .then((data) => {
         if (data?.stats) {
           setStats((prev) => ({
@@ -77,8 +90,8 @@ export function StatsProvider({ children }: { children: ReactNode }) {
   );
 
   const value = useMemo(
-    () => ({ stats, track, getEntryStats }),
-    [stats, track, getEntryStats],
+    () => ({ stats, rankingStats, track, getEntryStats }),
+    [stats, rankingStats, track, getEntryStats],
   );
 
   return (

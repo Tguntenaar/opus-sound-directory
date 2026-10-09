@@ -1,3 +1,4 @@
+import { TrackedLink } from "@/components/tracked-link";
 import type { Viewport } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
@@ -10,6 +11,7 @@ import { FileUp, HeartHandshake, Info } from "lucide-react";
 import { IconTooltip } from "@/components/icon-tooltip";
 import { OwnerProfileLinks } from "@/components/owner-profile-links";
 import { PosthogProvider } from "@/components/posthog-provider";
+import { ClickNotes } from "@/components/click-notes";
 
 export const metadata = rootSiteMetadata();
 
@@ -24,6 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body className="bg-zinc-950 text-zinc-100 antialiased">
+        <ClickNotes />
         <JsonLd data={[rootWebSiteJsonLd(), organizationJsonLd()]} />
         <PosthogProvider>
           <StatsProvider>
@@ -36,13 +39,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               aria-label="Footer"
             >
               <IconTooltip label="Submit a sound">
-                <a
+                <TrackedLink
+                  event="add_sound_click"
+                  eventProperties={{ placement: "footer" }}
                   href="/submit"
                   className="inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-zinc-900/60 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
                   aria-label="Submit a sound"
                 >
                   <FileUp className="h-4 w-4" aria-hidden />
-                </a>
+                </TrackedLink>
               </IconTooltip>
               <IconTooltip label="Sponsor">
                 <a

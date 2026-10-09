@@ -1,4 +1,4 @@
-import { ALL_ENTRIES } from "@/lib/entries.generated";
+import { getAllEntriesMerged } from "@/lib/entries";
 import type { EntryStats, StatEvent, StatsMap } from "@/lib/stats-types";
 import { EMPTY_STATS } from "@/lib/stats-types";
 
@@ -35,7 +35,7 @@ async function resolveKv(): Promise<KvLike | null> {
     // not in workerd (e.g. plain node preview)
   }
   if (process.env.NODE_ENV === "development") return devKv();
-  return devKv();
+  return null;
 }
 
 async function readCount(kv: KvLike, entryId: string, event: StatEvent): Promise<number> {
@@ -47,16 +47,17 @@ async function readCount(kv: KvLike, entryId: string, event: StatEvent): Promise
 export async function getStatsForEntry(entryId: string): Promise<EntryStats> {
   const kv = await resolveKv();
   if (!kv) return { ...EMPTY_STATS };
-  const [copy, download] = await Promise.all([
+  const [copy, download, play] = await Promise.all([
     readCount(kv, entryId, "copy"),
     readCount(kv, entryId, "download"),
+    readCount(kv, entryId, "play"),
   ]);
-  return { copy, download };
+  return { copy, download, play };
 }
 
 export async function getAllStats(): Promise<StatsMap> {
   const kv = await resolveKv();
-  const ids = ALL_ENTRIES.map((e) => e.id);
+  const ids = (await getAllEntriesMerged()).map((e) => e.id);
   const out: StatsMap = {};
   if (!kv) {
     for (const id of ids) out[id] = { ...EMPTY_STATS };
@@ -73,7 +74,7 @@ export async function getAllStats(): Promise<StatsMap> {
 export async function incrementStat(entryId: string, event: StatEvent): Promise<EntryStats> {
   const kv = await resolveKv();
   if (!kv) {
-    return { ...EMPTY_STATS, [event]: 1 } as EntryStats;
+    throw new Error("Sound statistics storage is unavailable");
   }
   const current = await readCount(kv, entryId, event);
   const next = current + 1;
@@ -81,10 +82,10 @@ export async function incrementStat(entryId: string, event: StatEvent): Promise<
   return getStatsForEntry(entryId);
 }
 
-export function isValidEntryId(id: string): boolean {
-  return ALL_ENTRIES.some((e) => e.id === id);
+export async function isValidEntryId(id: string): Promise<boolean> {
+  return (await getAllEntriesMerged()).some((e) => e.id === id);
 }
 
 export function isValidEvent(event: string): event is StatEvent {
-  return event === "copy" || event === "download";
+  return event === "copy" || event === "download" || event === "play";
 }

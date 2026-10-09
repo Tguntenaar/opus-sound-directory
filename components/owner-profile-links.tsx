@@ -2,10 +2,12 @@
 
 import { IconTooltip } from "@/components/icon-tooltip";
 import { GithubIcon, XLogoIcon } from "@/components/social-icons";
-import { OWNER_GITHUB_PROFILE, OWNER_X_PROFILE } from "@/lib/owner-profiles";
+import { OWNER_X_PROFILE } from "@/lib/owner-profiles";
 import { cn } from "@/lib/utils";
 import { captureEvent } from "@/lib/analytics-client";
 import type { OutboundDestination } from "@/lib/analytics";
+
+const REPOSITORY_URL = "https://github.com/Tguntenaar/opus-sound-directory";
 
 const linkClass =
   "inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-900/80 hover:text-zinc-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60";
@@ -32,14 +34,14 @@ export function OwnerProfileLinks({ className, variant = "default" }: Props) {
 
   return (
     <>
-      <IconTooltip label="GitHub · @Tguntenaar">
+      <IconTooltip label="GitHub · Opus Sounds">
         <a
-          href={OWNER_GITHUB_PROFILE}
+          href={REPOSITORY_URL}
           className={cls}
           target="_blank"
-          rel="me noopener noreferrer"
-          aria-label="GitHub · @Tguntenaar"
-          onClick={() => trackOutbound("github", OWNER_GITHUB_PROFILE)}
+          rel="noopener noreferrer"
+          aria-label="GitHub · Opus Sounds"
+          onClick={() => trackOutbound("github", REPOSITORY_URL)}
         >
           <GithubIcon />
         </a>

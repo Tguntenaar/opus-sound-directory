@@ -10,7 +10,9 @@ export function PosthogPageviews() {
   useEffect(() => {
     void getPosthogWhenReady().then((ph) => {
       if (!ph) return;
-      const search = typeof window !== "undefined" ? window.location.search : "";
+      const params = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+      for (const key of ["code", "state", "error", "error_description", "sign_in"]) params.delete(key);
+      const search = params.size ? `?${params.toString()}` : "";
       const hash = typeof window !== "undefined" ? window.location.hash : "";
       const pathWithQuery = search ? `${pathname}${search}` : pathname;
       const url = hash ? `${pathWithQuery}${hash}` : pathWithQuery;

@@ -11,6 +11,8 @@ export default function PrivacyPage() {
     <p>Submissions may be processed by automated services for code and content review. Warning emails to the directory administrator can contain your submission details, contact email, and review findings. Automated checks help surface concerns; they do not establish that a submission is lawful.</p>
     <h2 className="text-xl font-medium text-zinc-100">Agent access</h2>
     <p>Agent tokens are stored as hashes and can be revoked from your account. They allow submission and access to your own submission status, but do not grant account management access. Session and abuse-prevention records can include IP addresses and browser information.</p>
+    <h2 className="text-xl font-medium text-zinc-100">Usage analytics</h2>
+    <p>We use PostHog to understand page visits, searches, sound previews and reuse, sign-in provider choices, and contribution steps. Browser identifiers help count repeat visits and follow steps in a session. Explicit sign-in and form events do not include your email, credentials, agent tokens, or draft submission text. Browser analytics respects Do Not Track. Aggregate plays, copies, and download clicks also help order popular sounds.</p>
     <h2 className="text-xl font-medium text-zinc-100">Requests and corrections</h2>
     <p>To ask about account data, deletion, or a submission, contact the maintainers through the repository’s contact options. Do not post private credentials or personal information in a public issue. Already published CC0 material may have been downloaded or reused by others.</p>
   </article>;

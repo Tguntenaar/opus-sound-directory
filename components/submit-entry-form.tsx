@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CATEGORY_ORDER, CATEGORIES } from "@/lib/categories";
 import { MOOD_FACETS, type MoodSlug } from "@/lib/mood";
 import { Button } from "@/components/ui/button";
@@ -34,13 +34,23 @@ const initial: FormState = {
 };
 
 export function SubmitEntryForm() {
+  const started = useRef(false);
   const [access, setAccess] = useState<"loading" | "allowed" | "signin">("loading");
   useEffect(() => {
     let active = true;
     fetch("/api/account", { cache: "no-store" }).then(async response => {
       const data = await response.json() as { user?: { emailVerified: boolean } };
-      if (active) setAccess(response.ok && data.user?.emailVerified ? "allowed" : "signin");
-    }).catch(() => { if (active) setAccess("signin"); });
+      if (active) {
+        const nextAccess = response.ok && data.user?.emailVerified ? "allowed" : "signin";
+        setAccess(nextAccess);
+        captureEvent("submit_form_access", { source: "web", access: nextAccess });
+      }
+    }).catch(() => {
+      if (active) {
+        setAccess("signin");
+        captureEvent("submit_form_access", { source: "web", access: "error" });
+      }
+    });
     return () => { active = false; };
   }, []);
   const [form, setForm] = useState<FormState>(initial);
@@ -70,7 +80,14 @@ export function SubmitEntryForm() {
     }
   }
 
+  function trackStart() {
+    if (started.current) return;
+    started.current = true;
+    captureEvent("submit_form_start", { source: "web" });
+  }
+
   function toggleMood(slug: MoodSlug) {
+    trackStart();
     setForm((f) => ({
       ...f,
       mood: f.mood.includes(slug) ? f.mood.filter((m) => m !== slug) : [...f.mood, slug],
@@ -80,16 +97,20 @@ export function SubmitEntryForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    captureEvent("submit_form_attempt", { source: "web", category: form.category });
 
     if (!form.title.trim()) {
+      captureEvent("submit_form_validation_error", { source: "web", field: "title" });
       setError("Title is required");
       return;
     }
     if (form.prompt.trim().length < 40) {
+      captureEvent("submit_form_validation_error", { source: "web", field: "prompt" });
       setError("Prompt must be at least 40 characters");
       return;
     }
     if (form.mood.length === 0) {
+      captureEvent("submit_form_validation_error", { source: "web", field: "mood" });
       setError("Select at least one mood");
       return;
     }
@@ -118,6 +139,7 @@ export function SubmitEntryForm() {
         status?: string;
       };
       if (!res.ok || !data.ok) {
+        captureEvent("submit_form_error", { source: "web", reason: "server_rejected", http_status: res.status });
         setError(data.error ?? "Submission failed");
         return;
       }
@@ -136,6 +158,7 @@ export function SubmitEntryForm() {
         void pollStatus(sid);
       }
     } catch {
+      captureEvent("submit_form_error", { source: "web", reason: "network_or_response" });
       setError("Network error — try again");
     } finally {
       setSubmitting(false);
@@ -159,22 +182,16 @@ export function SubmitEntryForm() {
           </p>
         )}
         <p className="mt-2 text-zinc-400">
-          Follow review progress in your account. Submissions with concerns stay unpublished until reviewed.
-          Prefer git? Open a pull request on{" "}
-          <a
-            href="https://github.com/Tguntenaar/opus-sound-directory"
-            className="text-violet-300 underline-offset-2 hover:underline"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            github.com/Tguntenaar/opus-sound-directory
-          </a>{" "}
-          with your entry JSON and assets.
+          Track progress in <a href="/account" className="text-violet-300 hover:underline">your account</a>.
         </p>
         <button
           type="button"
           className="mt-4 text-xs text-zinc-500 underline-offset-2 hover:text-zinc-300 hover:underline"
-          onClick={() => setSuccess(false)}
+          onClick={() => {
+            started.current = false;
+            captureEvent("submit_another_click", { source: "web" });
+            setSuccess(false);
+          }}
         >
           Submit another
         </button>
@@ -183,7 +200,10 @@ export function SubmitEntryForm() {
   }
 
   return (
-    <form onSubmit={(e) => void onSubmit(e)} className="flex flex-col gap-4">
+    <form onSubmit={(e) => void onSubmit(e)} onChange={trackStart} onInvalidCapture={(e) => {
+      const field = (e.target as HTMLInputElement).name;
+      captureEvent("submit_form_validation_error", { source: "web", field });
+    }} className="flex flex-col gap-4">
       <label className="flex flex-col gap-1 text-sm">
         <span className="text-zinc-400">Title</span>
         <input
@@ -240,7 +260,7 @@ export function SubmitEntryForm() {
         <textarea
           required
           name="prompt"
-          rows={8}
+          rows={4}
           value={form.prompt}
           onChange={(e) => setForm((f) => ({ ...f, prompt: e.target.value }))}
           className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100 outline-none focus:border-violet-500"
@@ -304,7 +324,7 @@ export function SubmitEntryForm() {
       <p className="text-xs leading-relaxed text-zinc-600">{SUBMIT_LICENSE_NOTE}</p>
 
       <Button type="submit" disabled={submitting}>
-        {submitting ? "Sending…" : "Submit entry"}
+        {submitting ? "Sending…" : "Submit sound"}
       </Button>
     </form>
   );
