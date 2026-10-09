@@ -1,8 +1,9 @@
 """podcast-intro-10s: Opus Sound Directory
 
-A bright, friendly 10-second podcast intro in Bb major at 120 BPM: one balanced
-four-bar phrase (Ebmaj9 | Dm7 G13 | Cm9 | Cm9 F13) that resolves home on the
-button. It opens on a full-band hit at frame 0 with a soft splash. A warm tine
+A bright, friendly 10-second podcast intro in Bb major at 135 BPM. It opens on a
+full-band Bb hit at frame 0 with a soft splash, and a two-beat snare pickup and a
+two-note lead pickup lead into one balanced four-bar phrase (Ebmaj9 | Dm7 G13 |
+Cm9 | Cm9 F13) that resolves home on the button. A warm tine
 electric piano (FM bark plus a short bell tine, gentle stereo tremolo) comps with
 pushed off-beat stabs, a round finger-style electric bass plays a syncopated line
 with a chromatic walk-up, and a tight, dry kit (warm kick, snappy snare with a
@@ -28,7 +29,7 @@ from scipy.ndimage import minimum_filter1d, uniform_filter1d
 SAMPLE_RATE = 48000
 SEED = 1200810
 DURATION_SEC = 10
-BPM = 120
+BPM = 135
 KEY = "Bb major"
 FPS = 30
 CUE_FRAMES = (0, 240)          # frame 0: full-band intro hit, frame 240: button
@@ -37,16 +38,18 @@ TRUE_PEAK_CEILING_DBTP = -1.0
 
 SR = SAMPLE_RATE
 N = DURATION_SEC * SR
-BEAT = 60.0 / BPM              # 0.5 s, so 4 bars = 8.0 s
-BUTTON_B = 16                  # beat 16 = bar 5 downbeat = 8.0 s = frame 240
+BEAT = 60.0 / BPM              # 0.444 s: a 2-beat intro hit + 4 bars = 18 beats = 8.0 s
+OFF = 2                        # bar 1 of the phrase starts after the 2-beat intro hit
+BUTTON_B = 16                  # phrase beat 16 = bar 5 downbeat = 8.0 s = frame 240
 SW = 0.04                      # light 16th swing (fraction of a beat added to off-16ths)
-assert abs(BUTTON_B * BEAT - CUE_FRAMES[1] / FPS) < 1e-12
+assert abs((BUTTON_B + OFF) * BEAT - CUE_FRAMES[1] / FPS) < 1e-12
 
 rng = np.random.default_rng(SEED)
 
 
 def T(b: float) -> float:
-    return b * BEAT
+    """Time of phrase beat b (beat 0 = bar-1 downbeat, after the intro hit)."""
+    return (b + OFF) * BEAT
 
 
 # ---------------------------------------------------------------- utilities
@@ -330,7 +333,8 @@ COMP = [(0, EBMAJ9, 1.4, 1.0), (1.5, EBMAJ9, 0.35, 0.7), (2.5, EBMAJ9, 1.3, 0.75
         (12, CM9, 1.4, 0.85), (13.5, F13, 1.6, 0.82), (15.5, F13, 0.22, 0.95)]
 
 # (beat, midi, length in beats): hook, answer, hook up, turnaround + pickup
-MELODY = [(0, 79, 1.0), (1, 77, 0.5), (1.5, 79, 1.5), (3, 82, 0.5), (3.5, 79, 0.5),
+MELODY = [(-1, 74, 0.5), (-0.5, 77, 0.5),
+          (0, 79, 1.0), (1, 77, 0.5), (1.5, 79, 1.5), (3, 82, 0.5), (3.5, 79, 0.5),
           (4, 77, 1.0), (5, 74, 0.5), (5.5, 77, 1.5), (7, 79, 0.5), (7.5, 77, 0.5),
           (8, 79, 1.0), (9, 77, 0.5), (9.5, 79, 1.5), (11, 84, 0.5), (11.5, 82, 0.5),
           (12, 82, 1.0), (13, 81, 0.5), (13.5, 77, 1.5), (15, 79, 0.45), (15.5, 81, 0.24)]
@@ -351,7 +355,7 @@ def render() -> np.ndarray:
     low = np.zeros((N, 2))       # bass + kick: the only content below 120 Hz (mono)
     verb = np.zeros((N, 2))      # medium room send
     kick_times = []
-    stop = T(15.5) + 0.14        # band stab released before the breath into the button
+    stop = T(15.5) + 0.12        # band stab released before the breath into the button
 
     # --- EP comping
     pans = (-0.3, -0.1, 0.1, 0.3)
@@ -425,8 +429,20 @@ def render() -> np.ndarray:
     place(low, kick(0.9), T(15.5))
     kick_times.append(T(15.5))
 
-    # intro hit + bar-3 lift
+    # intro hit on frame 0 (Bb: kick, bass, piano, splash) and a snare pickup into bar 1
     place(drums, splash(1.6, 1.0, att=0.0006), 0.0)
+    place(low, kick(1.0, att=0.0006), 0.0)
+    kick_times.append(0.0)
+    place(low, ebass(34, 2 * BEAT - 0.03, 1.1, att=0.0006), 0.0)
+    for j, m in enumerate((50, 55, 60, 65)):
+        v = epiano(m, 2 * BEAT - 0.02, 1.0, att=0.0006)
+        place(keys, v, 0.0, 0.5, pans[j])
+        place(verb, v, 0.0, 0.14, pans[j])
+    place(drums, snare(0.85), 0.0, 0.8, pan=-0.05)
+    for k, b in enumerate((-1, -0.5, -0.25)):
+        place(drums, snare(0.4 + 0.15 * k, clap=False), T(b) + human() * 0.5, 1.0, pan=-0.05)
+
+    # bar-3 lift
     place(drums, swell(T(8) - T(6.5), 1.0), T(6.5), 1.0)
     place(drums, splash(1.3, 0.6), T(8))
     for b, ch, ln in ((8, CM9, 4.0), (12, CM9, 1.5), (13.5, F13, 1.8)):
