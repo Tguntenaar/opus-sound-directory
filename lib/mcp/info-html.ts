@@ -71,11 +71,12 @@ export function mcpInfoHtml(): string {
     <a class="home" href="/">← Opus Sounds Directory</a>
     <div class="card">
       <h1>MCP server</h1>
+      <p><a class="home" href="/agents">Install the skill and connect your agent →</a></p>
       <p>Public streamable HTTP endpoint for ${SITE_NAME}. Submissions are screened and AI-reviewed; safe entries auto-publish as community sounds.</p>
       <p>${MCP_SUBMIT_LICENSE_NOTE.replace(/</g, "&lt;")}</p>
       <p class="endpoint"><code>${endpoint}</code></p>
       <section>
-        <div class="row"><strong>Cursor (.mcp.json)</strong><button type="button" onclick="copy('c1')">Copy</button></div>
+        <div class="row"><strong>Cursor (.cursor/mcp.json)</strong><button type="button" onclick="copy('c1')">Copy</button></div>
         <pre id="c1">${cursorJson.replace(/</g, "&lt;")}</pre>
       </section>
       <section>

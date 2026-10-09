@@ -94,19 +94,25 @@ The Hero8 archive records its own selection status and Codex attribution. Candid
 
 ## Use with AI assistants
 
-Search the directory and retrieve sound prompts through the public [MCP endpoint](https://opussounds.directory/mcp).
+Install the **Opus Sounds skill** to help your agent find suitable audio, check duration and licensing, and integrate sounds into your app, game or video.
 
-```json
-{
-  "mcpServers": {
-    "opus-sounds": {
-      "url": "https://opussounds.directory/mcp"
-    }
-  }
-}
+```bash
+npx skills add Tguntenaar/opus-sound-directory --skill opus-sounds
 ```
 
-Read tools include `search_sounds`, `get_sound`, `list_categories` and `get_prompt_template`. Submission tools use the same review queue as the website. [MCP and review details](docs/DEVELOPMENT.md#remote-mcp-server-mcp).
+Run in your project with Node.js and npm installed, then choose your agent in the installer. [Review the skill](skills/opus-sounds/SKILL.md) · [Supported agents](https://github.com/vercel-labs/skills#supported-agents).
+
+**Connect MCP separately** for access to the live directory. No API key is needed for public read tools. Installing the skill does not register the MCP server automatically.
+
+- **Claude Code:** `claude mcp add --transport http opus-sounds https://opussounds.directory/mcp`
+- **Cursor:** merge the server entry into `.cursor/mcp.json`; see the [setup instructions](skills/opus-sounds/references/setup.md).
+- **Other clients:** add `https://opussounds.directory/mcp` as a remote Streamable HTTP server using your client's configuration format.
+
+[Website installation guide](https://opussounds.directory/agents) · [MCP tool details](https://opussounds.directory/mcp)
+
+Try: **“Find a gentle notification sound under one second.”** Read tools include `search_sounds`, `get_sound`, `list_categories` and `get_prompt_template`. The skill can fall back to public catalog pages when MCP is unavailable.
+
+This skill focuses on finding and using sounds. Publication is a separate workflow; MCP submission is not included in the verified setup.
 
 ## Run locally
 
