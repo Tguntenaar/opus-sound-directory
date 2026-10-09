@@ -1,0 +1,53 @@
+{
+  "id": "guitar-funk-rhythm-loop",
+  "slug": "guitar-funk-rhythm-loop",
+  "title": "Funk rhythm guitar (loop)",
+  "category": "guitar",
+  "tags": [
+    "9.6s",
+    "100bpm",
+    "loop",
+    "funk",
+    "rhythm guitar",
+    "16ths"
+  ],
+  "prompt": "A seamless 9.6-second, four-bar funk loop in F# minor at 100 BPM with a light sixteenth swing, built around two physically modelled clean electric guitars. The rhythm guitar (bright bridge-position single-coil, firmly compressed, panned left) keeps its picking hand moving in constant down-up sixteenths: most strokes are fret-hand-muted scratches, damped strings that die in a few periods under a dry pick click, and the accented strokes press down into short, staccato ninth-chord stabs, F#m9 (x-9-7-9-9-9) and a B9 with the root on the low string and the A string muted (7-x-7-8-7-9), each strum rolled across the strings low-to-high on downstrokes and high-to-low on upstrokes, with a half-step-below approach stab leading the turnaround back into the top. A second, rounder neck-side single-coil guitar panned right answers with an original palm-muted single-note riff of staccato notes, hammer-ons and dead-note ghosts. Underneath sit a syncopated round finger-style bass with octave pops, ghost notes and a chromatic walk-up into the loop point, and a minimal tight kit: punchy kick, crisp backbeat snare with ghost strokes and a small fill in bar four, and accented closed hats. The loop starts with a chord stab, kick and bass on sample 0 and is rendered circularly (three identical cycles, middle one kept), so the last sample flows straight back into the first. Only the mono kick and bass sit below 120 Hz.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 1006100,
+  "timing": {
+    "fps": 30,
+    "durationSec": 9.6,
+    "samples": 460800,
+    "sampleRate": 48000,
+    "bpm": 100
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "loop start"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.03,
+    "truePeak": -1.3,
+    "durationSec": 9.6,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/guitar-funk-rhythm-loop/out.wav",
+    "mp3": "/assets/guitar-funk-rhythm-loop/out.mp3",
+    "spectrogram": "/assets/guitar-funk-rhythm-loop/spectrogram.png",
+    "code": "/assets/guitar-funk-rhythm-loop/generate.py"
+  },
+  "notes": "Two physically modelled clean electric guitars (extended Karplus-Strong strings with Thiran-allpass tuning, pluck- and pickup-position combs, resonant single-coil pickup, compressor, 4x-oversampled clean amp, cab roll-off): a bright bridge-position rhythm part of fret-muted 16th scratches (damped strings + pick click) and rolled F#m9 / B9 stabs, answered by a palm-muted single-note riff panned opposite. Waveguide finger bass with pops, ghosts and an E-F-F# walk-up; tight kick/snare/closed-hat kit. Rendered circularly (3 cycles, middle kept, wrap-mode limiter); verified with --loop.",
+  "mood": [
+    "upbeat",
+    "energetic"
+  ],
+  "tempo": "medium"
+}
