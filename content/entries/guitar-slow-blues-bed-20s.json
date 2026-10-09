@@ -1,0 +1,57 @@
+{
+  "id": "guitar-slow-blues-bed-20s",
+  "slug": "guitar-slow-blues-bed-20s",
+  "title": "Slow blues guitar bed",
+  "category": "guitar",
+  "tags": [
+    "20s",
+    "60bpm",
+    "12/8",
+    "blues",
+    "lead guitar",
+    "organ"
+  ],
+  "prompt": "A 20-second slow-burn blues-ballad bed in G, 12/8 at 60 dotted-quarter beats per minute (one beat = one second = 30 frames). The star is an electric lead guitar on the edge of breakup: a single-coil neck pickup into a 4x-oversampled two-stage tube preamp and a 1x12 open-back cab, mic'd in a small room with a warm plate. It plays an original call-and-response solo. High, singing calls on the top strings use continuous half- and whole-step bends, finger vibrato that starts slow and speeds up, and pick rakes. Lower answers use double stops sliding chromatically, a blue curl and a hammer-on trill between the minor and major third. Under it sit a soft drawbar organ through a slow rotary speaker, a round finger-style electric bass walking in triplets, and a brushed 12/8 shuffle kit (felt kick, brush taps on 2 and 4 with a circular sweep, triplet ride, hi-hat foot). The form is a two-beat pickup on the V chord, then four bars (G9 C9 | G9 Dm7 G7 | C9 C#dim7 | G/D E7#9 Am7 D7) with the last bar as the turnaround. The band enters with the first guitar bend on frame 0, swells bar by bar to the high bent cry in bar 3, and stops dead on a G9 hit on frame 540 (guitar chord, bass, kick, organ, brush cymbal). The hit rings for 2 s to silence. Only the mono kick and bass sit below 120 Hz.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 60540,
+  "timing": {
+    "fps": 30,
+    "durationSec": 20.0,
+    "samples": 960000,
+    "sampleRate": 48000,
+    "bpm": 60
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "intro"
+    },
+    {
+      "frame": 540,
+      "label": "final hit"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -1.37,
+    "durationSec": 20.0,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/guitar-slow-blues-bed-20s/out.wav",
+    "mp3": "/assets/guitar-slow-blues-bed-20s/out.mp3",
+    "spectrogram": "/assets/guitar-slow-blues-bed-20s/spectrogram.png",
+    "code": "/assets/guitar-slow-blues-bed-20s/generate.py"
+  },
+  "notes": "Lead: additive electric-guitar string with integrated-phase continuous bends, accelerating finger vibrato, hammer-on trill, chromatic double-stop slides and pick rakes; neck single-coil pickup/pluck combs into a leveller, a 4x-oversampled asymmetric two-stage tube preamp and a steep 1x12 cab sim, small-room reflections and plate. Band: drawbar organ through a slow rotary, round triplet-walking finger bass, brushed 12/8 kit (felt kick, brush taps 2 & 4 + sweep, triplet ride). Two-beat V pickup + 4 bars (turnaround in bar 4); the band chokes 80 ms before the G9 stop hit on frame 540, which rings 2 s to silence. No flags.",
+  "mood": [
+    "sad",
+    "calm"
+  ],
+  "tempo": "slow"
+}
