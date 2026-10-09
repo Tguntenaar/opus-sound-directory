@@ -16,6 +16,7 @@ const CATEGORY_NOUN: Record<string, string> = {
   gaming: "Game Sound Effect",
   cinematic: "Cinematic Sound Effect",
   "retro-tech": "Retro Tech Sound Effect",
+  guitar: "Guitar Sound",
 };
 
 const USE_CASE: Record<string, string> = {
@@ -30,6 +31,7 @@ const USE_CASE: Record<string, string> = {
   gaming: "games, streams and gaming edits",
   cinematic: "trailers and big reveals",
   "retro-tech": "nostalgia edits and throwback intros",
+  guitar: "intros, vlogs and warm, human-feeling edits",
 };
 
 export function categoryNoun(category: string): string {

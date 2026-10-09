@@ -46,6 +46,10 @@ export const CATEGORIES: Record<
     label: "Retro tech",
     description: "Nostalgic machine sounds: modems, dial tones and old hardware.",
   },
+  guitar: {
+    label: "Guitar",
+    description: "Licks, stings, loops and beds played by synthesised guitars.",
+  },
 };
 
 export const CATEGORY_ORDER = [
@@ -60,4 +64,5 @@ export const CATEGORY_ORDER = [
   "gaming",
   "cinematic",
   "retro-tech",
+  "guitar",
 ] as const;
