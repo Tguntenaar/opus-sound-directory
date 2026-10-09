@@ -3,6 +3,7 @@ import { GithubStars } from "@/components/github-stars";
 import { Info, LayoutGrid, Plug, UserRound } from "lucide-react";
 import { IconTooltip } from "@/components/icon-tooltip";
 import { BrandMark } from "@/components/brand-mark";
+import { GlobalSearch } from "@/components/global-search";
 
 export function SiteHeader() {
   return (
@@ -16,6 +17,7 @@ export function SiteHeader() {
           Opus Sounds Directory
         </Link>
         <nav className="ml-auto flex items-center gap-1 overflow-visible text-sm" aria-label="Main">
+          <GlobalSearch />
           <IconTooltip label="Browse sounds" side="bottom">
             <Link
               href="/"

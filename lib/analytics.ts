@@ -1,6 +1,6 @@
 import type { SoundEntry } from "@/lib/entries-types";
 
-export type AnalyticsSource = "card" | "detail" | "featured" | "blog_embed";
+export type AnalyticsSource = "card" | "detail" | "featured" | "blog_embed" | "search";
 
 export type SoundEventProps = {
   sound_id: string;
