@@ -12,6 +12,7 @@ import { FileUp, HeartHandshake, Info } from "lucide-react";
 import { IconTooltip } from "@/components/icon-tooltip";
 import { OwnerProfileLinks } from "@/components/owner-profile-links";
 import { PosthogProvider } from "@/components/posthog-provider";
+import { BookmarkLoginProvider } from "@/components/bookmark-login-provider";
 import { ClickNotes } from "@/components/click-notes";
 
 export const metadata = rootSiteMetadata();
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <JsonLd data={[rootWebSiteJsonLd(), organizationJsonLd()]} />
         <PosthogProvider>
           <StatsProvider>
+          <BookmarkLoginProvider>
           <PlaybackShortcuts />
           <LandingSting />
           <SiteHeader />
@@ -75,6 +77,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <OwnerProfileLinks variant="footer" />
             </nav>
           </footer>
+          </BookmarkLoginProvider>
           </StatsProvider>
         </PosthogProvider>
       </body>

@@ -44,6 +44,16 @@ a {
   text-decoration: none;
 }
 
+:where(a[href], button, summary, select, [role="button"], [role="link"],
+  input[type="button"], input[type="submit"], input[type="reset"],
+  input[type="checkbox"], input[type="radio"], input[type="range"]):not(:disabled):not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+:where(button, select, input, [role="button"], [role="link"]):is(:disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+}
+
 ::selection {
   background: rgb(139 92 246 / 0.35);
 }
