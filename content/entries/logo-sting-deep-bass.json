@@ -1,0 +1,56 @@
+{
+  "id": "logo-sting-deep-bass",
+  "slug": "logo-sting-deep-bass",
+  "title": "Deep bass double hit",
+  "category": "logo-stings",
+  "tags": [
+    "logo",
+    "3.5s",
+    "sub",
+    "bass",
+    "intro",
+    "double hit"
+  ],
+  "prompt": "A 3.5-second double bass hit in E: a heavy downbeat and a softer answer, \"DUM-dum\". The first hit lands on frame 0 and carries the weight: a deep sub boom whose pitch falls from about 72 Hz to E1 (41 Hz), a soft felt-and-wood thud, and a gently saturated low layer that puts the weight into the 80-250 Hz range, so it still feels heavy on laptop and phone speakers. With it, a warm, wide E add9 chord (E2, B2, F#3, G#3, B3) of filtered analog-style saws blooms open. Half a second later, on frame 15, a lighter second hit answers a fifth higher, on B1, with its own short thud and no new bloom. A faint glassy shimmer on E5 and B5 rises out of the chord, and both hits ring down in a soft, dark room to silence at 3.5 s. Calm, confident and weighty, never harsh.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 410350,
+  "timing": {
+    "fps": 30,
+    "durationSec": 3.5,
+    "samples": 168000,
+    "sampleRate": 48000
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "heavy E hit"
+    },
+    {
+      "frame": 15,
+      "label": "lighter B answer"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.01,
+    "truePeak": -1.3,
+    "durationSec": 3.5,
+    "passedChecks": true
+  },
+  "assets": {
+    "wav": "/assets/logo-sting-deep-bass/out.wav",
+    "mp3": "/assets/logo-sting-deep-bass/out.mp3",
+    "spectrogram": "/assets/logo-sting-deep-bass/spectrogram.png",
+    "code": "/assets/logo-sting-deep-bass/generate.py"
+  },
+  "notes": "Two hits, accent on the first ('DUM-dum'): a heavy E1 downbeat on frame 0 with the E add9 bloom, then a lighter answer a fifth up on B1 on frame 15 with no new bloom. The first sub is choked just before the answer (like a re-struck drum) and the chord ducks briefly so the answer reads cleanly. Saturated 80-250 Hz layer keeps weight on laptop/phone speakers (-4.2 LU at a 150 Hz high-pass). Written as an original sting, not a sound-alike of any brand's audio logo; it's the site's own landing sound.",
+  "mood": [
+    "dark",
+    "calm"
+  ],
+  "tempo": "slow"
+}

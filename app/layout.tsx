@@ -4,6 +4,7 @@ import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { StatsProvider } from "@/components/stats-provider";
 import { PlaybackShortcuts } from "@/components/playback-shortcuts";
+import { LandingSting } from "@/components/landing-sting";
 import { rootSiteMetadata } from "@/lib/site-metadata";
 import { rootWebSiteJsonLd, organizationJsonLd } from "@/lib/structured-data";
 import { JsonLd } from "@/components/json-ld";
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <PosthogProvider>
           <StatsProvider>
           <PlaybackShortcuts />
+          <LandingSting />
           <SiteHeader />
           <main className="page-enter mx-auto max-w-6xl px-4 py-12 sm:py-16">{children}</main>
           <footer className="border-t border-zinc-900/80 py-8">
