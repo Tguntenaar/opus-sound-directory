@@ -56,6 +56,7 @@ const links = [
     external: true,
   },
   { href: "/blog", label: "Blog", icon: BookOpen },
+  { href: "/agents", label: "Use with your agent", icon: Wrench },
 ] as const;
 
 export default function AboutPage() {

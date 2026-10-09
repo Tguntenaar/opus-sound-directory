@@ -52,6 +52,7 @@ export async function buildLlmsTxt(): Promise<string> {
     "## Optional",
     "",
     `- [About](${base}/about)`,
+    `- [Use with your agent](${base}/agents) — skill installation and MCP setup`,
     `- [Submit](${base}/submit)`,
     `- [MCP server](${base}/mcp) — remote tools at \`${base}/mcp\` (streamable HTTP)`,
     `- [Sitemap](${base}/sitemap.xml)`,
