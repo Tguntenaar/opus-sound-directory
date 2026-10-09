@@ -22,6 +22,7 @@ import heartbeat_tension_12s from "../content/entries/heartbeat-tension-12s.json
 import heavy_boom_meme from "../content/entries/heavy-boom-meme.json";
 import logo_sting_bright from "../content/entries/logo-sting-bright.json";
 import logo_sting_dark_cinematic from "../content/entries/logo-sting-dark-cinematic.json";
+import logo_sting_deep_bass from "../content/entries/logo-sting-deep-bass.json";
 import logo_sting_organic from "../content/entries/logo-sting-organic.json";
 import meditation_bowls_40s from "../content/entries/meditation-bowls-40s.json";
 import ocean_shore_loop from "../content/entries/ocean-shore-loop.json";
@@ -42,4 +43,4 @@ import whoosh_pass_by from "../content/entries/whoosh-pass-by.json";
 
 import type { SoundEntry } from "./entries-types";
 
-export const ALL_ENTRIES: SoundEntry[] = [ad_bed_15_upbeat, ad_bed_30_lifestyle, ad_bed_6_bumper, ad_bed_60_story, ambient_bed_lofi, arcade_game_over, chaos_calm_01, chaos_calm_02, chaos_calm_03, chaos_calm_04, chaos_calm_05, countdown_10_to_0, dialup_modem_56k, drop_impact_heavy, drop_whoosh_stinger, endless_riser_shepard, game_coin_pickup, game_level_up, glitch_transition_digital, heartbeat_tension_12s, heavy_boom_meme, logo_sting_bright, logo_sting_dark_cinematic, logo_sting_organic, meditation_bowls_40s, ocean_shore_loop, podcast_intro_10s, riser_tension_8s, sci_fi_hangar_loop, synthwave_drive_20s, tape_stop_transition, trailer_braam_hit, ui_camera_shutter, ui_cozy_sprite, ui_error_soft, ui_message_sent, ui_success_chime, ui_toggle_on, wah_wah_fail, whoosh_pass_by];
+export const ALL_ENTRIES: SoundEntry[] = [ad_bed_15_upbeat, ad_bed_30_lifestyle, ad_bed_6_bumper, ad_bed_60_story, ambient_bed_lofi, arcade_game_over, chaos_calm_01, chaos_calm_02, chaos_calm_03, chaos_calm_04, chaos_calm_05, countdown_10_to_0, dialup_modem_56k, drop_impact_heavy, drop_whoosh_stinger, endless_riser_shepard, game_coin_pickup, game_level_up, glitch_transition_digital, heartbeat_tension_12s, heavy_boom_meme, logo_sting_bright, logo_sting_dark_cinematic, logo_sting_deep_bass, logo_sting_organic, meditation_bowls_40s, ocean_shore_loop, podcast_intro_10s, riser_tension_8s, sci_fi_hangar_loop, synthwave_drive_20s, tape_stop_transition, trailer_braam_hit, ui_camera_shutter, ui_cozy_sprite, ui_error_soft, ui_message_sent, ui_success_chime, ui_toggle_on, wah_wah_fail, whoosh_pass_by];
