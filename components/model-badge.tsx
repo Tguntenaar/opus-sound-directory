@@ -14,7 +14,11 @@ export function ModelBadge({
   const { label, tooltip, variant } = modelBadgeDisplay(entry);
 
   const Icon =
-    variant === "local" ? Cpu : variant === "community" ? Users : Bot;
+    variant === "local" || variant === "codex"
+      ? Cpu
+      : variant === "community"
+        ? Users
+        : Bot;
 
   if (chip) {
     return (
@@ -24,7 +28,9 @@ export function ModelBadge({
             ? "bg-emerald-500/10 text-emerald-200/90"
             : variant === "local"
               ? "bg-zinc-800 text-zinc-400"
-              : "bg-violet-500/10 text-violet-200/90"
+              : variant === "codex"
+                ? "bg-sky-500/10 text-sky-200/90"
+                : "bg-violet-500/10 text-violet-200/90"
         }`}
         title={tooltip}
       >
@@ -43,7 +49,9 @@ export function ModelBadge({
             ? "border-amber-500/30 bg-amber-500/10"
             : variant === "community"
               ? "border-emerald-500/30 bg-emerald-500/10"
-              : "border-violet-500/30 bg-violet-500/10"
+              : variant === "codex"
+                ? "border-sky-500/30 bg-sky-500/10"
+                : "border-violet-500/30 bg-violet-500/10"
         }`}
         title={tooltip}
       >

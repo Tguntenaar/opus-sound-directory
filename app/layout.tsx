@@ -3,6 +3,7 @@ import type { Viewport } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import { StatsProvider } from "@/components/stats-provider";
+import { TakeVotesProvider } from "@/components/take-votes-provider";
 import { PlaybackShortcuts } from "@/components/playback-shortcuts";
 import { LandingSting } from "@/components/landing-sting";
 import { rootSiteMetadata } from "@/lib/site-metadata";
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <JsonLd data={[rootWebSiteJsonLd(), organizationJsonLd()]} />
         <PosthogProvider>
           <StatsProvider>
+          <TakeVotesProvider>
           <BookmarkLoginProvider>
           <PlaybackShortcuts />
           <LandingSting />
@@ -78,6 +80,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </nav>
           </footer>
           </BookmarkLoginProvider>
+          </TakeVotesProvider>
           </StatsProvider>
         </PosthogProvider>
       </body>

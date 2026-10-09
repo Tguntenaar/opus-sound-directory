@@ -204,11 +204,11 @@ export function BrowseGrid({
 
   return (
     <div className="flex flex-col gap-8">
-      {featured && !lockedCategory && !homeSponsor ? <FeaturedSoundExperiment
+      {featured && !bookmarksOnly && !lockedCategory && !homeSponsor ? <FeaturedSoundExperiment
         entry={featured}
         control={entries.find((entry) => entry.slug === FEATURED_CONTROL_SLUG)}
       /> : <FeaturedSlot
-        entry={featured}
+        entry={bookmarksOnly ? undefined : featured}
         placement={lockedCategory ? "category" : "home"}
         category={lockedCategory}
       />}

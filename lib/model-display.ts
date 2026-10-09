@@ -2,6 +2,9 @@
 
 export const LOCAL_SYNTH_MODEL_ID = "local-synth";
 
+/** OpenAI Codex — local numpy/scipy synthesis (hero8 review candidates). */
+export const CODEX_MODEL_ID = "openai-codex";
+
 /** Default Anthropic Opus model id for future `--agent` runs (Messages API). */
 export const TARGET_OPUS_MODEL_ID = "claude-opus-5-5";
 
@@ -15,6 +18,10 @@ const DISPLAY: Record<string, { label: string; detail?: string }> = {
   [LOCAL_SYNTH_MODEL_ID]: {
     label: "Local numpy synth",
     detail: "Runner verification pipeline (not an API model call)",
+  },
+  [CODEX_MODEL_ID]: {
+    label: "Codex",
+    detail: "OpenAI Codex-authored local NumPy/SciPy synthesis (not Claude Opus)",
   },
   "claude-opus-4-20250514": {
     label: "Claude Opus 4",
@@ -31,7 +38,11 @@ const DISPLAY: Record<string, { label: string; detail?: string }> = {
 };
 
 export function isOpusApiModelId(modelId: string): boolean {
-  return modelId !== LOCAL_SYNTH_MODEL_ID && modelId.startsWith("claude-opus");
+  return (
+    modelId !== LOCAL_SYNTH_MODEL_ID &&
+    modelId !== CODEX_MODEL_ID &&
+    modelId.startsWith("claude-opus")
+  );
 }
 
 export function modelAttribution(modelId: string, targetModelId?: string): {

@@ -52,7 +52,7 @@
     "start": "vite preview",
     "deploy": "vinext-cloudflare deploy",
     "generate:icons": "node scripts/generate-brand-icons.mjs",
-    "test": "node --experimental-strip-types --test lib/entries.test.ts lib/browse-sort.test.ts lib/mcp/search.test.ts lib/mcp/should-serve-info-page.test.ts lib/stats-display.test.ts lib/sponsors.test.ts lib/sponsor-notify.test.ts lib/sponsor-packages.test.ts lib/accounts.test.ts lib/auth-analytics.test.ts lib/submit-review-policy.test.ts lib/search-records.test.ts",
+    "test": "node --experimental-strip-types --test lib/entries.test.ts lib/browse-sort.test.ts lib/mcp/search.test.ts lib/mcp/should-serve-info-page.test.ts lib/stats-display.test.ts lib/sponsors.test.ts lib/sponsor-notify.test.ts lib/sponsor-packages.test.ts lib/accounts.test.ts lib/auth-analytics.test.ts lib/submit-review-policy.test.ts lib/search-records.test.ts lib/take-selection.test.ts lib/entry-takes-selection.test.ts lib/hero8-take-quality.test.ts",
     "test:e2e": "playwright test",
     "accounts:schema": "node --experimental-strip-types scripts/generate-account-schema.mjs",
     "search:index": "node scripts/index-algolia.mjs"

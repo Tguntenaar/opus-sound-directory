@@ -15,6 +15,8 @@ import { setFocusedSoundCard } from "@/lib/playback-focus";
 import { UsageBadges } from "@/components/usage-badges";
 import { MoodChips } from "@/components/mood-chips";
 import { ModelBadge } from "@/components/model-badge";
+import { EntryTakeAffordance } from "@/components/entry-take-affordance";
+import { useResolvedEntryTake } from "@/lib/use-resolved-entry-take";
 import { PlayPauseIcon } from "@/components/play-pause-icon";
 import { EqualizerBars } from "@/components/equalizer-bars";
 import { WaveformScrubber } from "@/components/waveform-scrubber";
@@ -36,10 +38,15 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const audioId = entry.id;
+  const { defaultTake, hasTakes } = useResolvedEntryTake(entry);
+  const previewSrc = defaultTake?.mp3 ?? entry.assets.mp3 ?? "";
+  const previewEntry = defaultTake
+    ? { ...entry, modelId: defaultTake.modelId }
+    : entry;
+  const audioId = hasTakes && defaultTake ? `${entry.id}:${defaultTake.id}` : entry.id;
   const analyticsSource: AnalyticsSource = featured ? "featured" : "card";
 
-  useSoundPlaybackAnalytics(entry, analyticsSource, audioRef, playing);
+  useSoundPlaybackAnalytics(previewEntry, analyticsSource, audioRef, playing);
 
   useEffect(() => {
     const card = cardRef.current;
@@ -152,7 +159,7 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
     >
       <audio
         ref={audioRef}
-        src={entry.assets.mp3}
+        src={previewSrc}
         preload="none"
         onEnded={() => {
           notifyEnded(audioId);
@@ -179,6 +186,7 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
               {entry.title}
             </h3>
             <div className="flex shrink-0 items-center gap-1">
+              <EntryTakeAffordance entry={entry} />
               {playing && <EqualizerBars active className="mt-0.5" />}
               <CardQuickActions entry={entry} source={analyticsSource} />
             </div>
@@ -187,7 +195,7 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
       </div>
 
       <WaveformScrubber
-        src={entry.assets.wav}
+        src={previewSrc || entry.assets.wav}
         progress={progress}
         playing={playing}
         onSeek={seek}
@@ -196,7 +204,7 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
 
       <MoodChips entry={entry} compact />
       <div className="flex items-end justify-between gap-2">
-        <ModelBadge entry={entry} chip />
+        <ModelBadge entry={previewEntry} chip />
         <UsageBadges entryId={entry.id} compact className="text-xs text-zinc-600" />
       </div>
     </Link>

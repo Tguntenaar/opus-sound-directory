@@ -18,14 +18,13 @@ import {
   relatedEntries,
   spectrogramAlt,
 } from "@/lib/entry-seo";
-import { AudioPlayer } from "@/components/audio-player";
+import { EntryTakesPlayer } from "@/components/entry-takes-player";
 import { CopyButton } from "@/components/copy-button";
 import { MetricsPanel } from "@/components/metrics-panel";
 import { CodeViewer } from "@/components/code-viewer";
 import { DownloadLinks } from "@/components/download-links";
 import { UsageBadges } from "@/components/usage-badges";
 import { MoodChips } from "@/components/mood-chips";
-import { ModelBadge } from "@/components/model-badge";
 import { SpectrogramImage } from "@/components/spectrogram-image";
 import { EntryShareActions } from "@/components/entry-share-actions";
 import { entryAudioObjectJsonLd, breadcrumbListJsonLd } from "@/lib/structured-data";
@@ -126,11 +125,6 @@ export default async function EntryPage({ params }: Props) {
           <EntryShareActions slug={entry.slug} title={entry.title} entry={entry} />
         </div>
         <RelatedGuideLink entryId={entry.id} category={entry.category} />
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <div className="max-w-md">
-            <ModelBadge entry={entry} prominent />
-          </div>
-        </div>
         {community?.author?.name && (
           <p className="text-sm text-zinc-500">
             Credit:{" "}
@@ -156,12 +150,7 @@ export default async function EntryPage({ params }: Props) {
 
       {hasAudio ? (
         <>
-          <AudioPlayer
-            audioId={entry.id}
-            src={entry.assets.mp3}
-            title={entry.title}
-            entry={entry}
-          />
+          <EntryTakesPlayer entry={entry} />
           <DownloadLinks
             entryId={entry.id}
             wav={
