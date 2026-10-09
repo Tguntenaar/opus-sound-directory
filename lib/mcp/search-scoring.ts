@@ -14,6 +14,77 @@ const WEIGHT = {
   moodWholeWord: 400,
 } as const;
 
+/**
+ * Everyday search words → words the catalog actually uses. Short UI sounds are
+ * described by what they are ("chime", "toggle"), not by what people search
+ * for ("notification", "button"), so literal matching alone misses them.
+ * Related terms are discounted (nouns more than adjectives) and a matching
+ * category adds a small flat boost, so no single related word outweighs a
+ * literal tag or title match.
+ */
+type RelatedGroup = {
+  queries: string[];
+  related: string[];
+  category?: string;
+  factor: number;
+};
+
+const RELATED_GROUPS: RelatedGroup[] = [
+  {
+    queries: ["notification", "notify", "alert", "ping", "ding", "beep", "chime", "bell"],
+    related: ["chime", "ping", "ding", "message", "notification"],
+    category: "ui-sounds",
+    factor: 0.5,
+  },
+  {
+    queries: ["click", "tap", "button", "toggle", "switch", "press"],
+    related: ["toggle", "tap", "click", "switch", "tactile"],
+    category: "ui-sounds",
+    factor: 0.5,
+  },
+  {
+    queries: ["success", "confirm", "confirmation", "complete", "done", "correct"],
+    related: ["success", "chime"],
+    category: "ui-sounds",
+    factor: 0.5,
+  },
+  {
+    queries: ["error", "fail", "failure", "wrong", "denied", "invalid", "nope", "warning"],
+    related: ["error", "fail", "nope"],
+    category: "ui-sounds",
+    factor: 0.5,
+  },
+  {
+    queries: ["send", "sent", "message", "chat", "sms"],
+    related: ["message", "send", "swish"],
+    category: "ui-sounds",
+    factor: 0.5,
+  },
+  {
+    queries: ["coin", "pickup", "collect", "collectible", "reward", "points"],
+    related: ["coin", "pickup", "collect", "sparkle"],
+    factor: 0.5,
+  },
+  {
+    queries: ["gentle", "soft", "subtle", "quiet", "calm"],
+    related: ["gentle", "soft", "subtle", "calm"],
+    factor: 0.15,
+  },
+];
+
+const CATEGORY_HINT = 2_000;
+
+/** The token plus a naive singular form ("notifications" → "notification"). */
+function tokenVariants(token: string): string[] {
+  const variants = [token];
+  if (token.length > 4 && token.endsWith("ies")) variants.push(`${token.slice(0, -3)}y`);
+  else if (/(s|x|ch|sh)es$/.test(token)) variants.push(token.slice(0, -2));
+  else if (token.length > 3 && token.endsWith("s") && !token.endsWith("ss")) {
+    variants.push(token.slice(0, -1));
+  }
+  return variants;
+}
+
 function normalizeQuery(query: string): string {
   return query.trim().toLowerCase();
 }
@@ -41,7 +112,12 @@ function categoryTokens(categoryId: string): string[] {
   return categoryId.toLowerCase().split("-").filter(Boolean);
 }
 
-function scoreTokenAgainstEntry(entry: SoundEntry, token: string): number {
+/** `wholeWordsOnly` skips id/slug prefix rules, so related term "tap" can't hit "tape-stop". */
+function scoreTokenAgainstEntry(
+  entry: SoundEntry,
+  token: string,
+  wholeWordsOnly = false,
+): number {
   if (!token) return 0;
   let score = 0;
   const category = entry.category.toLowerCase();
@@ -50,8 +126,8 @@ function scoreTokenAgainstEntry(entry: SoundEntry, token: string): number {
 
   if (category === token) score += WEIGHT.categoryExact;
   if (slug === token) score += WEIGHT.slugExact;
-  if (id.startsWith(token)) score += WEIGHT.idPrefix;
-  if (slug.startsWith(token)) score += WEIGHT.slugPrefix;
+  if (!wholeWordsOnly && id.startsWith(token)) score += WEIGHT.idPrefix;
+  if (!wholeWordsOnly && slug.startsWith(token)) score += WEIGHT.slugPrefix;
   if (categoryTokens(category).includes(token)) score += WEIGHT.categoryToken;
 
   for (const tag of entry.tags ?? []) {
@@ -62,11 +138,15 @@ function scoreTokenAgainstEntry(entry: SoundEntry, token: string): number {
   }
 
   if (hasWholeWord(entry.title, token)) score += WEIGHT.titleWholeWord;
-  else if (entry.title.toLowerCase().includes(token)) score += WEIGHT.titleSubstring;
+  else if (!wholeWordsOnly && entry.title.toLowerCase().includes(token)) {
+    score += WEIGHT.titleSubstring;
+  }
 
   const description = entry.prompt ?? "";
   if (hasWholeWord(description, token)) score += WEIGHT.descriptionWholeWord;
-  else if (description.toLowerCase().includes(token)) score += WEIGHT.descriptionSubstring;
+  else if (!wholeWordsOnly && description.toLowerCase().includes(token)) {
+    score += WEIGHT.descriptionSubstring;
+  }
 
   return score;
 }
@@ -93,7 +173,18 @@ export function scoreEntry(
 
   let score = 0;
   for (const token of tokens) {
-    score += scoreTokenAgainstEntry(entry, token);
+    const variants = tokenVariants(token);
+    score += Math.max(...variants.map((v) => scoreTokenAgainstEntry(entry, v)));
+
+    for (const group of RELATED_GROUPS) {
+      if (!variants.some((v) => group.queries.includes(v))) continue;
+      let relatedScore = 0;
+      for (const term of group.related) {
+        if (!variants.includes(term)) relatedScore += scoreTokenAgainstEntry(entry, term, true);
+      }
+      score += Math.round(relatedScore * group.factor);
+      if (group.category === entry.category) score += CATEGORY_HINT;
+    }
   }
   return score;
 }
