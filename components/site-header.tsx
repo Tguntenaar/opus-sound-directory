@@ -24,12 +24,12 @@ export function SiteHeader() {
               <LayoutGrid className="h-4 w-4" aria-hidden />
             </Link>
           </IconTooltip>
-          <IconTooltip label="MCP server" side="bottom">
+          <IconTooltip label="Use with your agent" side="bottom">
             <Link
-              href="/mcp"
+              href="/agents"
               prefetch={false}
               className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-900/80 hover:text-zinc-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
-              aria-label="MCP server"
+              aria-label="Use with your agent"
             >
               <Plug className="h-4 w-4" aria-hidden />
             </Link>
