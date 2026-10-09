@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BrandMark } from "@/components/brand-mark";
-import { InstallSnippet } from "@/components/install-snippet";
+import { HarnessSnippets, InstallSnippet } from "@/components/install-snippet";
 import { canonicalForPath } from "@/lib/site-metadata";
 
 export const metadata: Metadata = {
@@ -40,18 +40,12 @@ export default function AgentsPage() {
       <section className="min-w-0 space-y-5 rounded-xl border border-zinc-800 bg-zinc-900/30 p-5 sm:p-7">
         <h2 className="text-xl font-medium text-zinc-100">2. Connect the live directory</h2>
         <p className="text-sm leading-6 text-zinc-400">Installing the skill does not automatically connect MCP. Add the server using your agent’s setup below. No API key is needed for public read tools.</p>
-        <details className="rounded-lg border border-zinc-800 p-4" open>
-          <summary className="cursor-pointer text-sm font-medium text-zinc-200">Claude Code</summary>
-          <div className="mt-4 space-y-3"><InstallSnippet text={`claude mcp add --transport http opus-sounds ${endpoint}`} label="Claude Code MCP command" /><p className="text-xs leading-5 text-zinc-400">Run in your project, then check the connection with <code>claude mcp list</code>. <a className="text-violet-300 underline" href="https://code.claude.com/docs/en/mcp">Official setup guide</a>.</p></div>
-        </details>
-        <details className="rounded-lg border border-zinc-800 p-4">
-          <summary className="cursor-pointer text-sm font-medium text-zinc-200">Cursor</summary>
-          <div className="mt-4 space-y-3"><p className="text-xs leading-5 text-zinc-400">Merge this entry into <code>.cursor/mcp.json</code> in your project. Keep your existing servers. Then enable or reload it in MCP settings.</p><InstallSnippet text={cursorConfig} label="Cursor MCP configuration" /><a className="text-xs text-violet-300 underline" href="https://cursor.com/docs/mcp">Official setup guide</a></div>
-        </details>
-        <details className="rounded-lg border border-zinc-800 p-4">
-          <summary className="cursor-pointer text-sm font-medium text-zinc-200">Other MCP clients</summary>
-          <div className="mt-4 space-y-3"><p className="text-sm leading-6 text-zinc-400">Add a remote server with Streamable HTTP transport using the URL below. Configuration varies by client; skill support and MCP support are separate capabilities.</p><InstallSnippet text={endpoint} label="MCP server URL" /></div>
-        </details>
+        <HarnessSnippets snippets={[
+          { name: "Claude Code", text: `claude mcp add --transport http opus-sounds ${endpoint}`, label: "Run in your project" },
+          { name: "Codex", text: `codex mcp add opus-sounds --url ${endpoint}`, label: "Run in your terminal · requires Codex CLI" },
+          { name: "Cursor", text: cursorConfig, label: "Add to .cursor/mcp.json · keep existing servers" },
+          { name: "Other agents", text: endpoint, label: "Remote server · Streamable HTTP", description: "Add this URL as a remote MCP server. No API key required for search or downloads." },
+        ]} />
       </section>
 
       <section className="space-y-4">
