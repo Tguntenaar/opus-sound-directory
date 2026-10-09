@@ -8,7 +8,7 @@
   "packageManager": "npm@10.9.7",
   "dependencies": {
     "@better-auth/api-key": "^1.7.7",
-    "@modelcontextprotocol/sdk": "^1.30.0",
+    "@modelcontextprotocol/sdk": "^1.31.0",
     "@vinext/cloudflare": "^1.0.1",
     "agents": "^0.26.0",
     "algoliasearch": "^5.59.0",
@@ -36,7 +36,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "@vitejs/plugin-rsc": "^0.5.35",
     "cf": "^1.0.0-beta.12",
-    "sharp": "^0.34.4",
+    "sharp": "^0.35.5",
     "tailwindcss": "latest",
     "to-ico": "^1.1.5",
     "typescript": "latest",
