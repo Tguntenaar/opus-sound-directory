@@ -13,7 +13,7 @@
   ],
   "prompt": "A 20-second slow-burn blues-ballad bed in G, 12/8 at 60 dotted-quarter beats per minute (one beat = one second = 30 frames). The star is an electric lead guitar on the edge of breakup: a single-coil neck pickup into a 4x-oversampled two-stage tube preamp and a 1x12 open-back cab, mic'd in a small room with a warm plate. It plays an original call-and-response solo. High, singing calls on the top strings use continuous half- and whole-step bends, finger vibrato that starts slow and speeds up, and pick rakes. Lower answers use double stops sliding chromatically, a blue curl and a hammer-on trill between the minor and major third. Under it sit a soft drawbar organ through a slow rotary speaker, a round finger-style electric bass walking in triplets, and a brushed 12/8 shuffle kit (felt kick, brush taps on 2 and 4 with a circular sweep, triplet ride, hi-hat foot). The form is a two-beat pickup on the V chord, then four bars (G9 C9 | G9 Dm7 G7 | C9 C#dim7 | G/D E7#9 Am7 D7) with the last bar as the turnaround. The band enters with the first guitar bend on frame 0, swells bar by bar to the high bent cry in bar 3, and stops dead on a G9 hit on frame 540 (guitar chord, bass, kick, organ, brush cymbal). The hit rings for 2 s to silence. Only the mono kick and bass sit below 120 Hz.",
   "modelId": "claude-opus-5-5",
-  "generatedAt": "2026-10-06",
+  "generatedAt": "2026-10-09",
   "seed": 60540,
   "timing": {
     "fps": 30,

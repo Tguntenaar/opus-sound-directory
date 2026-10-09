@@ -13,7 +13,7 @@
   ],
   "prompt": "A 20-second seamless loop of intimate fingerstyle steel-string acoustic guitar in D major at 96 BPM: eight bars of alternating-thumb picking, played in standard tuning with every note on a real string and fret. A lightly palm-muted thumb keeps a steady boom-chick bass on the low strings (with a thumb-over F# and a walking turnaround), the fingers pinch an original melody on the top strings, and open strings ring on as drones between the moving notes. Bars 1-4 state the theme in first position over D, Bm7, G and Asus4-A; bars 5-8 answer it up the neck over open-string bass, peak on a hammered-on high E in bar 6, drop back to first position with a pull-off, and turn around on A7sus4-A7 while the thumb walks B-C# straight back into the opening D. A light thumb knock on the top marks beats 2 and 4, and two soft wound-string squeaks give away the position shifts. Each string is a two-polarisation digital waveguide (loop low-pass, stiffness allpasses, fractional tuning) plucked with a shaped flesh-and-nail impulse at a varying point along the string, every string can only sound one note at a time, and all of them drive one modelled guitar body (air and top-plate resonances near 100 and 200 Hz plus a dense wooden mode field), picked up by a close stereo pair in a small warm room. Rendered circularly so the last sample flows back into the first.",
   "modelId": "claude-opus-5-5",
-  "generatedAt": "2026-10-06",
+  "generatedAt": "2026-10-09",
   "seed": 96203,
   "timing": {
     "fps": 30,

@@ -13,7 +13,7 @@
   ],
   "prompt": "A 9-second clean neo-soul electric guitar lick in E major at 72 BPM, played on a glassy single-coil guitar in the \"in-between\" neck+middle pickup position into a clean tube amp with light compression and a spring reverb. On frame 0 the fretting thumb holds a low A under a fingerpicked double stop whose lower note hammers up a whole step into a bright A-major shape. A second hammered double stop in thirds adds a lydian colour, the thumb walks down to G#, and a pair of sixths slides up the G and high-E strings with a little finger vibrato. One muted ghost \"chuck\" follows, then a quick pentatonic run that opens with a grace-note pull-off and lands over a thumbed C#. A 4th-to-3rd hammered double stop follows, then a singing whole-step bend over a B bass, held with a finger vibrato that starts slow and quickens before the bend eases back. After a short breath, frame 200 lands on a fast-rolled, lush Emaj9 chord that rings out with a soft chiming 7th-fret natural harmonic on top, and the spring tail fades to silence. Every note is modelled as a real string: an additive waveguide-style string with inharmonic partials, frequency-dependent decay, two polarisations, pluck-position and twin-pickup comb filtering, per-string voice stealing, fretted slides that step across the frets, and humanised timing.",
   "modelId": "claude-opus-5-5",
-  "generatedAt": "2026-10-06",
+  "generatedAt": "2026-10-09",
   "seed": 72009,
   "timing": {
     "fps": 30,

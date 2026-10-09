@@ -12,7 +12,7 @@
   ],
   "prompt": "A 3-second clean electric-guitar logo sting in A major. From frame 0 three bell-like natural harmonics ring out one beat apart in a rising figure, each on its own string so they overlap: A4 at the 7th fret of the D string, B4 at the 12th fret of the B string, then E5 at the 12th fret of the high E string. Each one is a picked string with a finger resting on a node, so only the partials that are multiples of 3 (7th fret) or 2 (12th fret) survive, after a tiny damped \"tick\" from the rest. On frame 45 (1.5 s) the fretting hand lands and a fast downstroke rolls an open-voiced A major add9 chord across all six strings (A2 E3 A3 C#4 B3 E4; the open B rubs against the fretted C#). A light touch of the tremolo arm adds a shimmer. The tone is a clean single-coil neck pickup, with a touch of the middle coil, into a light compressor and a clean tube amp with a 1x12 open-back cab, then a lush stereo chorus. A dotted-eighth ping-pong delay with a faint octave-up shimmer and a small plate fill the space. Everything rings out to silence by 3.0 s. Only the guitar's own low notes sit below 120 Hz, and they are mono.",
   "modelId": "claude-opus-5-5",
-  "generatedAt": "2026-10-06",
+  "generatedAt": "2026-10-09",
   "seed": 45903,
   "timing": {
     "fps": 30,
