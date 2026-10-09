@@ -1,16 +1,18 @@
 """podcast-intro-10s: Opus Sound Directory
 
-A friendly 10-second podcast intro in Bb major at 96 BPM, played by a small jazz
-trio. A tine electric piano (two-operator FM bark plus a short bell-like tine,
-pickup asymmetry and a 4.8 Hz stereo tremolo) comps rootless voicings in a
-Charleston rhythm and plays a swung, singable top melody. A round upright-style
-bass walks quarter notes (Bbmaj7 Gm7 | Cm7 F7 | Ebmaj7 Cm7 F7) under brushed
-snare swirls, taps on 2 and 4 and a feathered kick. It opens on a full-band hit
-with a brushed cymbal at frame 0. The last bar slows into a gentle ritardando
-and a quick triplet brush pickup, the band takes a short breath, and a Bb6/9
-button (bass, piano chord, cymbal) lands exactly on frame 240 (8.0 s). It then
-rings out to silence over the final two seconds, leaving room for the host to
-start talking. Everything below 120 Hz is a mono bass and kick.
+A bright, friendly 10-second podcast intro in Bb major at 120 BPM: one balanced
+four-bar phrase (Ebmaj9 | Dm7 G13 | Cm9 | Cm9 F13) that resolves home on the
+button. It opens on a full-band hit at frame 0 with a soft splash. A warm tine
+electric piano (FM bark plus a short bell tine, gentle stereo tremolo) comps with
+pushed off-beat stabs, a round finger-style electric bass plays a syncopated line
+with a chromatic walk-up, and a tight, dry kit (warm kick, snappy snare with a
+clap layer, swung hats) keeps it moving. A soft, whistle-like synth lead carries a
+singable hook in bar 1, answers it in bar 2 and restates it higher in bar 3. Bar 3
+lifts with a short noise swell, a quiet string pad and a shaker. Bar 4 builds with
+a snare fill into an "and-of-four" band stab and a breath of silence. A Bb6/9
+button (kick, bass, piano chord, lead on the tonic, splash) then lands exactly on
+frame 240 (8.0 s) and decays to true silence by 10 s, so the host can start
+talking over the ring-out. Everything below 120 Hz is a mono kick and bass.
 
 Run:  python3 generate.py   -> writes out.wav next to this file.
 """
@@ -24,9 +26,9 @@ from scipy.io import wavfile
 from scipy.ndimage import minimum_filter1d, uniform_filter1d
 
 SAMPLE_RATE = 48000
-SEED = 960810
+SEED = 1200810
 DURATION_SEC = 10
-BPM = 96
+BPM = 120
 KEY = "Bb major"
 FPS = 30
 CUE_FRAMES = (0, 240)          # frame 0: full-band intro hit, frame 240: button
@@ -35,24 +37,16 @@ TRUE_PEAK_CEILING_DBTP = -1.0
 
 SR = SAMPLE_RATE
 N = DURATION_SEC * SR
-BEAT = 60.0 / BPM              # 0.625 s
-BUTTON_T = CUE_FRAMES[1] / FPS  # 8.0 s
-SWING = 0.64                   # swung "and" position inside a beat
+BEAT = 60.0 / BPM              # 0.5 s, so 4 bars = 8.0 s
+BUTTON_B = 16                  # beat 16 = bar 5 downbeat = 8.0 s = frame 240
+SW = 0.04                      # light 16th swing (fraction of a beat added to off-16ths)
+assert abs(BUTTON_B * BEAT - CUE_FRAMES[1] / FPS) < 1e-12
 
 rng = np.random.default_rng(SEED)
 
-# Beat clock: beats 0..8 strict at 96 BPM (bars 1-2 and the bar-3 downbeat),
-# then a ritardando so beat 12 (the button) lands on 8.0 s.
-_BEATS = [i * BEAT for i in range(9)]
-for d in (0.64, 0.70, 0.78, 0.88):
-    _BEATS.append(_BEATS[-1] + d)
-assert abs(_BEATS[12] - BUTTON_T) < 1e-9
-
 
 def T(b: float) -> float:
-    """Time of a (fractional) beat position on the tempo map."""
-    i = min(int(np.floor(b)), 11)
-    return _BEATS[i] + (b - i) * (_BEATS[i + 1] - _BEATS[i])
+    return b * BEAT
 
 
 # ---------------------------------------------------------------- utilities
@@ -68,8 +62,9 @@ def fade(x: np.ndarray, a: float = 0.001, r: float = 0.005) -> np.ndarray:
     """Raised-cosine attack/release so nothing starts or stops with a click."""
     x = x.copy()
     na, nr = max(1, int(a * SR)), max(1, int(r * SR))
-    x[:na] *= (0.5 - 0.5 * np.cos(np.linspace(0, np.pi, na)))[(slice(None),) + (None,) * (x.ndim - 1)]
-    x[-nr:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nr)))[(slice(None),) + (None,) * (x.ndim - 1)]
+    sh = (slice(None),) + (None,) * (x.ndim - 1)
+    x[:na] *= (0.5 - 0.5 * np.cos(np.linspace(0, np.pi, na)))[sh]
+    x[-nr:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nr)))[sh]
     return x
 
 
@@ -94,93 +89,150 @@ def noise(dur: float) -> np.ndarray:
     return rng.standard_normal(int(round(dur * SR)))
 
 
+def human() -> float:
+    """A few ms of timing looseness (never applied to cue events)."""
+    return float(rng.uniform(-0.004, 0.004))
+
+
 # ---------------------------------------------------------------- voices
-def epiano(midi: float, dur: float, vel: float = 0.8, att: float = 0.002, ring: float = 1.0) -> np.ndarray:
-    """Tine electric piano. A 1:1 FM pair whose index falls fast (the 'bark' into a
-    round body), a short inharmonic tine partial at 7.0x, and a gentle even-order
-    pickup asymmetry. All sidebands stay under ~6 kHz."""
+def epiano(midi: float, dur: float, vel: float = 0.8, att: float = 0.002, ring: float = 1.0,
+           rel: float = 0.06) -> np.ndarray:
+    """Tine electric piano: 1:1 FM pair whose index falls fast (bark -> round body),
+    a short bell tine at 7x, and a little even-order pickup asymmetry."""
     t = tt(dur)
     f = hz(midi)
-    idx = vel * (2.0 * np.exp(-t / 0.10) + 0.35 * np.exp(-t / 1.5))
+    idx = vel * (1.7 * np.exp(-t / 0.08) + 0.3 * np.exp(-t / 1.2))
     ph = rng.uniform(0, 2 * np.pi)
     body = np.sin(2 * np.pi * f * t + ph + idx * np.sin(2 * np.pi * f * t))
-    tine = (0.22 * vel ** 2 * np.sin(2 * np.pi * 7.0 * f * t + 0.6 * np.sin(2 * np.pi * f * t))
-            * np.exp(-t / 0.035))
+    tine = (0.18 * vel ** 2 * np.sin(2 * np.pi * 7.0 * f * t + 0.5 * np.sin(2 * np.pi * f * t))
+            * np.exp(-t / 0.03))
     y = body + tine
-    y = y + 0.16 * y ** 2
-    y -= 0.16 * 0.5                                  # remove most of the asymmetry's DC
-    dec = 1.9 * ring * (440.0 / f) ** 0.35           # low notes ring longer
-    env = np.exp(-t / dec) * (0.7 + 0.3 * np.exp(-t / 0.25))
-    return fade(y * env * 0.25 * vel, a=att, r=min(0.12, dur * 0.4))
+    y = y + 0.12 * y ** 2 - 0.06
+    dec = 1.6 * ring * (440.0 / f) ** 0.3
+    env = np.exp(-t / dec) * (0.72 + 0.28 * np.exp(-t / 0.2))
+    return fade(y * env * 0.22 * vel, a=att, r=min(rel, dur * 0.4))
 
 
-def upright(midi: float, dur: float, vel: float = 1.0, att: float = 0.003) -> np.ndarray:
-    """Round upright-style bass: plucked fundamental with a small pitch settle,
-    upper harmonics dying faster than the fundamental, and a soft finger thump."""
+def lead(midi: float, dur: float, prev: float | None = None, vel: float = 1.0, att: float = 0.012,
+         rel: float = 0.05, tail: float | None = None) -> np.ndarray:
+    """Soft whistle-like synth lead: a few additive harmonics, a breath of band-passed
+    noise, a 15 ms legato glide from the previous note and delayed vibrato."""
     t = tt(dur)
-    f = hz(midi) * (1 + 0.010 * np.exp(-t / 0.035))
+    f0 = hz(midi)
+    f = np.full_like(t, f0)
+    if prev is not None:
+        f = f0 * 2 ** ((prev - midi) / 12 * np.exp(-t / 0.015))
+    vib = 1 + 0.0105 * np.sin(2 * np.pi * 5.4 * t) * np.clip((t - 0.18) / 0.25, 0, 1)
+    ph = 2 * np.pi * np.cumsum(f * vib) / SR
+    y = (np.sin(ph) + 0.30 * np.sin(2 * ph) + 0.12 * np.sin(3 * ph) + 0.04 * np.sin(4 * ph))
+    br = sos_filter(noise(dur), "bandpass", [1.6 * f0, 3.2 * f0], order=2) * 0.05
+    env = (1 - np.exp(-t / att)) * (0.82 + 0.18 * np.exp(-t / 0.15))
+    if tail is not None:
+        env *= np.exp(-t / tail)
+    return fade((y + br) * env * 0.2 * vel, a=0.002, r=min(rel, dur * 0.4))
+
+
+def ebass(midi: float, dur: float, vel: float = 1.0, att: float = 0.002, rel: float = 0.03,
+          tail: float = 0.9) -> np.ndarray:
+    """Round finger-style electric bass: additive partials whose upper harmonics die
+    fast (a closing 'filter'), a tiny pitch settle and a soft finger thump."""
+    t = tt(dur)
+    f = hz(midi) * (1 + 0.006 * np.exp(-t / 0.02))
     ph = 2 * np.pi * np.cumsum(f) / SR
     y = np.zeros_like(t)
-    for k, a in ((1, 1.0), (2, 0.55), (3, 0.28), (4, 0.13), (5, 0.06), (6, 0.03)):
-        y += a * np.sin(k * ph) * np.exp(-t * (1.1 + 2.4 * (k - 1)))
-    thump = sos_filter(noise(dur), "bandpass", [150, 700]) * np.exp(-t / 0.012) * 0.35
-    env = 0.75 * np.exp(-t / 0.9) + 0.25 * np.exp(-t / 2.5)
-    return fade((y * env + thump) * 0.5 * vel, a=att, r=min(0.06, dur * 0.3))
+    for k in range(1, 9):
+        if k * hz(midi) > 3000:
+            break
+        y += (1 / k ** 1.25) * np.sin(k * ph) * np.exp(-t * (0.6 + 9.0 * (k - 1)))
+    thump = sos_filter(noise(dur), "bandpass", [200, 900]) * np.exp(-t / 0.008) * 0.25
+    env = 0.8 * np.exp(-t / tail) + 0.2
+    return fade((y * env + thump) * 0.45 * vel, a=att, r=min(rel, dur * 0.3))
 
 
-def feather_kick(vel: float = 1.0, att: float = 0.001) -> np.ndarray:
-    t = tt(0.3)
-    f = 50 + (95 - 50) * np.exp(-t / 0.03)
+def kick(vel: float = 1.0, att: float = 0.0008) -> np.ndarray:
+    t = tt(0.45)
+    f = 60 + (165 - 60) * np.exp(-t / 0.025)
     y = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.13)
-    return fade(sos_filter(y, "lowpass", 400) * 0.6 * vel, a=att, r=0.03)
+    click = sos_filter(noise(0.45), "bandpass", [1500, 4500]) * np.exp(-t / 0.0025) * 0.12
+    return fade((np.tanh(1.4 * y) / np.tanh(1.4) + click) * 0.75 * vel, a=att, r=0.04)
 
 
-def brush_tap(vel: float = 1.0) -> np.ndarray:
-    """Brush slap on the snare: a soft wire-buzz noise burst with a hint of drum body."""
-    d = 0.30
+def snare(vel: float = 1.0, clap: bool = True, att: float = 0.0006) -> np.ndarray:
+    """Snappy snare: two drum-head modes, band-passed wire noise, optional clap layer."""
+    d = 0.4
     t = tt(d)
-    wires = sos_filter(noise(d), "bandpass", [1100, 7500], order=2)
-    wires *= (1 - np.exp(-t / 0.003)) * np.exp(-t / 0.065)
-    body = np.sin(2 * np.pi * 196 * t) * np.exp(-t / 0.035) * 0.25
-    return fade((wires + body) * 0.55 * vel, a=0.001, r=0.03)
+    head = (np.sin(2 * np.pi * 185 * t) * 0.6 + np.sin(2 * np.pi * 330 * t) * 0.3) * np.exp(-t / 0.045)
+    wires = sos_filter(noise(d), "bandpass", [1800, 8500], order=2) * np.exp(-t / 0.085)
+    y = head * 0.7 + wires
+    if clap:
+        cl = sos_filter(noise(d), "bandpass", [900, 3200], order=2)
+        e = np.zeros_like(t)
+        for k, dt in enumerate((0.0, 0.009, 0.018)):
+            e += (t >= dt) * np.exp(-np.maximum(t - dt, 0) / (0.006 if k < 2 else 0.06))
+        y += cl * e * 0.45
+    return fade(y * 0.5 * vel, a=att, r=0.04)
 
 
-def brush_sweep(dur: float, vel: float = 1.0) -> np.ndarray:
-    """One circular brush stroke across the snare head: a soft 'shhh' that swells and
-    fades within the beat, with the band drifting as the brush turns (stereo)."""
+def hat(vel: float = 1.0, open_: bool = False) -> np.ndarray:
+    d = 0.35 if open_ else 0.09
+    t = tt(d)
+    y = sos_filter(noise(d), "bandpass", [7000, 14500], order=3)
+    ring = sum(np.sin(2 * np.pi * fr * t + rng.uniform(0, 6.3)) for fr in (6100, 7900, 9300, 11200)) * 0.05
+    y = (y + ring) * np.exp(-t / (0.12 if open_ else 0.022))
+    return fade(y * 0.25 * vel, a=0.0008, r=0.02)
+
+
+def shaker(vel: float = 1.0) -> np.ndarray:
+    d = 0.11
+    t = tt(d)
+    y = sos_filter(noise(d), "bandpass", [4500, 11000], order=2)
+    env = (t / 0.018) ** 1.5 * np.exp(1.5 * (1 - t / 0.018))   # rounded swell, peak at 18 ms
+    return fade(y * env * 0.09 * vel, a=0.002, r=0.02)
+
+
+def splash(dur: float = 1.4, vel: float = 1.0, att: float = 0.0008, tau: float = 0.45) -> np.ndarray:
     t = tt(dur)
-    ph = t / dur
-    env = np.sin(np.pi * ph) ** 1.6
     out = []
-    for ch in range(2):
-        lo = sos_filter(noise(dur), "bandpass", [1600, 5000], order=2)
-        hi = sos_filter(noise(dur), "bandpass", [4500, 11000], order=2)
-        mix = (0.5 + 0.5 * np.cos(2 * np.pi * (ph + 0.25 * ch)))
-        out.append((lo * (1 - 0.5 * mix) + hi * 0.5 * mix) * env)
-    return np.stack(out, axis=1) * 0.16 * vel
+    for _ in range(2):
+        wash = sos_filter(noise(dur), "bandpass", [3500, 13000], order=2)
+        bell = sum(np.sin(2 * np.pi * 2600 * r * rng.uniform(0.99, 1.01) * t + rng.uniform(0, 6.3))
+                   for r in (1.0, 1.43, 1.79, 2.37, 2.91)) * 0.04
+        out.append(fade((wash + bell) * np.exp(-t / tau), a=att, r=0.1))
+    return np.stack(out, axis=1) * 0.13 * vel
 
 
-def brushed_cymbal(dur: float = 2.2, vel: float = 1.0, att: float = 0.001) -> np.ndarray:
-    """Brushed ride/crash: band-limited noise wash plus a few inharmonic bell partials."""
+def pad(chord, dur: float, vel: float = 1.0) -> np.ndarray:
+    """Quiet string-like pad: detuned band-limited saws (additive), slow attack, stereo."""
     t = tt(dur)
-    out = []
-    for ch in range(2):
-        wash = sos_filter(noise(dur), "bandpass", [3200, 13500], order=2) * np.exp(-t / 0.75)
-        bell = np.zeros_like(t)
-        for r in (1.0, 1.47, 1.83, 2.41, 2.97):
-            fr = 2350 * r * rng.uniform(0.99, 1.01)
-            bell += np.sin(2 * np.pi * fr * t + rng.uniform(0, 2 * np.pi)) * np.exp(-t / 0.5)
-        out.append(fade(wash + 0.05 * bell, a=att, r=0.08))
-    return np.stack(out, axis=1) * 0.22 * vel
+    out = np.zeros((len(t), 2))
+    for m in chord:
+        for ch, det in ((0, -0.07), (1, 0.07), (0, 0.025), (1, -0.025)):
+            f = hz(m + det)
+            ph = rng.uniform(0, 2 * np.pi)
+            y = sum(np.sin(k * (2 * np.pi * f * t + ph)) / k for k in range(1, 12) if k * f < 4000)
+            out[:, ch] += y
+    env = (1 - np.exp(-t / 0.35))
+    return fade(out * env[:, None] * 0.018 * vel, a=0.005, r=0.08)
 
 
-def reverb(x: np.ndarray, rt60: float = 1.0, predelay: float = 0.014) -> np.ndarray:
-    """Decorrelated stereo exponential-noise IR (small warm room)."""
+def swell(dur: float, vel: float = 1.0) -> np.ndarray:
+    """Short noise swell into bar 3: a band-pass that sweeps up as it grows."""
+    t = tt(dur)
+    x = noise(dur)
+    lo = sos_filter(x, "bandpass", [600, 2200], order=2)
+    hi = sos_filter(x, "bandpass", [2500, 9000], order=2)
+    p = t / dur
+    y = (lo * (1 - p) + hi * p) * p ** 2.2
+    return fade(y * 0.18 * vel, a=0.01, r=0.012)
+
+
+def reverb(x: np.ndarray, rt60: float = 1.0, predelay: float = 0.012, band=(300, 7000)) -> np.ndarray:
+    """Decorrelated stereo exponential-noise IR."""
     t = tt(rt60 * 1.1)
     env = np.exp(-6.9 * t / rt60)
     irs = []
     for _ in range(2):
-        ir = sos_filter(rng.standard_normal(len(t)), "bandpass", [300, 6000]) * env
+        ir = sos_filter(rng.standard_normal(len(t)), "bandpass", list(band)) * env
         ir = np.concatenate([np.zeros(int(predelay * SR)), ir])
         irs.append(ir / np.sqrt(np.sum(ir ** 2)))
     return np.stack([signal.fftconvolve(x[:, 0], irs[0])[: len(x)],
@@ -214,7 +266,7 @@ def true_peak_dbtp(x: np.ndarray) -> float:
     return float(20 * np.log10(np.max(np.abs(os)) + 1e-20))
 
 
-def soft_limiter(x: np.ndarray, ceiling_db: float, look_ms: float = 2.0, rel_ms: float = 110.0) -> np.ndarray:
+def soft_limiter(x: np.ndarray, ceiling_db: float, look_ms: float = 2.0, rel_ms: float = 90.0) -> np.ndarray:
     """Look-ahead gain limiter driven by the 4x-oversampled (true) peak. Gain is held
     over the look-ahead window, released through a one-pole, then box-smoothed
     (edge-safe). It never clips the waveform."""
@@ -234,7 +286,24 @@ def soft_limiter(x: np.ndarray, ceiling_db: float, look_ms: float = 2.0, rel_ms:
     return x * g[:, None]
 
 
+def glue(x: np.ndarray, thresh_db: float = -16.0, ratio: float = 2.0) -> np.ndarray:
+    """Gentle bus compressor (RMS detector, ~10 ms attack / 150 ms release) for glue."""
+    det = uniform_filter1d((x ** 2).mean(axis=1), size=int(0.01 * SR), mode="nearest")
+    lvl = 10 * np.log10(det + 1e-12)
+    over = np.maximum(0, lvl - thresh_db)
+    gr = over * (1 - 1 / ratio)
+    rc = np.exp(-1.0 / (0.15 * SR))
+    g = np.empty_like(gr)
+    prev = 0.0
+    for n, v in enumerate(gr.tolist()):
+        prev = v if v > prev else prev * rc + v * (1 - rc)
+        g[n] = prev
+    g = uniform_filter1d(g, size=int(0.003 * SR), mode="nearest")
+    return x * (10 ** (-g / 20))[:, None]
+
+
 def master(mix: np.ndarray) -> np.ndarray:
+    mix = glue(mix, thresh_db=10 * np.log10(np.mean(mix ** 2) * 2) + 5.0)
     gain_db = TARGET_LUFS - integrated_lufs(mix)
     ceiling = TRUE_PEAK_CEILING_DBTP - 0.3
     for _ in range(12):
@@ -247,93 +316,178 @@ def master(mix: np.ndarray) -> np.ndarray:
 
 
 # ---------------------------------------------------------------- arrangement
+EBMAJ9 = (55, 58, 62, 65)        # G Bb D F (rootless)
+DM7 = (53, 57, 60, 62)           # F A C D
+G13 = (53, 59, 62, 64)           # F B D E
+CM9 = (51, 55, 58, 62)           # Eb G Bb D
+F13 = (51, 55, 57, 62)           # Eb G A D
+BUTTON = (50, 55, 60, 65, 70, 74)  # Bb6/9: D G C F Bb D
+
+# (beat, chord, length in beats, velocity)
+COMP = [(0, EBMAJ9, 1.4, 1.0), (1.5, EBMAJ9, 0.35, 0.7), (2.5, EBMAJ9, 1.3, 0.75),
+        (4, DM7, 1.4, 0.85), (5.5, G13, 2.3, 0.8),
+        (8, CM9, 1.4, 0.9), (9.5, CM9, 0.35, 0.7), (10.5, CM9, 1.3, 0.78),
+        (12, CM9, 1.4, 0.85), (13.5, F13, 1.6, 0.82), (15.5, F13, 0.22, 0.95)]
+
+# (beat, midi, length in beats): hook, answer, hook up, turnaround + pickup
+MELODY = [(0, 79, 1.0), (1, 77, 0.5), (1.5, 79, 1.5), (3, 82, 0.5), (3.5, 79, 0.5),
+          (4, 77, 1.0), (5, 74, 0.5), (5.5, 77, 1.5), (7, 79, 0.5), (7.5, 77, 0.5),
+          (8, 79, 1.0), (9, 77, 0.5), (9.5, 79, 1.5), (11, 84, 0.5), (11.5, 82, 0.5),
+          (12, 82, 1.0), (13, 81, 0.5), (13.5, 77, 1.5), (15, 79, 0.45), (15.5, 81, 0.24)]
+
+# (beat, midi, length in beats): syncopated finger bass with a chromatic walk-up
+BASS = [(0, 39, 0.8), (1.5, 39, 0.45), (2.5, 46, 0.45), (3, 39, 0.45), (3.5, 38, 0.45),
+        (4, 38, 0.8), (5.5, 43, 0.9), (6.5, 43, 0.45), (7, 41, 0.45), (7.5, 35, 0.45),
+        (8, 36, 0.8), (9.5, 36, 0.45), (10.5, 43, 0.45), (11, 46, 0.45), (11.5, 43, 0.45),
+        (12, 41, 0.8), (13.5, 41, 0.45), (14, 36, 0.45), (14.5, 37, 0.45), (15, 38, 0.45),
+        (15.5, 33, 0.24)]
+
+
 def render() -> np.ndarray:
-    keys = np.zeros((N, 2))     # EP comping + melody (gets the tremolo)
+    keys = np.zeros((N, 2))      # EP comping (gets the tremolo)
+    lead_bus = np.zeros((N, 2))
+    pads = np.zeros((N, 2))
     drums = np.zeros((N, 2))
-    low = np.zeros((N, 2))      # bass + kick: the only content below 120 Hz (mono)
-    verb_send = np.zeros((N, 2))
-    end_play = T(11) + 0.82 * (BUTTON_T - T(11))   # everything before the button releases by ~7.84 s
+    low = np.zeros((N, 2))       # bass + kick: the only content below 120 Hz (mono)
+    verb = np.zeros((N, 2))      # medium room send
+    kick_times = []
+    stop = T(15.5) + 0.14        # band stab released before the breath into the button
 
-    # --- comping: Charleston (beat 1 + pushed "and of 2"), rootless voicings
-    Bbmaj7, Gm7 = (57, 60, 62, 65), (53, 57, 58, 62)
-    Cm7, F7 = (51, 55, 58, 62), (51, 55, 57, 62)
-    Ebmaj7 = (55, 58, 62, 65)
-    comps = [(0, Bbmaj7, 1.0), (1 + SWING, Gm7, 0.62), (4, Cm7, 0.66), (5 + SWING, F7, 0.62),
-             (8, Ebmaj7, 0.66), (10, Cm7, 0.6), (11, F7, 0.62)]
-    for i, (b, ch, vel) in enumerate(comps):
-        t0 = T(b)
-        t1 = T(comps[i + 1][0]) - 0.03 if i + 1 < len(comps) else end_play
+    # --- EP comping
+    pans = (-0.3, -0.1, 0.1, 0.3)
+    for b, ch, ln, vel in COMP:
+        t0 = T(b) + (0 if b == 0 else human())
+        dur = min(ln * BEAT, stop - t0) if b >= 15 else ln * BEAT
         for j, m in enumerate(ch):
-            v = epiano(m, t1 - t0, vel)
-            place(keys, v, t0 + 0.004 * j * (b != 0), 0.55, pan=(-0.25, -0.08, 0.08, 0.25)[j])
-            place(verb_send, v, t0, 0.18, pan=(-0.25, -0.08, 0.08, 0.25)[j])
+            v = epiano(m, dur, vel, att=0.001 if b == 0 else 0.002, rel=0.05 if b < 15 else 0.03)
+            place(keys, v, t0 + (0.003 * j if b not in (0, 15.5) else 0), 0.5, pans[j])
+            place(verb, v, t0, 0.12, pans[j])
 
-    # --- melody (EP right hand, an octave above the comping)
-    mel = [(0, 77), (1, 74), (1 + SWING, 77), (2, 79), (3 + SWING, 77),
-           (4, 75), (5, 74), (5 + SWING, 72), (6, 69), (7, 72),
-           (8, 79), (8 + SWING, 77), (9, 75), (10, 74), (11, 69)]
-    for i, (b, m) in enumerate(mel):
-        t0 = T(b)
-        t1 = T(mel[i + 1][0]) - 0.015 if i + 1 < len(mel) else end_play
-        vel = 0.95 if b == int(b) else 0.8
-        v = epiano(m, t1 - t0, vel)
-        place(keys, v, t0, 0.74 * (1.12 if i == 0 else 1.0), pan=0.05)
-        place(verb_send, v, t0, 0.25, pan=0.05)
+    # --- lead hook
+    prev = None
+    for i, (b, m, ln) in enumerate(MELODY):
+        t0 = T(b) + (0 if b == 0 else 0.006 + human())
+        legato = i > 0 and abs(MELODY[i - 1][0] + MELODY[i - 1][2] - b) < 1e-9 and b not in (8, 15.5)
+        dur = ln * BEAT + (0.02 if legato else -0.02)
+        v = lead(m, dur, prev if legato else None, 1.0 if b == int(b) else 0.85,
+                 att=0.004 if b == 0 else 0.012, rel=0.04 if b < 15 else 0.025)
+        place(lead_bus, v, t0, 1.0, pan=0.04)
+        place(verb, v, t0, 0.22, pan=0.04)
+        prev = m
 
-    # --- walking bass, quarter notes
-    walk = [34, 38, 43, 37, 36, 39, 41, 40, 39, 43, 36, 41]
-    for b, m in enumerate(walk):
-        t0 = T(b)
-        t1 = T(b + 1) - 0.02 if b < 11 else end_play
-        place(low, upright(m, t1 - t0, 1.1 if b == 0 else 0.9 + 0.06 * (b % 2 == 0)), t0, 1.0)
+    # --- bass
+    for b, m, ln in BASS:
+        t0 = T(b) + (0 if b == 0 else human() * 0.5)
+        place(low, ebass(m, ln * BEAT, 1.1 if b % 4 == 0 else 0.9, att=0.001 if b == 0 else 0.002,
+                         rel=0.02 if b >= 15 else 0.03), t0)
 
-    # --- drums
-    for b in range(12):
-        place(drums, brush_sweep(T(b + 1) - T(b) if b < 11 else end_play - T(b), 0.85 + 0.25 * (b >= 8)),
-              T(b), 1.0, pan=-0.15)
-        if b % 2 == 1:
-            place(drums, brush_tap(0.8 if b < 8 else 0.9), T(b), 1.0, pan=-0.1)
-            place(verb_send, brush_tap(0.8), T(b), 0.2)
-        if b % 2 == 0:
-            place(low, feather_kick(0.55 if b else 1.0), T(b), 1.0)
-        if b % 4 == 3 and b < 11:
-            place(drums, brush_tap(0.35), T(b + SWING), 1.0, pan=-0.1)   # swung "and of 4"
-    for k, b in enumerate((11 + 1 / 3, 11 + 2 / 3)):                     # triplet pickup into the button
-        place(drums, brush_tap(0.45 + 0.15 * k), T(b), 1.0, pan=-0.1)
-    place(drums, brushed_cymbal(2.4, 0.9), 0.0, 1.0)
-    place(verb_send, brushed_cymbal(1.2, 0.5), 0.0, 0.3)
+    # --- drums, bars 1-4
+    for bar in range(4):
+        o = bar * 4
+        last = bar == 3
+        for kb in (0, 2, 2.5):
+            v = 1.0 if kb == 0 else 0.8
+            place(low, kick(v, att=0.0008), T(o + kb))
+            kick_times.append(T(o + kb))
+        for sb in (1, 3):
+            if last and sb == 3:
+                continue
+            t0 = T(o + sb) + human()
+            sv, clap = (0.8, False) if bar < 2 else (0.95, True)    # the clap joins for the lift
+            place(drums, snare(sv, clap), t0, 1.0, pan=-0.05)
+            place(verb, snare(sv, clap), t0, 0.35, pan=-0.05)
+        if bar == 1:
+            place(drums, snare(0.25, clap=False), T(o + 3.75) + SW * BEAT, 1.0, pan=-0.05)  # ghost
+        # hats: 8ths (16ths in bars 3-4), open hat on the "and of 4" in bar 2
+        steps = np.arange(0, 4, 0.25) if bar >= 2 else np.arange(0, 4, 0.5)
+        for s in steps:
+            if last and s >= 3.5:
+                break
+            if bar == 1 and s == 3.5:
+                place(drums, hat(0.75, open_=True), T(o + s) + human(), 1.0, pan=0.3)
+                continue
+            frac = s % 1
+            sw = SW * BEAT if frac in (0.25, 0.75) else 0.0
+            vel = (0.85 if frac == 0 else 0.6 if frac == 0.5 else 0.35) * (0.8 if bar < 2 else 1.0)
+            place(drums, hat(vel), T(o + s) + sw + human(), 1.0, pan=0.3)
+        # shaker 16ths from bar 3
+        if bar >= 2:
+            for s in np.arange(0, 4, 0.25):
+                if last and s >= 3.0:
+                    break
+                sw = SW * BEAT if s % 0.5 else 0.0
+                place(drums, shaker(1.0 if s % 1 == 0.5 else 0.7), T(o + s) + sw + human(), 1.0, pan=-0.35)
 
-    # --- button on frame 240: bass, kick, Bb6/9 chord, melody resolve, cymbal
-    ring = DURATION_SEC - BUTTON_T
-    place(low, upright(34, ring, 1.25, att=0.0004), BUTTON_T, 1.0)
-    place(low, feather_kick(1.1, att=0.0004), BUTTON_T, 1.0)
-    for j, m in enumerate((50, 55, 60, 65, 70, 74)):
-        v = epiano(m, ring, 0.95 if m < 70 else 1.0, att=0.0004, ring=0.6)
-        pan = (-0.3, -0.15, 0.0, 0.15, 0.05, 0.1)[j]
-        place(keys, v, BUTTON_T, 0.55 if m < 70 else 0.6, pan=pan)
-        place(verb_send, v, BUTTON_T, 0.32, pan=pan)
-    place(drums, brushed_cymbal(ring, 1.0, att=0.0004), BUTTON_T, 1.0)
-    place(drums, brush_tap(1.0), BUTTON_T, 0.8, pan=-0.1)
-    place(verb_send, brushed_cymbal(1.5, 0.6), BUTTON_T, 0.3)
+    # bar 4 fill: snare 16ths with a crescendo into the band stab on the "and of 4"
+    for k, s in enumerate((3.0, 3.25, 3.375)):
+        place(drums, snare(0.45 + 0.15 * k, clap=False), T(12 + s) + human() * 0.5, 1.0, pan=-0.05)
+    place(drums, snare(1.0), T(15.5), 1.0, pan=-0.05)
+    place(low, kick(0.9), T(15.5))
+    kick_times.append(T(15.5))
+
+    # intro hit + bar-3 lift
+    place(drums, splash(1.6, 1.0, att=0.0006), 0.0)
+    place(drums, swell(T(8) - T(6.5), 1.0), T(6.5), 1.0)
+    place(drums, splash(1.3, 0.6), T(8))
+    for b, ch, ln in ((8, CM9, 4.0), (12, CM9, 1.5), (13.5, F13, 1.8)):
+        place(pads, pad(tuple(m + 12 for m in ch[1:]) + (ch[0],), ln * BEAT - 0.03), T(b))
+
+    # --- the breath: choke every dry bus shortly after the stab, silent until the button
+    tb = T(BUTTON_B)
+    g = np.ones(N)
+    s0, s1 = int(round(stop * SR)), int(round(tb * SR))
+    nf = int(0.02 * SR)
+    g[s0 - nf:s0] = 0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nf))
+    g[s0:s1] = 0.0
+    for bus in (keys, lead_bus, pads, drums, low):
+        bus *= g[:, None]
+
+    # --- button on frame 240 (8.0 s): kick, bass, Bb6/9, lead on the tonic, splash
+    ring = DURATION_SEC - tb
+    place(low, kick(1.15, att=0.0004), tb)
+    kick_times.append(tb)
+    place(low, ebass(34, ring, 1.25, att=0.0004, rel=0.3, tail=0.55), tb)
+    for j, m in enumerate(BUTTON):
+        v = epiano(m, ring, 0.95, att=0.0004, ring=0.42, rel=0.3)
+        pan = (-0.35, -0.2, -0.05, 0.1, 0.25, 0.35)[j]
+        place(keys, v, tb, 0.5, pan)
+        place(verb, v, tb, 0.18, pan)
+    v = lead(82, ring, None, 1.0, att=0.0015, rel=0.3, tail=0.55)
+    place(lead_bus, v, tb, 1.0, pan=0.04)
+    place(verb, v, tb, 0.22, pan=0.04)
+    place(drums, splash(ring, 1.15, att=0.0004, tau=0.5), tb)
+    place(drums, snare(0.8), tb, 0.9, pan=-0.05)
+    place(verb, snare(0.8), tb, 0.3)
 
     # --- bus processing
-    tr = 1 + 0.22 * np.sin(2 * np.pi * 4.8 * np.arange(N) / SR)        # stereo tremolo (autopan)
+    tr = 1 + 0.15 * np.sin(2 * np.pi * 4.2 * np.arange(N) / SR)        # gentle stereo tremolo
     keys = keys * np.stack([tr, 2 - tr], axis=1)
-    keys = sos_filter(keys, "highpass", 140, order=4)
-    keys = sos_filter(keys, "lowpass", 9000, order=2)                  # warm, not glassy
-    drums = sos_filter(drums, "highpass", 160, order=4)
-    wet = sos_filter(reverb(verb_send, rt60=1.1), "highpass", 200, order=4) * 0.5
-    low = np.repeat(low.mean(axis=1, keepdims=True), 2, axis=1)
-    low = sos_filter(low, "lowpass", 2500, order=2)
+    keys = sos_filter(keys, "highpass", 150, order=4)
+    keys = sos_filter(keys, "lowpass", 8000, order=2)
+    lead_bus = sos_filter(lead_bus, "highpass", 250, order=4)
+    pads = sos_filter(sos_filter(pads, "highpass", 200, order=4), "lowpass", 3500, order=2)
+    drums = sos_filter(drums, "highpass", 170, order=4)
+    wet = sos_filter(reverb(verb, rt60=0.9), "highpass", 220, order=4) * 0.45
 
-    mix = low * 0.78 + keys * 1.0 + drums * 0.9 + wet
+    # bass ducks ~3 dB under each kick (kick stays on top without extra low-end level)
+    duck = np.ones(N)
+    for t0 in kick_times:
+        s = int(round(t0 * SR))
+        n = min(N - s, int(0.18 * SR))
+        duck[s:s + n] *= 1 - 0.3 * np.exp(-np.arange(n) / (0.06 * SR))
+    duck = uniform_filter1d(duck, size=int(0.004 * SR), mode="nearest")
+    low = np.repeat(low.mean(axis=1, keepdims=True), 2, axis=1)
+    low = sos_filter(low, "lowpass", 2200, order=2) * duck[:, None]
+    low = sos_filter(low, "highpass", 42, order=2)
+
+    mix = low * 0.5 + keys * 1.25 + lead_bus * 0.78 + pads * 1.6 + drums * 0.95 + wet
     mid, side = (mix[:, 0] + mix[:, 1]) / 2, (mix[:, 0] - mix[:, 1]) / 2
     side = sos_filter(side, "highpass", 250, order=8)
     mix = np.stack([mid + side, mid - side], axis=1)
     mix = sos_filter(mix, "highpass", 20, order=2)
     mix = sos_filter(mix, "lowpass", 16500, order=4)
 
-    nf = int(0.25 * SR)
+    nf = int(0.3 * SR)
     mix[-nf:] *= (0.5 + 0.5 * np.cos(np.linspace(0, np.pi, nf)))[:, None]
     return mix
 
