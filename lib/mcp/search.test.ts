@@ -18,8 +18,12 @@ function loadCatalog(): SoundEntry[] {
 
 const CATALOG = loadCatalog();
 
-function topIds(query: string, limit = 5): string[] {
-  return CATALOG.map((entry) => ({ entry, score: scoreEntry(entry, query, {}) }))
+function topIds(
+  query: string,
+  limit = 5,
+  filters: Parameters<typeof scoreEntry>[2] = {},
+): string[] {
+  return CATALOG.map((entry) => ({ entry, score: scoreEntry(entry, query, filters) }))
     .filter((row) => row.score > 0)
     .sort((a, b) => b.score - a.score || a.entry.title.localeCompare(b.entry.title))
     .slice(0, limit)
@@ -53,5 +57,26 @@ describe("search_sounds ranking", () => {
   it("ranks riser for query riser", () => {
     const ids = topIds("riser", 5);
     assert.equal(ids[0], "riser-tension-8s");
+  });
+
+  it("finds short UI sounds for a gentle notification under one second", () => {
+    const ids = topIds("gentle notification", 5, { maxDurationSec: 1 });
+    assert.ok(ids.length >= 3, `expected short UI hits, got ${ids.join(", ")}`);
+    assert.ok(
+      ["ui-success-chime", "ui-message-sent"].includes(ids[0] ?? ""),
+      `expected a chime or message sound first, got ${ids.join(", ")}`,
+    );
+  });
+
+  it("matches plural and synonym queries to UI sounds", () => {
+    for (const query of ["notification", "notifications", "alert"]) {
+      const ids = topIds(query, 5);
+      assert.ok(ids.includes("ui-success-chime"), `${query}: ${ids.join(", ")}`);
+    }
+    assert.equal(topIds("button", 1)[0], "ui-toggle-on");
+  });
+
+  it("does not let related terms hit id prefixes", () => {
+    assert.ok(!topIds("button click", 5).includes("tape-stop-transition"));
   });
 });
