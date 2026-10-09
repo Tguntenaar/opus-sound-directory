@@ -1,298 +1,157 @@
+<div align="center">
+
+<a href="https://opussounds.directory">
+  <img src="public/og-default.png" alt="Opus Sounds Directory — royalty-free sound effects and music beds, with prompts, Python code and loudness metrics" width="900">
+</a>
+
 # Opus Sounds Directory
 
-Browsable directory of **Claude Opus 5.5–generated** synthesised audio: prompts, Python synthesis code, waveforms, spectrograms, and loudness metrics. The live catalog at **https://opussounds.directory** has **32** entries, all `modelId: claude-opus-5-5`. Inspired by the *idea* of a plugin directory, not any third-party implementation.
+**Find your sound. See how it was made. Make it your own.**
 
-## Concept
+An open directory of synthesized sound effects, music beds and loops for videos, games and apps.
 
-Each **entry** is a JSON file in `content/entries/` plus assets under `public/assets/<id>/`. The site shows:
+[![Browse sounds](https://img.shields.io/badge/Listen-opussounds.directory-8b5cf6?style=for-the-badge)](https://opussounds.directory) [![Sounds: CC0](https://img.shields.io/badge/Sounds-CC0_1.0-8b5cf6?style=for-the-badge)](ASSETS-LICENSE.md) [![Code: MIT](https://img.shields.io/badge/Code-MIT-8b5cf6?style=for-the-badge)](LICENSE)
 
-- Prompt (with copy button)
-- Audio player
-- Generated Python
-- Spectrogram
-- LUFS / true peak / length
-- **Mood / tempo** chips (`mood[]`, optional `tempo`)
-- **Model attribution** (`modelId` — `claude-opus-5-5` for catalog sounds; `community` for KV-published submissions)
-- Run date
+[![GitHub stars](https://img.shields.io/github/stars/Tguntenaar/opus-sound-directory?style=flat&color=8b5cf6)](https://github.com/Tguntenaar/opus-sound-directory/stargazers) [![Last commit](https://img.shields.io/github/last-commit/Tguntenaar/opus-sound-directory/main?style=flat&color=8b5cf6)](https://github.com/Tguntenaar/opus-sound-directory/commits/main) [![Pull requests welcome](https://img.shields.io/badge/PRs-welcome-8b5cf6?style=flat)](CONTRIBUTING.md)
 
-Audio is **synthesised** (numpy/scipy) for precise, royalty-free, video-timed beds and SFX — not realistic instruments or vocals. Use your ears for final taste.
+[Browse the directory](https://opussounds.directory) · [Submit a sound](https://opussounds.directory/submit) · [Read the blog](https://opussounds.directory/blog) · [Connect an AI assistant](#use-with-ai-assistants)
 
-## Quick start (site)
+</div>
 
-Requires **Node.js ≥ 22.18** (Cloudflare vite plugin). Use `.nvmrc` if you use nvm.
+> [!TIP]
+> **Yes, you can use the sounds commercially.** Download, edit, remix and use the audio in your own projects without permission or attribution. Sounds are **CC0**; source code is **MIT**. [Full licensing details ↓](#license)
+
+## Contents
+
+- [Explore by category](#explore-by-category)
+- [Start listening](#start-listening)
+- [What comes with a sound](#what-comes-with-a-sound)
+- [Use with AI assistants](#use-with-ai-assistants)
+- [Run locally](#run-locally)
+- [Contribute](#contribute)
+- [License](#license)
+
+## Explore by category
+
+| Collection | Find the right moment |
+| :--- | :--- |
+| [UI & app sounds](https://opussounds.directory/c/ui-sounds) | Taps, toggles, notifications and feedback for product interfaces. |
+| [Drops & transitions](https://opussounds.directory/c/drops) | Impacts, whooshes and accents for cuts and reveals. |
+| [Game sounds](https://opussounds.directory/c/gaming) | Arcade effects, chiptune gestures and game feedback. |
+| [Cinematic hits](https://opussounds.directory/c/cinematic) | Braams, booms and trailer-sized impacts. |
+| [Meme & reaction](https://opussounds.directory/c/meme) | Comic fails and reaction stings. |
+| [Retro tech](https://opussounds.directory/c/retro-tech) | Dial tones, modems and nostalgic machine sounds. |
+| [Risers](https://opussounds.directory/c/risers) | Tension builds timed to the frame. |
+| [Ambient beds](https://opussounds.directory/c/ambient) | Background textures, atmospheres and loops. |
+| [Ad beds by length](https://opussounds.directory/c/ad-beds) | Short beds for bumpers, product videos and ads. |
+| [Logo stings](https://opussounds.directory/c/logo-stings) | Brief musical signatures for intros and reveals. |
+| [Chaos → calm](https://opussounds.directory/c/chaos-calm) | Tension that resolves into space and calm. |
+
+## Start listening
+
+A few entry points into the collection. Open a sound to listen and download it.
+
+| Sound | Use it for |
+| :--- | :--- |
+| [Shock boom](https://opussounds.directory/e/heavy-boom-meme) | A reaction cut or sudden zoom. |
+| [Pass-by whoosh](https://opussounds.directory/e/whoosh-pass-by) | A fast transition or moving object. |
+| [Cozy UI sprite](https://opussounds.directory/e/ui-cozy-sprite) | A coordinated set of small product interactions. |
+| [Endless Shepard riser](https://opussounds.directory/e/endless-riser-shepard) | Sustained tension without a final hit. |
+| [56k modem handshake](https://opussounds.directory/e/dialup-modem-56k) | A nostalgic connection sequence. |
+| [Coin pickup sparkle](https://opussounds.directory/e/game-coin-pickup) | A collectible or positive reward. |
+
+### Behind the sound
+
+[![Spectrogram of the shock boom](public/assets/heavy-boom-meme/spectrogram.png)](https://opussounds.directory/e/heavy-boom-meme)
+
+*Shock boom: inspect its frequency content, read the synthesis code, then adapt it to your edit.*
+
+## What comes with a sound
+
+- **Audio to preview and download** — listen before choosing a file.
+- **The creative prompt** — timing, character and synthesis direction.
+- **Python synthesis code** — inspect how the sound is made and regenerate it.
+- **Spectrograms and measurements** — duration, integrated loudness and true peak.
+- **Timing and attribution** — frame cues, sample rate, generation date and model metadata.
+
+The catalog focuses on procedural synthesis with NumPy and SciPy. Model attribution is recorded per entry; generation archives retain the provenance of experiments and candidate takes.
+
+<details>
+<summary><strong>Explore the source and candidate takes</strong></summary>
+
+| Path | Contents |
+| :--- | :--- |
+| [`content/entries/`](content/entries/) | Catalog metadata, prompts and timing. |
+| [`public/assets/`](public/assets/) | Published audio, synthesis scripts and spectrograms. |
+| [`masters/`](masters/) | Full-rate audio masters. |
+| [`runner/`](runner/) | Synthesis, mastering and verification tools. |
+| [`provenance/`](provenance/) | Generation history and review candidates. |
+| [Codex Hero8 collection](provenance/codex-generations/README.md) | 27 alternative takes, an offline listening page and QA reports. |
+
+The Hero8 archive records its own selection status and Codex attribution. Candidate rankings are provisional; see its report before choosing by ear.
+
+</details>
+
+## Use with AI assistants
+
+Search the directory and retrieve sound prompts through the public [MCP endpoint](https://opussounds.directory/mcp).
+
+```json
+{
+  "mcpServers": {
+    "opus-sounds": {
+      "url": "https://opussounds.directory/mcp"
+    }
+  }
+}
+```
+
+Read tools include `search_sounds`, `get_sound`, `list_categories` and `get_prompt_template`. Submission tools use the same review queue as the website. [MCP and review details](docs/DEVELOPMENT.md#remote-mcp-server-mcp).
+
+## Run locally
+
+Requires **Node.js 22.18 or newer**. The repo includes an `.nvmrc`.
 
 ```bash
+git clone https://github.com/Tguntenaar/opus-sound-directory.git
+cd opus-sound-directory
 npm install
 npm run dev
 ```
 
-Open [http://127.0.0.1:43123](http://127.0.0.1:43123).
+Open **[localhost:43123](http://127.0.0.1:43123)**.
 
-### Blog
+| I want to… | Go here |
+| :--- | :--- |
+| Generate or add a sound | [Adding an entry](docs/DEVELOPMENT.md#adding-an-entry) |
+| Understand the audio pipeline | [Runner guide](docs/DEVELOPMENT.md#runner-runner) |
+| Build or deploy the site | [Development and operations](docs/DEVELOPMENT.md) |
+| Review community submissions | [Review workflow](docs/DEVELOPMENT.md#reviewing-submissions) |
+| Read the sound-generation history | [Provenance](provenance/README.md) |
 
-Posts live in `content/blog/<slug>.md` with YAML frontmatter (`title`, `slug`, `description`, `date`, `keywords[]`, `faq`, optional `draft: true`). `npm run prebuild` runs `scripts/sync-blog.mjs` to regenerate `lib/blog.generated.ts`. Published posts appear at `/blog`, in `/sitemap.xml`, `/blog/rss.xml`, and `/llms.txt`. Set `draft: true` to keep a post out of listings, RSS, sitemap, and LLM indexes.
+## Contribute
 
-Embed a sound on its own line in markdown:
+Have a sound idea, a better synthesis approach or a fix? [Open an issue](https://github.com/Tguntenaar/opus-sound-directory/issues/new), [submit a sound](https://opussounds.directory/submit), or send a pull request.
 
-```md
-[Success chime](/e/ui-success-chime)
-```
-
-```bash
-npm run build    # production build (vinext + Cloudflare)
-npm run start    # preview production build locally
-npm run deploy   # build + deploy via vinext-cloudflare → cf deploy
-```
-
-### IndexNow (after deploy)
-
-Verification file: `https://opussounds.directory/opus-sounds-directory-indexnow-key-2026.txt` (override with `INDEXNOW_KEY`).
-
-```bash
-SITE_URL=https://opussounds.directory node scripts/indexnow.mjs
-```
-
-### Deploy to Cloudflare Workers
-
-Worker name: **`opus-sound-directory`** (`cloudflare.config.ts`). With no custom domain, Cloudflare serves **`https://opus-sound-directory.<your-subdomain>.workers.dev`**.
-
-**Authenticate (pick one):**
-
-1. **API token (recommended for CI / Cloud Agents)**  
-   - Create a token at [Cloudflare API tokens](https://dash.cloudflare.com/profile/api-tokens) (e.g. **Edit Cloudflare Workers** template).  
-   - Export before deploy:
-     ```bash
-     export CLOUDFLARE_API_TOKEN="your-token"
-     # If you have multiple accounts:
-     export CLOUDFLARE_ACCOUNT_ID="your-account-id"
-     ```
-   - In Cursor Cloud Agent, add the same vars as environment secrets, then re-run deploy.
-
-2. **OAuth (local machine)**  
-   ```bash
-   npx cf auth login
-   npx cf auth whoami   # should show authenticated: true
-   npm run deploy
-   ```
-
-Requires Node ≥ 22.18 (`nvm use` / `.nvmrc`).
-
-### Temporary preview deploy (no API token)
-
-Wrangler 4.102+ can provision a **60-minute temporary account** (claim in dashboard):
-
-```bash
-npm run build
-CI=true npx wrangler deploy --temporary --config wrangler.temporary.jsonc
-```
-
-Workers static assets are limited to **5 MiB per file**. By default, WAV downloads use the static asset at `/audio/<entry-id>/out.wav` (downsampled copy under `public/assets/<id>/out.wav` when needed). After R2 is enabled on the account, swap deploy config to serve full **48 kHz** masters from bucket `opus-sounds-audio`:
-
-```bash
-cp cloudflare.config.with-r2.ts cloudflare.config.ts && npm run deploy
-```
-
-Uncomment the `r2_buckets` block in `wrangler.temporary.jsonc` for temporary preview deploys with R2.
-
-**48 kHz masters (not deployed as static assets)** live in `masters/<entry-id>/out.wav`. The runner copies each mastered WAV there before optional downsampling for Workers.
-
-After deploy, create the R2 bucket if needed (dashboard → **R2** → create `opus-sounds-audio`), then upload masters:
-
-```bash
-node scripts/upload-wavs-r2.mjs
-```
-
-That runs `wrangler r2 object put opus-sounds-audio/<entry-id>/out.wav --file=masters/<entry-id>/out.wav --content-type=audio/wav --remote` for every entry. Requires `CLOUDFLARE_API_TOKEN` or `wrangler login`.
-
-Stack: **Next.js via [vinext](https://github.com/nicolo-ribaudo/vinext)** on Cloudflare Workers, Tailwind CSS.
-
-### SEO, sharing, and crawl
-
-- **Open Graph / Twitter** — `app/layout.tsx` + `lib/site-metadata.ts` (default image `public/og-default.png`, 1200×630). Entry pages use each asset’s **spectrogram** as `og:image` via `generateMetadata` in `app/e/[slug]/page.tsx`.
-- **`/sitemap.xml`** — `app/sitemap.ts` (home, `/sponsor`, all `/e/[slug]`).
-- **`/robots.txt`** — `app/robots.ts` (allow all, `Sitemap:` absolute URL).
-
-Set the public origin before build/deploy so canonical and social URLs are correct:
-
-```bash
-export SITE_URL="https://opus-sound-directory.<your-subdomain>.workers.dev"
-# Production: SITE_URL="https://opussounds.directory"
-npm run build && npm run deploy
-```
-
-Regenerate the default share image after branding changes: `python3 scripts/generate-og-default.py`.
-
-### Cloudflare Web Analytics (optional, dashboard only)
-
-No beacon is wired in this repo. To enable: Cloudflare dashboard → **Workers & Pages** → your Worker → **Metrics** / **Web Analytics** (or zone **Analytics** → **Web Analytics** when using a custom domain). No code change required for basic page views.
-
-### Copy / download stats (Workers KV)
-
-Prompt copies and audio downloads are counted per entry via **`STATS_KV`** in `cloudflare.config.ts`.
-
-- **API:** `GET /api/stats` returns all entry counts; `POST /api/stats` with `{ "id": "<entry-id>", "event": "copy" | "download" }` increments.
-- **Keys:** `stats:<entry-id>:copy` and `stats:<entry-id>:download` (integers as strings).
-- **UI:** optimistic updates on copy, download links, and browse cards.
-
-**Dashboard setup (first permanent deploy):**
-
-1. Deploy with `npm run deploy` (or `cf deploy --prebuilt`). The `bindings.kv()` entry usually **creates** a KV namespace named for the binding (`STATS_KV`) on first upload.
-2. In [Cloudflare Dashboard](https://dash.cloudflare.com) → **Workers & Pages** → your Worker → **Bindings**, confirm **KV namespace** `STATS_KV` is attached.
-3. If deploy errors on KV, create a namespace manually (**Workers KV** → **Create**), copy its ID, and set `STATS_KV: bindings.kv({ id: "…" })` in `cloudflare.config.ts`.
-
-Local `npm run dev` uses an in-memory fallback when KV is unavailable; production needs the binding.
-
-### Sponsor leads (`/sponsor`)
-
-Public interest form at **`/sponsor`** (header/footer **Sponsors**). Leads are stored in **`SPONSOR_KV`** (`sponsor:lead:{uuid}` plus index key `sponsor:index`).
-
-- **POST `/api/sponsor`** — JSON body with company/contact/email/website/packages/budget/message (optional `logoUrl`). Returns `{ ok: true, id }` (`id` is the lead id for tracing; honeypot replies stay `{ ok: true }`). Honeypot field `companyFax` must stay empty.
-- **GET `/api/sponsor`** — disabled (`{ enabled: false, leads: [] }`) until you set Worker secret **`SPONSOR_ADMIN_TOKEN`**. Then pass `Authorization: Bearer <token>` or header `X-Sponsor-Admin-Token` to list recent leads.
-
-**KV namespace (`SPONSOR_KV`):** On first deploy, `bindings.kv()` in `cloudflare.config.ts` usually provisions a namespace per binding name. If deploy fails, create one in the dashboard (**Workers KV** → **Create**), then pin it:
-
-```ts
-SPONSOR_KV: bindings.kv({ id: "<namespace-id>" }),
-```
-
-(`STATS_KV` is separate — sponsor data does not share the stats namespace.)
-
-**Optional email alert** after each lead (MVP works without it):
-
-1. Enable [Email Sending](https://developers.cloudflare.com/email-service/) on your domain (`wrangler email sending enable yourdomain.com`).
-2. `cloudflare.config.ts` already declares **`SPONSOR_SEND_EMAIL`** (`bindings.sendEmail()`).
-3. Set Worker variable **`SPONSOR_MAIL_FROM`** to a verified sender on that domain (e.g. `sponsors@yourdomain.com`). Optional **`SPONSOR_MAIL_TO`** is a comma/semicolon list (default `olivierguntenaar@gmail.com,thomas@guntenaar.org`). Optional Worker secrets **`SPONSOR_NOTIFY_WEBHOOK_URL`** and **`SPONSOR_NOTIFY_WEBHOOK_KEY`** POST the lead JSON after email (or skip).
-
-```bash
-curl -s -H "Authorization: Bearer $SPONSOR_ADMIN_TOKEN" https://your-worker.example/api/sponsor | jq
-```
-
-### Cloudflare / R2 (later)
-
-- Today: static WAV/MP3/spectrograms live in `public/assets/` and ship with the Worker.
-- **R2**: move large assets to a bucket, set `assets.wav` URLs in entry JSON to public R2 URLs, and optionally add a Worker route for signed URLs. No code changes required to the JSON schema.
-
-## Adding an entry
-
-**Pending sound candidates:** [Codex Hero8 collection](provenance/codex-generations/README.md) contains 27 takes for nine sounds, with an offline listening page and measured QA. These await listening selection and are not part of the live catalog.
-
-1. Copy an existing file in `content/entries/*.json` and edit `id`, `slug`, `title`, `category`, `prompt`, `timing`, and `cues`.
-2. Run the runner (mock mode fills assets and metrics):
-
-   ```bash
-   pip install -r runner/requirements.txt
-   python3 runner/run.py content/entries/your-id.json --mock
-   ```
-
-3. Commit the JSON and `public/assets/your-id/` files.
-
-Day-one seed (16 entries):
-
-```bash
-python3 runner/seed_day_one.py
-```
-
-### Entry categories
-
-`chaos-calm`, `ad-beds`, `drops`, `risers`, `ui-sounds`, `logo-stings`, `ambient`
-
-## Runner (`runner/`)
-
-Each entry has a **distinct** synthesiser in `runner/synth/entry_synth.py`. The runner writes:
-
-- `public/assets/<id>/out.wav` (+ `out.mp3` when ffmpeg is installed)
-- `public/assets/<id>/spectrogram.png`
-- `public/assets/<id>/generate.py` — **executable** code that reproduces the WAV (embeds `runner/templates/synth_runtime.py` + entry function)
-
-Metrics in the JSON are measured from the shipped file (`verify.py` + ffmpeg `ebur128` when available). Beds longer than ~30 s at 48 kHz stereo may be auto-downsampled (32 kHz, 24 kHz, 22.05 kHz, or 16 kHz **stereo**) to stay under the Workers **5 MiB** per-file limit (`runner/ship_wav.py`); MP3 is encoded from the full-rate master before downsampling. `timing.sampleRate` / `timing.samples` in JSON match the shipped WAV.
-
-| Script | Purpose |
-|--------|---------|
-| `run.py` | Synthesise, verify, update JSON metrics, export `generate.py`, stamp `modelId` / mood |
-| `entry_meta.py` | Per-entry `mood` / `tempo`; `local-synth` + `targetModelId` (`claude-opus-5-5`) |
-| `synth/entry_synth.py` | Per-entry sound design (16 ids) |
-| `verify.py` | Length, LUFS/peak, spectrogram |
-| `code_writer.py` | Export self-contained `generate.py` |
-| `ship_wav.py` | Optional downsample for Workers asset limits |
-
-### CLI
-
-```bash
-pip install -r runner/requirements.txt   # numpy, matplotlib; ffmpeg optional but recommended
-
-# One entry
-python3 runner/run.py content/entries/chaos-calm-01.json
-
-# All 16
-for f in content/entries/*.json; do python3 runner/run.py "$f"; done
-
-# Re-render from published code only
-python3 public/assets/chaos-calm-01/generate.py
-```
-
-```bash
-python3 runner/run.py content/entries/chaos-calm-01.json --mock
-python3 runner/run.py content/entries/chaos-calm-01.json --mock --best-of 3
-```
-
-- **`--mock`** (default): runs the per-entry numpy synthesiser, sets **`modelId`: `local-synth`** (honest — not an API call), **`targetModelId`: `claude-opus-5-5`**, mood/tempo from `entry_meta.py`, and updates `metrics` in JSON.
-- **`--pipeline-only`**: skip synthesis; remaster `out.wav` (pyloudnorm LUFS + peak limit), ffmpeg verify, spectrogram, MP3, Workers sizing. Use after dropping in Opus `generate.py` / WAV. Add **`--run-generate-py`** to execute the asset script first. **`--preserve-model-id`** keeps `modelId: claude-opus-5-5` (no `targetModelId`).
-- **`--agent`**: reserved for real generation (not wired in MVP). To integrate later:
-  - **Claude Code CLI**: `claude -p "$(cat prompt.txt)"` with a project rule to write `generate.py` and run verification.
-  - **Agent SDK**: implement `agent_generate()` in `run.py` to call your agent with the entry prompt + seed, then run the same `verify.py` pipeline.
-
-### Verification
-
-Uses `ffmpeg -af ebur128` when `ffmpeg` is on PATH; otherwise estimates LUFS/peak in Python. Spectrograms via matplotlib.
-
-### Remote MCP server (`/mcp`)
-
-Public **Model Context Protocol** endpoint (streamable HTTP, stateless) for LLM clients:
-
-- **URL:** `https://opussounds.directory/mcp` (also in repo root `.mcp.json` for cursor.directory auto-scan)
-- **Browser info:** `GET /mcp` with `Accept: text/html` shows install snippets
-- **Tools:** `search_sounds`, `get_sound`, `list_categories`, `get_prompt_template`, `submit_sound`, `get_submission_status`
-- **Resources (optional):** `opus://sound/<id>` for static catalog entries
-
-**Cursor** — add to `.mcp.json`:
-
-```json
-{ "mcpServers": { "opus-sounds": { "url": "https://opussounds.directory/mcp" } } }
-```
-
-**Claude Code / Desktop:**
-
-```bash
-claude mcp add --transport http opus-sounds https://opussounds.directory/mcp
-```
-
-Read tools need no auth. `submit_sound` uses the same review queue as the web form (`SPONSOR_KV` keys `submit:entry:*`, `submit:index`; `source: "mcp"`).
-
-### Reviewing submissions
-
-Web (`POST /api/submit`) and MCP (`submit_sound`) share one pipeline:
-
-1. **Static screen** — validation, size limits, spam heuristics, banned imports (`subprocess`, `requests`, `eval`, …), per-IP rate limit (same as `/api/submit`).
-2. **Workers AI review** — binding **`AI`** in `cloudflare.config.ts` (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`) returns `{ verdict, quality, reasons, categoryFit }`.
-3. **Outcome** — `verdict: safe` and `quality ≥ 3` → auto-publish a **community** entry in KV (`community:entry:*`, `community:index`), visible at `/e/<slug>` with `modelId: community` (never shown as Opus unless proven). Otherwise `pending_review` or `rejected`.
-
-Status values: `scanning` → `live` | `pending_review` | `rejected`. Poll `GET /api/submit/status?id=<uuid>` or MCP `get_submission_status`.
-
-**Admin overrides** — `/admin/review` + `GET/POST /api/admin/review` protected by Worker secret **`REVIEW_ADMIN_TOKEN`** (Bearer, `?token=`, or `X-Review-Admin-Token`). Approve publishes from queue; unpublish removes a community KV entry. Curated git entries still ship via `runner/run.py` and a normal PR.
-
-**Secrets to set (production):**
-
-```bash
-npx wrangler secret put REVIEW_ADMIN_TOKEN
-# optional, existing:
-npx wrangler secret put SPONSOR_ADMIN_TOKEN
-```
-
-Enable Workers AI on the account; the `AI` binding is declared in `cloudflare.config.ts`.
+Read the [contribution guide](CONTRIBUTING.md) for audio requirements, attribution and licensing. If the directory helps your work, a GitHub star helps others find it.
 
 ## License
 
-- **Code** (site, runner, tooling): [MIT License](./LICENSE) — Copyright (c) 2026 Thomas Guntenaar
-- **Sounds** (audio and spectrograms under `public/assets/`, plus entry prompt text in `content/entries/`): [CC0 1.0 Universal](./ASSETS-LICENSE.md)
+**Everyone can use this project, including for commercial work.**
 
-Community submissions via the form or pull requests are accepted under the same terms (code MIT, audio and prompts CC0). No code was copied from `cursor/community-plugins`.
+| Material | License | What that means |
+| :--- | :--- | :--- |
+| Audio, spectrograms and sound prompts, including masters and archived candidate takes | [CC0 1.0](ASSETS-LICENSE.md) | Copy, edit, remix, redistribute and use commercially without asking permission or giving credit. |
+| Application code, synthesis scripts, configuration, tooling and documentation | [MIT](LICENSE) | Use, modify, distribute and sell; retain the copyright and license notice in copies or substantial portions. |
+
+See the [asset scope](ASSETS-LICENSE.md), [full CC0 text](LICENSES/CC0-1.0.txt) and [MIT license](LICENSE). Third-party dependencies retain their own licenses. CC0 does not grant trademark or endorsement rights.
+
+---
+
+<div align="center">
+
+**A sound directory you can listen to, learn from and build on.**
+
+[Browse sounds](https://opussounds.directory) · [Contribute](CONTRIBUTING.md) · [Back to top](#opus-sounds-directory)
+
+</div>
