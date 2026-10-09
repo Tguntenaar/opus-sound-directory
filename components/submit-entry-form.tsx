@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CATEGORY_ORDER, CATEGORIES } from "@/lib/categories";
 import { MOOD_FACETS, type MoodSlug } from "@/lib/mood";
 import { Button } from "@/components/ui/button";
 import { SUBMIT_LICENSE_NOTE } from "@/lib/licenses";
 import { captureEvent } from "@/lib/analytics-client";
 
+import { ContributorAccount } from "@/components/contributor-account";
+
 const MOOD_OPTIONS = Object.entries(MOOD_FACETS) as [MoodSlug, string][];
 
 type FormState = {
   title: string;
   prompt: string;
-  email: string;
+  author_name: string;
   category: string;
   mood: MoodSlug[];
   codeSnippet: string;
@@ -23,7 +25,7 @@ type FormState = {
 const initial: FormState = {
   title: "",
   prompt: "",
-  email: "",
+  author_name: "",
   category: CATEGORY_ORDER[0],
   mood: [],
   codeSnippet: "",
@@ -32,6 +34,15 @@ const initial: FormState = {
 };
 
 export function SubmitEntryForm() {
+  const [access, setAccess] = useState<"loading" | "allowed" | "signin">("loading");
+  useEffect(() => {
+    let active = true;
+    fetch("/api/account", { cache: "no-store" }).then(async response => {
+      const data = await response.json() as { user?: { emailVerified: boolean } };
+      if (active) setAccess(response.ok && data.user?.emailVerified ? "allowed" : "signin");
+    }).catch(() => { if (active) setAccess("signin"); });
+    return () => { active = false; };
+  }, []);
   const [form, setForm] = useState<FormState>(initial);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -78,10 +89,6 @@ export function SubmitEntryForm() {
       setError("Prompt must be at least 40 characters");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      setError("Enter a valid contact email");
-      return;
-    }
     if (form.mood.length === 0) {
       setError("Select at least one mood");
       return;
@@ -95,7 +102,7 @@ export function SubmitEntryForm() {
         body: JSON.stringify({
           title: form.title.trim(),
           prompt: form.prompt.trim(),
-          email: form.email.trim(),
+          author_name: form.author_name.trim() || undefined,
           category: form.category,
           mood: form.mood,
           codeSnippet: form.codeSnippet.trim() || undefined,
@@ -135,6 +142,9 @@ export function SubmitEntryForm() {
     }
   }
 
+  if (access === "loading") return <p role="status" className="text-sm text-zinc-400">Checking sign-in…</p>;
+  if (access !== "allowed") return <ContributorAccount submission />;
+
   if (success) {
     return (
       <div
@@ -149,7 +159,7 @@ export function SubmitEntryForm() {
           </p>
         )}
         <p className="mt-2 text-zinc-400">
-          Safe submissions auto-publish as community entries after automated screening and AI review.
+          Follow review progress in your account. Submissions with concerns stay unpublished until reviewed.
           Prefer git? Open a pull request on{" "}
           <a
             href="https://github.com/Tguntenaar/opus-sound-directory"
@@ -239,14 +249,13 @@ export function SubmitEntryForm() {
       </label>
 
       <label className="flex flex-col gap-1 text-sm">
-        <span className="text-zinc-400">Contact email</span>
+        <span className="text-zinc-400">Public credit (optional)</span>
         <input
-          required
-          type="email"
-          name="email"
-          autoComplete="email"
-          value={form.email}
-          onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+          name="author_name"
+          maxLength={120}
+          placeholder="Name or handle shown on your sound"
+          value={form.author_name}
+          onChange={(e) => setForm((f) => ({ ...f, author_name: e.target.value }))}
           className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-zinc-100 outline-none focus:border-violet-500"
         />
       </label>

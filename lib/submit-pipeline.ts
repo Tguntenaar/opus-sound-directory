@@ -1,3 +1,4 @@
+import { reviewAllowsPublication } from "@/lib/submit-review-policy";
 import { audioExtension, validateAudioUrlSize } from "@/lib/audio-url-policy";
 import { saveCommunityEntry } from "@/lib/community-kv";
 import { COMMUNITY_MODEL_ID } from "@/lib/community-types";
@@ -89,7 +90,7 @@ async function buildCommunityEntry(
     author: submission.author_name
       ? {
           name: submission.author_name,
-          url: submission.author_url,
+          url: submission.author_url && /^https?:\/\//i.test(submission.author_url) ? submission.author_url : undefined,
         }
       : undefined,
     hasRenderedAudio,
@@ -136,6 +137,11 @@ export async function publishSubmissionAsCommunity(
   return slug;
 }
 
+async function warnAboutSubmission(id: string) {
+  const latest = await getSubmitEntry(id);
+  if (latest) await updateSubmitEntry(id, { notification: await notifySubmitEntry(latest) });
+}
+
 export async function runSubmissionPipeline(submissionId: string): Promise<void> {
   const submission = await getSubmitEntry(submissionId);
   if (!submission || submission.status !== "scanning") return;
@@ -148,6 +154,7 @@ export async function runSubmissionPipeline(submissionId: string): Promise<void>
       status: "rejected",
       reviewerNote: screen.reason,
     });
+    await warnAboutSubmission(submissionId);
     return;
   }
 
@@ -159,54 +166,24 @@ export async function runSubmissionPipeline(submissionId: string): Promise<void>
       status: "rejected",
       reviewerNote: aiReview.reasons.join("; ") || "Malicious content",
     });
+    await warnAboutSubmission(submissionId);
     return;
   }
 
   const autoApprove =
-    aiReview.verdict === "safe" && aiReview.quality >= 3 && aiReview.categoryFit;
+    reviewAllowsPublication(aiReview, screen.flags);
 
   if (!autoApprove) {
-    await updateSubmitEntry(submissionId, { status: "pending_review" });
-    const latest = await getSubmitEntry(submissionId);
-    if (latest) await notifySubmitEntry(latest);
+    await updateSubmitEntry(submissionId, { status: "pending_review", reviewerNote: [...aiReview.reasons, ...aiReview.rightsConcerns].join("; ") || "Submission requires review." });
+    await warnAboutSubmission(submissionId);
     return;
   }
 
-  let hasRenderedAudio = false;
-  let audioUrl = submission.audioUrl;
-  if (audioUrl) {
-    hasRenderedAudio = await validateAudioUrlSize(audioUrl);
-    if (!hasRenderedAudio) audioUrl = undefined;
-  }
-
-  const slug = slugifyTitle(submission.title, submission.id);
-  const { entry, code } = await buildCommunityEntry(
-    submission,
-    slug,
-    hasRenderedAudio,
-    audioUrl,
-  );
-  await saveCommunityEntry(entry, code);
-
   await updateSubmitEntry(submissionId, {
-    status: "live",
-    communitySlug: slug,
+    status: "pending_review",
+    reviewerNote: "Code review completed. Audio generation, validation, and hosting are required before automatic publication.",
   });
-
-  scheduleBackground(
-    captureServerEvent({
-      distinctId: `submission:${submissionId}`,
-      event: "submit_status_live",
-      properties: {
-        submission_id: submissionId,
-        community_slug: slug,
-        source: submission.source,
-      },
-    }),
-  );
-
-  const latest = await getSubmitEntry(submissionId);
-  if (latest) await notifySubmitEntry(latest);
+  await warnAboutSubmission(submissionId);
 }
 
 export function submissionReviewUrl(submission: SubmitEntry): string | undefined {

@@ -3,13 +3,16 @@ import { getRequestExecutionContext } from "vinext/shims/request-context";
 import { createOpusMcpServer } from "@/lib/mcp/server";
 
 const mcpHandler = createMcpHandler(
-  (request: Request) => createOpusMcpServer(request),
+  (context) => {
+    if (!context.requestInfo) throw new Error("HTTP request context is required");
+    return createOpusMcpServer(context.requestInfo);
+  },
   {
     route: "/mcp",
     corsOptions: {
       origin: "*",
       methods: "GET, POST, DELETE, OPTIONS",
-      headers: "Content-Type, Accept, Mcp-Session-Id, MCP-Protocol-Version",
+      headers: "Content-Type, Accept, Authorization, Mcp-Session-Id, MCP-Protocol-Version",
       maxAge: 86400,
     },
   },

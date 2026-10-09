@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Info, LayoutGrid, Plug } from "lucide-react";
+import { Info, LayoutGrid, Plug, UserRound } from "lucide-react";
 import { IconTooltip } from "@/components/icon-tooltip";
 import { BrandMark } from "@/components/brand-mark";
 
@@ -33,6 +33,9 @@ export function SiteHeader() {
             >
               <Plug className="h-4 w-4" aria-hidden />
             </Link>
+          </IconTooltip>
+          <IconTooltip label="Your account" side="bottom">
+            <Link href="/account" prefetch={false} aria-label="Your account" className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-900 hover:text-zinc-100"><UserRound className="h-4 w-4" aria-hidden /></Link>
           </IconTooltip>
           <IconTooltip label="About" side="bottom">
             <Link

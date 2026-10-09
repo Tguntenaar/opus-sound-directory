@@ -251,17 +251,24 @@ Public **Model Context Protocol** endpoint (streamable HTTP, stateless) for LLM 
 claude mcp add --transport http opus-sounds https://opussounds.directory/mcp
 ```
 
-Read tools need no auth. `submit_sound` uses the same review queue as the web form (`SPONSOR_KV` keys `submit:entry:*`, `submit:index`; `source: "mcp"`).
+Read tools need no auth. `submit_sound` requires an account-issued token in the `Authorization: Bearer …` header. It creates a submission owned by the authenticated account. The web form uses a signed session cookie; typed email addresses cannot override ownership. `get_submission_status` and the web status endpoint return only the caller's own submissions. Legacy anonymous submissions remain available to administrators but cannot be claimed by typing the same email.
+
+See [account setup](ACCOUNTS.md) for GitHub/Google OAuth, D1 migrations, and token configuration.
 
 ### Reviewing submissions
 
-Web (`POST /api/submit`) and MCP (`submit_sound`) share one pipeline:
+Web (`POST /api/submit`) and MCP (`submit_sound`) share one review pipeline:
 
-1. **Static screen** — validation, size limits, spam heuristics, banned imports (`subprocess`, `requests`, `eval`, …), per-IP rate limit (same as `/api/submit`).
-2. **Workers AI review** — binding **`AI`** in `cloudflare.config.ts` (`@cf/meta/llama-3.3-70b-instruct-fp8-fast`) returns `{ verdict, quality, reasons, categoryFit }`.
-3. **Outcome** — `verdict: safe` and `quality ≥ 3` → auto-publish a **community** entry in KV (`community:entry:*`, `community:index`), visible at `/e/<slug>` with `modelId: community` (never shown as Opus unless proven). Otherwise `pending_review` or `rejected`.
+1. Sign-in, verified email, and a per-account cooldown are required. New submissions are stored in D1; existing KV submissions remain readable by administrators.
+2. Static checks flag suspicious code, claims, and spam. These checks do not make Python safe to execute.
+3. Workers AI reviews the entire supported code input and returns structured quality and rights concerns. Missing AI, malformed output, or code beyond the review limit requires human review.
+4. Flagged or rejected submissions remain unpublished, with an email warning attempt recorded. Text review alone does not certify audio or establish legal clearance.
 
-Status values: `scanning` → `live` | `pending_review` | `rejected`. Poll `GET /api/submit/status?id=<uuid>` or MCP `get_submission_status`.
+**Automatic Python rendering and audio hosting are not enabled in this change.** Even a passing text/code review remains `pending_review` until audio generation, validation, and hosting are connected. Administrator approval remains available. Never execute contributed Python inside the website Worker or an unrestricted host process.
+
+Status values: `scanning` → `live` | `pending_review` | `rejected`. Signed-in contributors can follow their recent submissions at `/account`.
+
+Warnings use the existing Email Sending binding with private `SUBMIT_MAIL_TO` and `SUBMIT_MAIL_FROM` settings (the latter can fall back to `SPONSOR_MAIL_FROM`). Use a verified destination address for free destination-restricted sending. Configure and verify a sending domain first. The review dashboard shows whether sending was accepted, failed, or was unconfigured. Delivery currently has no durable automatic retry; administrators must check failed warnings in the dashboard.
 
 **Admin overrides** — `/admin/review` + `GET/POST /api/admin/review` protected by Worker secret **`REVIEW_ADMIN_TOKEN`** (Bearer, `?token=`, or `X-Review-Admin-Token`). Approve publishes from queue; unpublish removes a community KV entry. Curated git entries still ship via `runner/run.py` and a normal PR.
 

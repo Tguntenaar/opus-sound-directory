@@ -14,6 +14,8 @@ type Submission = {
   aiReview?: { verdict: string; quality: number; reasons: string[] };
   communitySlug?: string;
   reviewerNote?: string;
+  ownerId?: string;
+  notification?: { status: string };
 };
 
 export function ReviewAdminClient() {
@@ -132,6 +134,7 @@ export function ReviewAdminClient() {
                 Flags: {s.screening.suspiciousClaims.join(", ")}
               </p>
             ) : null}
+            <p className="mt-1 text-xs text-zinc-500">Account: {s.ownerId || "Legacy submission"} · Warning email: {s.notification?.status || "Not sent"}</p>
             {s.reviewerNote && (
               <p className="mt-1 text-xs text-zinc-500">Note: {s.reviewerNote}</p>
             )}

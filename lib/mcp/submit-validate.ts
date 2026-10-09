@@ -60,7 +60,9 @@ export function validateMcpSubmit(body: Record<string, unknown>): {
   let author_url: string | undefined;
   if (body.author_url) {
     try {
-      author_url = new URL(trimStr(body.author_url, 500)).toString();
+      const url = new URL(trimStr(body.author_url, 500));
+      if (url.protocol !== "https:" && url.protocol !== "http:") throw new Error("Unsupported link protocol");
+      author_url = url.toString();
     } catch {
       return { ok: false, error: "author_url must be a valid URL" };
     }

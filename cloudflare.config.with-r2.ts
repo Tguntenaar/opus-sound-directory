@@ -10,6 +10,7 @@ export default defineConfig({
     assets: { notFoundHandling: "none" },
     env: {
       ASSETS: bindings.assets(),
+      ACCOUNTS_DB: bindings.d1({ name: "opus-sounds-accounts" }),
       IMAGES: bindings.images(),
       STATS_KV: bindings.kv(),
       SPONSOR_KV: bindings.kv(),

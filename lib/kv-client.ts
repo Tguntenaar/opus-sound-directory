@@ -34,7 +34,7 @@ function devKv(storeId: string): KvLike {
 export async function getKvBinding(binding: "STATS_KV" | "SPONSOR_KV"): Promise<KvLike> {
   try {
     const { env } = await import("cloudflare:workers");
-    const kv = (env as Record<string, KvLike | undefined>)[binding];
+    const kv = env[binding];
     if (kv) return kv;
   } catch {
     // outside workerd
