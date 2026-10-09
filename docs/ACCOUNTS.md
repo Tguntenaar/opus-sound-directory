@@ -5,7 +5,7 @@ GitHub and Google sign-in give every new web or MCP submission a stable owner. T
 ## Before deployment
 
 1. Bind a Cloudflare D1 database as `ACCOUNTS_DB`. Both Cloudflare configuration variants declare the name `opus-sounds-accounts`.
-2. Apply `migrations/accounts/0001_accounts.sql` to that database before serving the new routes. For an existing database, review a new migration instead of reapplying or regenerating the initial migration.
+2. Apply `migrations/accounts/0001_accounts.sql` before serving the new routes: `npx wrangler d1 migrations apply ACCOUNTS_DB --remote --config wrangler.accounts.jsonc`. The migration-only configuration is not a website deployment configuration. For an existing database, review a new migration instead of reapplying or regenerating the initial migration.
 3. Configure a random `BETTER_AUTH_SECRET` of at least 32 characters using Worker secrets. Keep it stable between deployments. Set `BETTER_AUTH_URL` to the exact origin, normally `https://opussounds.directory`.
 4. Register provider applications with the callbacks below and set their client IDs and secrets on the Worker. Request only profile and email access; repository, Gmail, and Drive permissions are not needed.
 5. Confirm sign-in, sign-out, token creation/revocation, and an owned submission in a preview before release. Providers without both settings are hidden. Without a database/secret the account endpoints fail closed.
