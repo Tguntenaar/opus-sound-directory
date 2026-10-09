@@ -3,6 +3,9 @@ import { bindings, defineConfig, defineWorker } from "cf/config";
 export default defineConfig({
   worker: defineWorker({
     name: "opus-sound-directory",
+    domains: ["opussounds.directory"],
+    workersDev: true,
+    previewUrls: true,
     entrypoint: "vinext/server/fetch-handler",
     compatibilityDate: "2026-10-05",
     compatibilityFlags: ["nodejs_compat"],
@@ -12,9 +15,9 @@ export default defineConfig({
       ACCOUNTS_DB: bindings.d1({ name: "opus-sounds-accounts", id: "ec780306-8301-4ab1-b1bf-ffe299c7c506" }),
       IMAGES: bindings.images(),
       /** Copy/download counters per entry (`stats:{id}:copy|download`). */
-      STATS_KV: bindings.kv(),
+      STATS_KV: bindings.kv({ id: "9ecc01912bb64cf9bed736db1e7525ef" }),
       /** Sponsor interest leads (`sponsor:lead:{uuid}`, index `sponsor:index`). */
-      SPONSOR_KV: bindings.kv(),
+      SPONSOR_KV: bindings.kv({ id: "d24afdeb65a04134bd9ab17db3aef4a3" }),
       /**
        * Optional Email Sending binding — enable domain in dashboard, set SPONSOR_MAIL_FROM
        * (verified sender). Notifies olivierguntenaar@gmail.com and thomas@guntenaar.org

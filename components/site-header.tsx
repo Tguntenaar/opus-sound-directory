@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GithubStars } from "@/components/github-stars";
 import { Info, LayoutGrid, Plug, UserRound } from "lucide-react";
 import { IconTooltip } from "@/components/icon-tooltip";
 import { BrandMark } from "@/components/brand-mark";
@@ -6,7 +7,7 @@ import { BrandMark } from "@/components/brand-mark";
 export function SiteHeader() {
   return (
     <header className="overflow-visible border-b border-zinc-800/60">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-6 overflow-visible px-4 py-5">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 overflow-visible px-4 py-5">
         <Link
           href="/"
           className="group inline-flex items-center gap-2.5 text-sm font-medium tracking-tight text-zinc-100 transition-colors hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60"
@@ -14,7 +15,7 @@ export function SiteHeader() {
           <BrandMark size={20} interactive />
           Opus Sounds Directory
         </Link>
-        <nav className="flex items-center gap-1 overflow-visible text-sm" aria-label="Main">
+        <nav className="ml-auto flex items-center gap-1 overflow-visible text-sm" aria-label="Main">
           <IconTooltip label="Browse sounds" side="bottom">
             <Link
               href="/"
@@ -46,6 +47,7 @@ export function SiteHeader() {
               <Info className="h-4 w-4" aria-hidden />
             </Link>
           </IconTooltip>
+          <GithubStars />
         </nav>
       </div>
     </header>

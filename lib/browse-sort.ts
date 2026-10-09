@@ -6,7 +6,8 @@ export type SortMode = "popular" | "new";
 export function popularityScore(entryId: string, stats: StatsMap): number {
   const s = stats[entryId];
   if (!s) return 0;
-  return s.copy + s.download;
+  // Reuse intent outweighs listening; old counters without plays remain valid.
+  return (s.play ?? 0) + 3 * (s.copy ?? 0) + 5 * (s.download ?? 0);
 }
 
 export function sortEntries(

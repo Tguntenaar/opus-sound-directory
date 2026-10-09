@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDownAZ, Search, SlidersHorizontal, TrendingUp } from "lucide-react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { ArrowDownAZ, ChevronDown, Search, SlidersHorizontal, TrendingUp } from "lucide-react";
 import type { SoundEntry } from "@/lib/entries";
 import { CATEGORY_ORDER, CATEGORIES } from "@/lib/categories";
 import { MOOD_FACETS, formatMood } from "@/lib/mood";
@@ -38,7 +38,8 @@ export function BrowseGrid({
   syncCategoryToUrl,
   initialCategory = "all",
 }: Props) {
-  const { stats } = useStats();
+  // Freeze ranking to the loaded snapshot so playing a card never moves it.
+  const { rankingStats: stats } = useStats();
   const [category, setCategory] = useState<string>(
     lockedCategory ?? initialCategory ?? "all",
   );
@@ -46,6 +47,16 @@ export function BrowseGrid({
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortMode>("popular");
   const gridRef = useRef<HTMLDivElement>(null);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const filtersId = useId();
+  const activeFilterCount = Number(!lockedCategory && category !== "all") + Number(mood !== "all");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("opus-sounds:sort");
+      if (saved === "popular" || saved === "new") setSort(saved);
+    } catch { /* Storage can be unavailable in private browsing. */ }
+  }, []);
 
   useEffect(() => {
     if (lockedCategory) {
@@ -109,12 +120,11 @@ export function BrowseGrid({
   const filterKey = `${category}-${mood}-${query}-${sort}`;
 
   const cycleSort = useCallback(() => {
-    setSort((s) => {
-      const next = s === "popular" ? "new" : "popular";
-      captureEvent("sort_change", { sort: next });
-      return next;
-    });
-  }, []);
+    const next = sort === "popular" ? "new" : "popular";
+    setSort(next);
+    captureEvent("sort_change", { sort: next });
+    try { localStorage.setItem("opus-sounds:sort", next); } catch { /* Optional preference. */ }
+  }, [sort]);
 
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastSearchEventRef = useRef("");
@@ -200,33 +210,40 @@ export function BrowseGrid({
                 <ArrowDownAZ className="h-4 w-4" aria-hidden />
               )}
             </IconButton>
-            <span className="hidden items-center gap-1 text-xs uppercase tracking-wide text-zinc-600 sm:inline-flex">
-              <SlidersHorizontal className="h-3 w-3" aria-hidden />
+            <button type="button" aria-expanded={filtersOpen} aria-controls={filtersId}
+              onClick={() => setFiltersOpen(open => !open)}
+              className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-zinc-800 px-3 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400">
+              <SlidersHorizontal className="h-4 w-4" aria-hidden />
               Filters
-            </span>
+              {activeFilterCount > 0 && <span className="rounded-full bg-violet-500/15 px-1.5 text-xs text-violet-300">{activeFilterCount}</span>}
+              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${filtersOpen ? "rotate-180" : ""}`} aria-hidden />
+            </button>
           </div>
-          {!lockedCategory && (
-            <FilterPillGroup
-              aria-label="Category"
-              options={categoryPills}
-              value={category}
-              onChange={setCategoryWithUrl}
-              hrefForValue={(v) => (v === "all" ? "/" : `/c/${v}`)}
-            />
-          )}
-          {moodOptions.length > 0 && (
-            <FilterPillGroup
-              aria-label="Mood"
-              options={moodPills}
-              value={mood}
-              onChange={(next) => {
-                if (next !== mood) {
-                  captureEvent("filter_change", { filter: "mood", value: next });
-                }
-                setMood(next);
-              }}
-            />
-          )}
+          {activeFilterCount > 0 && <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
+            {!lockedCategory && category !== "all" && <span className="rounded-md bg-violet-500/10 px-2 py-1 text-violet-300">{categoryPills.find(option => option.value === category)?.label}</span>}
+            {mood !== "all" && <span className="rounded-md bg-violet-500/10 px-2 py-1 text-violet-300">{formatMood(mood)}</span>}
+            <button type="button" className="rounded px-2 py-1 hover:text-zinc-100 focus-visible:outline-violet-400" onClick={() => {
+              if (!lockedCategory) setCategoryWithUrl("all");
+              if (mood !== "all") captureEvent("filter_change", { filter: "mood", value: "all" });
+              setMood("all");
+            }}>Clear filters</button>
+          </div>}
+          <div id={filtersId} hidden={!filtersOpen}>
+            {filtersOpen && <div className="max-h-[50vh] space-y-5 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/30 p-4 sm:p-5">
+              {!lockedCategory && <section className="space-y-2">
+                <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-500">Category</h2>
+                <FilterPillGroup aria-label="Category" options={categoryPills} value={category} onChange={setCategoryWithUrl}
+                  hrefForValue={(v) => (v === "all" ? "/" : `/c/${v}`)} />
+              </section>}
+              {moodOptions.length > 0 && <section className={`space-y-2 ${!lockedCategory ? "border-t border-zinc-800 pt-4" : ""}`}>
+                <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-500">Mood</h2>
+                <FilterPillGroup aria-label="Mood" options={moodPills} value={mood} onChange={(next) => {
+                  if (next !== mood) captureEvent("filter_change", { filter: "mood", value: next });
+                  setMood(next);
+                }} />
+              </section>}
+            </div>}
+          </div>
         </div>
       </div>
 

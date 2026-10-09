@@ -25,7 +25,6 @@ export function IconButton({
       <button
         type="button"
         aria-label={label}
-        title={label}
         className={cn(
           "inline-flex items-center justify-center rounded-lg transition-[color,background-color,border-color,transform] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60 active:scale-95 motion-reduce:active:scale-100",
           dim,

@@ -59,9 +59,9 @@ export function FilterPillGroup({
   }, [measure]);
 
   const chip =
-    "relative z-[1] inline-flex min-h-10 items-center rounded-full px-3.5 py-2 text-xs transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60";
-  const chipIdle = "text-zinc-400 hover:text-zinc-300";
-  const chipActive = "text-violet-100";
+    "relative z-[1] inline-flex min-h-10 cursor-pointer items-center rounded-full px-3.5 py-2 text-xs transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-500/60";
+  const chipIdle = "text-zinc-400 hover:bg-zinc-800/80 hover:text-zinc-100 active:bg-zinc-700/70";
+  const chipActive = "text-violet-100 hover:bg-violet-500/15 hover:text-violet-50 active:bg-violet-500/25";
 
   return (
     <div
