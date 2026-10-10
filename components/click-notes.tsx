@@ -9,7 +9,6 @@ const SOUND_PATHS = [
   "M1 10h3l2-6 4 12 4-14 4 14 2-6h3v3h-1l-4 10-4-13-4 13-4-11-1 1H1Z",
   "M12 1 15 9 23 12 15 15 12 23 9 15 1 12 9 9Z",
 ];
-const COLORS = ["#c4b5fd", "#a78bfa", "#e9d5ff", "#818cf8"];
 
 export function ClickNotes() {
   const layerRef = useRef<HTMLDivElement>(null);
@@ -39,9 +38,8 @@ export function ClickNotes() {
     function burst(event: MouseEvent) {
       if ((motion.matches && !previewMotion) || event.detail === 0 || event.button !== 0 || pointerType !== "mouse") return;
 
-      const firstShape = Math.floor(Math.random() * SOUND_PATHS.length);
-      const secondShape = (firstShape + 1 + Math.floor(Math.random() * (SOUND_PATHS.length - 1))) % SOUND_PATHS.length;
-      for (let i = 0; i < 2; i++) {
+      const shape = Math.floor(Math.random() * SOUND_PATHS.length);
+      {
         // Bound the work even when someone clicks repeatedly.
         if (live.size >= 32) {
           const oldest = live.keys().next().value!;
@@ -51,24 +49,27 @@ export function ClickNotes() {
         }
         const note = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         note.setAttribute("viewBox", "0 0 24 24");
-        note.setAttribute("fill", COLORS[i]);
+        note.setAttribute("fill", "none");
+        note.setAttribute("stroke", "#71717a");
+        note.setAttribute("stroke-width", "1.2");
+        note.setAttribute("stroke-linejoin", "round");
         note.classList.add("click-note");
         note.style.left = `${event.clientX}px`;
         note.style.top = `${event.clientY}px`;
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        path.setAttribute("d", SOUND_PATHS[i === 0 ? firstShape : secondShape]);
+        path.setAttribute("d", SOUND_PATHS[shape]);
         note.appendChild(path);
         layer!.appendChild(note);
 
-        const dx = (i - 0.5) * 18 + Math.random() * 8 - 4;
+        const dx = Math.random() * 16 - 8;
         const height = 20 + Math.random() * 12;
-        const turn = (i - 0.5) * 12;
+        const turn = Math.random() * 12 - 6;
         const pose = (x: number, y: number, rotation: number, scale: number) =>
           `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${rotation}deg) scale(${scale})`;
         const animation = note.animate([
           { transform: pose(0, 0, 0, 0.35), opacity: 0, offset: 0 },
-          { transform: pose(dx * 0.3, -height * 0.6, turn * 0.3, 1), opacity: 1, offset: 0.2 },
-          { transform: pose(dx * 0.7, -height, turn * 0.7, 1), opacity: 0.9, offset: 0.55 },
+          { transform: pose(dx * 0.3, -height * 0.6, turn * 0.3, 1), opacity: 0.65, offset: 0.2 },
+          { transform: pose(dx * 0.7, -height, turn * 0.7, 1), opacity: 0.5, offset: 0.55 },
           { transform: pose(dx, -height + 12, turn, 0.7), opacity: 0, offset: 1 },
         ], { duration: 650 + Math.random() * 150, easing: "ease-out", fill: "both" });
         live.set(note, animation);
