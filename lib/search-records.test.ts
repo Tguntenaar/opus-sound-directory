@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import fs from "node:fs";
-import { toSearchRecords, searchCatalog } from "./search-records.ts";
+import { toSearchRecords, searchCatalog, matchCatalogRecords, mergeAlgoliaWithCatalog } from "./search-records.ts";
 import type { SoundEntry } from "./entries-types.ts";
 
 const entries: SoundEntry[] = fs.readdirSync(new URL("../content/entries/", import.meta.url))
@@ -25,6 +25,31 @@ test("catalog fallback matches multiple terms without case sensitivity and caps 
   const all = searchCatalog(records, "");
   assert.equal(all.nbHits, records.length);
   assert.equal(all.hits.length, 12);
+});
+
+test("catalog search matches slug and id for hyphenated queries", () => {
+  const records = toSearchRecords(entries);
+  const result = matchCatalogRecords(records, "guitar-chime");
+  assert.ok(result.some((record) => record.slug === "guitar-chime-logo"));
+});
+
+test("mergeAlgoliaWithCatalog keeps Algolia hits first and adds catalog-only matches", () => {
+  const records = toSearchRecords(entries);
+  const catalogMatches = matchCatalogRecords(records, "guitar");
+  const algoliaHits = catalogMatches.filter((record) => record.slug === "ad-bed-30-lifestyle");
+  const merged = mergeAlgoliaWithCatalog(algoliaHits, 1, catalogMatches);
+  assert.equal(merged.provider, "algolia");
+  assert.equal(merged.hits[0]?.slug, "ad-bed-30-lifestyle");
+  assert.ok(merged.hits.some((record) => record.slug === "guitar-chime-logo"));
+  assert.ok(merged.nbHits >= catalogMatches.length);
+});
+
+test("mergeAlgoliaWithCatalog dedupes overlapping hits and caps at twelve", () => {
+  const records = toSearchRecords(entries);
+  const catalogMatches = matchCatalogRecords(records, "chime");
+  const merged = mergeAlgoliaWithCatalog(catalogMatches.slice(0, 2), 2, catalogMatches);
+  assert.equal(merged.hits.length, catalogMatches.length);
+  assert.equal(new Set(merged.hits.map((hit) => hit.slug)).size, merged.hits.length);
 });
 
 test("search records carry audio previews only when rendered audio is available", () => {

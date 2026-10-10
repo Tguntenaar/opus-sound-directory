@@ -37,11 +37,50 @@ export type SearchResults = {
   provider: "algolia" | "catalog";
 };
 
-export function searchCatalog(records: SearchRecord[], query: string): SearchResults {
+function catalogSearchText(record: SearchRecord): string {
+  return [record.slug, record.id, record.title, record.category, ...record.tags, ...record.mood, record.description].join(" ").toLowerCase();
+}
+
+/** All public catalog records matching the query, best title matches first. */
+export function matchCatalogRecords(records: SearchRecord[], query: string): SearchRecord[] {
   const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
-  const hits = records.filter((record) => {
-    const text = [record.title, record.category, ...record.tags, ...record.mood, record.description].join(" ").toLowerCase();
+  const needle = query.toLowerCase();
+  return records.filter((record) => {
+    const text = catalogSearchText(record);
     return terms.every((term) => text.includes(term));
-  }).sort((a, b) => Number(b.title.toLowerCase().includes(query.toLowerCase())) - Number(a.title.toLowerCase().includes(query.toLowerCase())));
-  return { hits: hits.slice(0, 12), nbHits: hits.length, provider: "catalog" };
+  }).sort((a, b) => Number(b.title.toLowerCase().includes(needle)) - Number(a.title.toLowerCase().includes(needle)));
+}
+
+export function searchCatalog(records: SearchRecord[], query: string): SearchResults {
+  const matches = matchCatalogRecords(records, query);
+  return { hits: matches.slice(0, 12), nbHits: matches.length, provider: "catalog" };
+}
+
+/** Algolia first, then catalog-only hits so deployed sounds appear when the index is stale. */
+export function mergeAlgoliaWithCatalog(
+  algoliaHits: SearchRecord[],
+  algoliaNbHits: number,
+  catalogMatches: SearchRecord[],
+  limit = 12,
+): SearchResults {
+  const seen = new Set<string>();
+  const hits: SearchRecord[] = [];
+  for (const hit of algoliaHits) {
+    const key = hit.objectID || hit.slug;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    hits.push(hit);
+  }
+  for (const hit of catalogMatches) {
+    const key = hit.objectID || hit.slug;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    hits.push(hit);
+    if (hits.length >= limit) break;
+  }
+  return {
+    hits: hits.slice(0, limit),
+    nbHits: Math.max(algoliaNbHits, catalogMatches.length),
+    provider: "algolia",
+  };
 }

@@ -4,7 +4,7 @@ Open search from the header on any page, or press ⌘K on Mac / Ctrl+K on Window
 
 Play or pause a sound directly from its search result. Tab reaches the preview and open controls. Only one sound plays at a time; changing the query or closing search stops the preview. Audio loads only when you press play. Sounds without rendered audio have no preview button. Reindex after adding preview fields to an existing index.
 
-The global dialog uses Algolia when configured. With no Algolia credentials, it searches the current public catalog on the server. Partial configuration or an Algolia outage produces a retry message. The existing browse field still filters the cards on its page.
+The global dialog uses Algolia when configured, and the server also searches the live public catalog so newly deployed sounds appear even before the Algolia index is refreshed. Responses still report `"provider":"algolia"` when Algolia is configured. With no Algolia credentials, search uses the catalog only. Partial configuration or an Algolia outage produces a retry message. The existing browse field still filters the cards on its page.
 
 ## Connect Algolia
 

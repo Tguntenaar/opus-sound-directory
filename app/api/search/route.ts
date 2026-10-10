@@ -1,6 +1,6 @@
 import { getAlgoliaSearch } from "@/lib/algolia";
 import { getAllEntriesMerged } from "@/lib/entries";
-import { searchCatalog, toSearchRecords, type SearchRecord } from "@/lib/search-records";
+import { matchCatalogRecords, mergeAlgoliaWithCatalog, searchCatalog, toSearchRecords, type SearchRecord } from "@/lib/search-records";
 
 export async function GET(request: Request) {
   const query = new URL(request.url).searchParams.get("q")?.trim() ?? "";
@@ -13,6 +13,8 @@ export async function GET(request: Request) {
       const records = toSearchRecords(await getAllEntriesMerged());
       return Response.json(searchCatalog(records, query));
     }
+    const records = toSearchRecords(await getAllEntriesMerged());
+    const catalogMatches = matchCatalogRecords(records, query);
     const result = await algolia.client.searchSingleIndex<SearchRecord>({
       indexName: algolia.indexName,
       searchParams: {
@@ -22,7 +24,8 @@ export async function GET(request: Request) {
         attributesToHighlight: [],
       },
     });
-    return Response.json({ hits: result.hits, nbHits: result.nbHits ?? result.hits.length, provider: "algolia" }, {
+    const merged = mergeAlgoliaWithCatalog(result.hits, result.nbHits ?? result.hits.length, catalogMatches);
+    return Response.json(merged, {
       headers: { "Cache-Control": "public, max-age=30, s-maxage=60" },
     });
   } catch {
