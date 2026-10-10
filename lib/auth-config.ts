@@ -1,6 +1,8 @@
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { apiKey } from "@better-auth/api-key";
 
+export type AuthProvider = "github" | "google";
+
 export type AuthSettings = {
   BETTER_AUTH_SECRET?: string;
   BETTER_AUTH_URL?: string;
@@ -10,7 +12,7 @@ export type AuthSettings = {
   GOOGLE_CLIENT_SECRET?: string;
 };
 
-export function enabledProviders(settings: AuthSettings): ("github" | "google")[] {
+export function enabledProviders(settings: AuthSettings): AuthProvider[] {
   return [
     ...(settings.GITHUB_CLIENT_ID && settings.GITHUB_CLIENT_SECRET ? ["github" as const] : []),
     ...(settings.GOOGLE_CLIENT_ID && settings.GOOGLE_CLIENT_SECRET ? ["google" as const] : []),

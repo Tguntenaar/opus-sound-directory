@@ -4,16 +4,29 @@ import { useEffect, useState } from "react";
 import { GithubIcon, GoogleIcon } from "@/components/social-icons";
 import { authClient } from "@/lib/auth-client";
 import { captureEvent, getPosthogWhenReady } from "@/lib/analytics-client";
+import { useAuthProviders } from "@/components/auth-providers";
 import { SIGN_IN_ATTEMPT_KEY } from "@/lib/auth-analytics";
+import { shouldShowContributorSignIn } from "@/lib/contributor-sign-in";
 
 type User = { id: string; name: string; email: string; emailVerified: boolean };
 type Submission = { id: string; title: string; status: string; createdAt: string; reviewUrl?: string; reviewerNote?: string };
 type Key = { id: string; name: string | null; start: string | null; expiresAt: Date | string | null };
 
-export function ContributorAccount({ submission = false }: { submission?: boolean }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [providers, setProviders] = useState<("github" | "google")[]>([]);
-  const [loading, setLoading] = useState(true);
+export function ContributorAccount({
+  submission = false,
+  initialUser,
+  initialProviders: initialProvidersProp,
+}: {
+  submission?: boolean;
+  initialUser?: User | null;
+  initialProviders?: ("github" | "google")[];
+}) {
+  const contextProviders = useAuthProviders();
+  const sessionKnown = initialUser !== undefined;
+  const seedProviders = initialProvidersProp ?? contextProviders;
+  const [user, setUser] = useState<User | null>(initialUser ?? null);
+  const [providers, setProviders] = useState(seedProviders);
+  const [loading, setLoading] = useState(!sessionKnown);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [entries, setEntries] = useState<Submission[]>([]);
@@ -52,10 +65,11 @@ export function ContributorAccount({ submission = false }: { submission?: boolea
     finally { setBusy(false); }
   }
   const button = "rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-100 hover:border-violet-400 disabled:opacity-50";
+  const showSignIn = shouldShowContributorSignIn(user, loading, providers, sessionKnown);
   return <section className="ph-no-capture mt-6 space-y-6">
-    {loading && <p role="status" className="text-sm text-zinc-400">Loading your account…</p>}
+    {loading && !showSignIn && <p role="status" className="text-sm text-zinc-400">Loading your account…</p>}
     {error && <p role="alert" className="text-sm text-amber-300">{error}</p>}
-    {!loading && !user && <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 shadow-lg shadow-black/10 sm:p-8">
+    {showSignIn && <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 to-zinc-950 p-6 shadow-lg shadow-black/10 sm:p-8">
       <h2 className="text-lg font-semibold tracking-tight text-zinc-100">Sign in to contribute</h2>
       <p className="mt-2 text-sm text-zinc-400">Submit sounds and connect your agents.</p>
       <div className="mt-6 grid gap-3 sm:grid-cols-2">{providers.map(provider => <button key={provider} type="button" className={`inline-flex min-h-12 items-center justify-center gap-3 rounded-lg border px-5 py-3 text-sm font-medium shadow-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-violet-400 disabled:cursor-wait disabled:opacity-50 ${provider === "google" ? "border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-100" : "border-zinc-600 bg-zinc-800 text-white hover:border-zinc-400 hover:bg-zinc-700"}`} disabled={busy} onClick={() => void run(async () => {

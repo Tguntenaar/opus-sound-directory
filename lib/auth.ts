@@ -1,4 +1,4 @@
-import { createAuth, type AuthSettings } from "./auth-config";
+import { createAuth, enabledProviders, type AuthProvider, type AuthSettings } from "./auth-config";
 
 export async function getAccountEnv() {
   const { env } = await import("cloudflare:workers");
@@ -12,9 +12,21 @@ export async function getAuth() {
 
 export type Contributor = { id: string; email: string; emailVerified: boolean; name: string };
 
+export async function getEnabledAuthProviders(): Promise<AuthProvider[]> {
+  try {
+    return enabledProviders(await getAccountEnv());
+  } catch {
+    return [];
+  }
+}
+
 export async function sessionContributor(request: Request): Promise<Contributor | null> {
+  return sessionContributorFromHeaders(request.headers);
+}
+
+export async function sessionContributorFromHeaders(headerList: Headers): Promise<Contributor | null> {
   const auth = await getAuth();
-  const session = await auth.api.getSession({ headers: request.headers });
+  const session = await auth.api.getSession({ headers: headerList });
   return session?.user ?? null;
 }
 

@@ -5,9 +5,15 @@ import { X } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { toggleBookmark, useBookmarks } from "@/lib/use-bookmarks";
 import { GithubIcon, GoogleIcon } from "@/components/social-icons";
+import type { AuthProvider } from "@/lib/auth-config";
 
-type Provider = "google" | "github";
+type Provider = AuthProvider;
 const PENDING = "opus-sounds:pending-bookmark";
+
+function normalizeProviders(list: Provider[]): Provider[] {
+  return list.filter(provider => provider === "google" || provider === "github");
+}
+
 const BookmarkLogin = createContext<(id: string, save: () => void) => void>(() => {});
 export const useBookmarkLogin = () => useContext(BookmarkLogin);
 
@@ -15,10 +21,24 @@ export function BookmarkLoginProvider({ children }: { children: ReactNode }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const busyRef = useRef(false);
   const [providers, setProviders] = useState<Provider[]>([]);
+  const [providersKnown, setProvidersKnown] = useState(false);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const bookmarks = useBookmarks();
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetch("/api/account", { cache: "no-store" }).then(async response => {
+      if (!response.ok) return;
+      const account = await response.json() as { providers?: Provider[] };
+      if (cancelled || !account.providers) return;
+      setProviders(normalizeProviders(account.providers));
+    }).catch(() => {}).finally(() => {
+      if (!cancelled) setProvidersKnown(true);
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     let pending: { id: string; at: number };
@@ -47,10 +67,12 @@ export function BookmarkLoginProvider({ children }: { children: ReactNode }) {
       if (!response.ok) throw new Error("Sign-in is temporarily unavailable. Please try again.");
       const account = await response.json() as { user: unknown; providers: Provider[] };
       if (account.user) { save(); return; }
-      setProviders(account.providers.filter(provider => provider === "google" || provider === "github"));
+      setProviders(normalizeProviders(account.providers));
+      setProvidersKnown(true);
       dialog.current?.showModal();
     } catch (cause) {
       setProviders([]);
+      setProvidersKnown(true);
       setError(cause instanceof Error ? cause.message : "Could not check your account.");
       dialog.current?.showModal();
     } finally { busyRef.current = false; }
@@ -70,6 +92,8 @@ export function BookmarkLoginProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const showUnavailable = providersKnown && !providers.length && !error;
+
   return <BookmarkLogin.Provider value={(id, save) => void request(id, save)}>
     {children}
     <dialog ref={dialog} aria-labelledby="bookmark-login-title"
@@ -85,7 +109,7 @@ export function BookmarkLoginProvider({ children }: { children: ReactNode }) {
             {provider === "google" ? <GoogleIcon className="h-5 w-5" /> : <GithubIcon className="h-5 w-5" />}
             Continue with {provider === "google" ? "Google" : "GitHub"}
           </button>)}
-          {!providers.length && !error && <p className="text-sm text-zinc-400">Sign-in is currently unavailable.</p>}
+          {showUnavailable && <p className="text-sm text-zinc-400">Sign-in is currently unavailable.</p>}
           {error && <p role="alert" className="text-sm text-amber-300">{error}</p>}
         </div>
       </div>
