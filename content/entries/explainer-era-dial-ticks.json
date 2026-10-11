@@ -1,0 +1,54 @@
+{
+  "id": "explainer-era-dial-ticks",
+  "slug": "explainer-era-dial-ticks",
+  "title": "Era-dial tick sweep \u2192 whoosh hit",
+  "category": "drops",
+  "tags": [
+    "ui",
+    "tick",
+    "whoosh",
+    "explainer",
+    "wireframe",
+    "timeline"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 192,000 samples (4.0 s at 30 fps = 120 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 4-second timeline-dial transition in D minor at 120 BPM (1 beat = 15 frames) for a dark wireframe explainer. Frames 0-75: a mechanical dial ticks through 'eras': short bright clicks (2 ms noise burst through a 4.5 kHz resonant bandpass plus a 1 ms 2.2 kHz sine blip), starting at 4 ticks/s and accelerating exponentially to 28 ticks/s, each tick panned slightly further right then snapping left, with a faint pitched detent ring (D6, 30 ms decay) every 4th tick. Under it, a filtered noise whoosh rises from 300 Hz to 6 kHz bandpass centre over frames 30-75. Frame 75: ticks stop dead and a soft impact lands: sine sub thump on D1 dropping from 90 Hz to 45 Hz over 120 ms, a felt-mallet D minor add9 cluster (D4 F4 A4 E5) and a short reversed-noise tail. Frames 75-120: the cluster rings out with a gentle 1/8-note ping-pong delay (250 ms, 3 repeats, -6 dB each). Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the energy change lands on each cue frame, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 56,
+  "timing": {
+    "fps": 30,
+    "durationSec": 4.0,
+    "samples": 192000,
+    "sampleRate": 48000,
+    "bpm": 120
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.1,
+    "truePeak": -1.4,
+    "durationSec": 4.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/explainer-era-dial-ticks/out.wav",
+    "mp3": "/assets/explainer-era-dial-ticks/out.mp3",
+    "spectrogram": "/assets/explainer-era-dial-ticks/spectrogram.png",
+    "code": "/assets/explainer-era-dial-ticks/generate.py"
+  },
+  "notes": "Accelerating era-dial ticks (glassier Q=22) with rising band-pass whoosh into a D-minor felt-mallet hit at frame 75 and ping-pong ring-out.",
+  "mood": [
+    "dark",
+    "focused"
+  ],
+  "tempo": "medium",
+  "cues": [
+    {
+      "frame": 75,
+      "label": "impact hit"
+    }
+  ]
+}

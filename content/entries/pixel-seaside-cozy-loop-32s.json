@@ -1,0 +1,52 @@
+{
+  "id": "pixel-seaside-cozy-loop-32s",
+  "slug": "pixel-seaside-cozy-loop-32s",
+  "title": "Cozy pixel seaside village loop",
+  "category": "ambient",
+  "tags": [
+    "cozy",
+    "pixel-art",
+    "game",
+    "loop",
+    "chiptune-soft"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 1,536,000 samples (32.0 s at 30 fps = 960 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A seamless 32-second cozy pixel-game town loop in G major at 90 BPM (1 beat = 20 frames, 12 bars). Soft chiptune palette: a rounded square lead (25% duty, 3 kHz low-pass, gentle vibrato after 150 ms), triangle bass, a plucked 'kalimba' (Karplus-Strong, short) and a noise-channel shaker on 8ths at low level. Progression Gmaj7 \u2192 Em7 \u2192 Cmaj7 \u2192 D6sus4, 2 bars each, twice, then a 4-bar B section (Am7 \u2192 D7 \u2192 Bm7 \u2192 C6) ; an original, relaxed melody, mostly quarter and dotted notes. Bed of gentle seaside air: faint low-passed wave swells every 8 s (pink noise, 400 Hz low-pass, slow attack). Mono-ish (side/mid ~0.15) like a handheld. The last beat must flow into frame 0: make the ending state equal the start (no fade), verify loop seam by checking the RMS and waveform continuity across the boundary. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the loop seam is click-free (sample delta at the boundary < 0.01) and bar lines land on frame multiples of 80, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 57,
+  "timing": {
+    "fps": 30,
+    "durationSec": 32.0,
+    "samples": 1536000,
+    "sampleRate": 48000,
+    "bpm": 90
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -3.6,
+    "durationSec": 32.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master",
+    "shippedSampleRate": 32000,
+    "downsampled": true,
+    "note": "Public out.wav downsampled to 32000 Hz for Workers \u22645 MiB; metrics from 48 kHz master."
+  },
+  "assets": {
+    "wav": "/assets/pixel-seaside-cozy-loop-32s/out.wav",
+    "mp3": "/assets/pixel-seaside-cozy-loop-32s/out.mp3",
+    "spectrogram": "/assets/pixel-seaside-cozy-loop-32s/spectrogram.png",
+    "code": "/assets/pixel-seaside-cozy-loop-32s/generate.py"
+  },
+  "notes": "Seamless 32 s cozy pixel-town loop in G major at 90 BPM with soft pulse lead, kalimba, triangle bass and seaside air. No end fade (loop seam).",
+  "mood": [
+    "calm",
+    "happy",
+    "cozy",
+    "bright"
+  ],
+  "tempo": "slow"
+}

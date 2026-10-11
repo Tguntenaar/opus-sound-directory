@@ -1,0 +1,65 @@
+{
+  "id": "devlog-build-drop-56s",
+  "slug": "devlog-build-drop-56s",
+  "title": "Dev-log build with breakdown and drop",
+  "category": "drops",
+  "tags": [
+    "devlog",
+    "build",
+    "edm-lite",
+    "breakdown",
+    "tech"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 2,688,000 samples (56.0 s at 30 fps = 1680 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 56-second 'how it was made' tech bed in F minor at 128 BPM (1 beat = 14.0625 frames). Frames 0-112: muted glitchy intro (bit-crushed 8 kHz, a terminal-cursor tick each beat). Frame 112: full groove: sub kick four-on-the-floor, off-beat sub bass gate (\u22127 dB pump), Fm9 \u2192 Dbmaj7 \u2192 Ebsus4 \u2192 Cm7 pluck chords, rolling 16th hats; energy flat for 32 bars at -20 dBFS RMS. Frames 1060-1200: gradual brightening, white-noise riser and snare roll accelerating 8ths \u2192 32nds; loudness climbs 4 LU. Frame 1200: 3-beat breakdown to pad only, 20 dB quieter (a near-silence gasp). Frame 1252: re-entry with a downward sub drop (F2\u2192F0 sine sweep 300 ms) and a crash; then 12 bars of the loudest section with bright bell arps (FM, 1/16) and 1/8 chord stabs. Frame 1650: quick fade to 0 by frame 1680. Keep true peak \u2264 -1 dBTP even though the drop is loud. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the energy change lands on each cue frame, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 55,
+  "timing": {
+    "fps": 30,
+    "durationSec": 56.0,
+    "samples": 2688000,
+    "sampleRate": 48000,
+    "bpm": 128
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.2,
+    "truePeak": -1.4,
+    "durationSec": 56.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master",
+    "shippedSampleRate": 16000,
+    "downsampled": true,
+    "note": "Public out.wav downsampled to 16000 Hz for Workers \u22645 MiB; metrics from 48 kHz master."
+  },
+  "assets": {
+    "wav": "/assets/devlog-build-drop-56s/out.wav",
+    "mp3": "/assets/devlog-build-drop-56s/out.mp3",
+    "spectrogram": "/assets/devlog-build-drop-56s/spectrogram.png",
+    "code": "/assets/devlog-build-drop-56s/generate.py"
+  },
+  "notes": "56 s F-minor tech build: muted glitch intro, flat groove, riser/snare roll, near-silence gasp, then louder bell-arp drop.",
+  "mood": [
+    "energetic",
+    "dark",
+    "tech"
+  ],
+  "tempo": "fast",
+  "cues": [
+    {
+      "frame": 112,
+      "label": "full groove"
+    },
+    {
+      "frame": 1200,
+      "label": "breakdown"
+    },
+    {
+      "frame": 1252,
+      "label": "drop re-entry"
+    }
+  ]
+}

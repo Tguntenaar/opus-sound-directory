@@ -1,0 +1,81 @@
+{
+  "id": "pixel-fishing-minigame-sprite",
+  "slug": "pixel-fishing-minigame-sprite",
+  "title": "Pixel fishing minigame (8-sound sprite)",
+  "category": "ui-sounds",
+  "tags": [
+    "game",
+    "pixel-art",
+    "fishing",
+    "ui",
+    "sprite"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 192,000 samples (4.0 s at 30 fps = 120 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 4.0-second sprite of eight soft synthesized pixel-game sounds for a fishing/timing minigame, each starting exactly on frames 0, 15, 30, ..., 105 and silent before the next: 1 cast (short rising square sweep 300\u2192900 Hz + noise swish 120 ms), 2 bobber plop (sine bubble 500\u21921200 Hz, 50 ms), 3 waiting tick (tiny 2 kHz triangle blip), 4 bite! (two quick pulse notes D6-G6, bright), 5 reel tick (three 3 kHz clicks 40 ms apart), 6 perfect-timing hit (G major triad arpeggio G5-B5-D6-G6 in 30 ms steps, sparkle), 7 miss (a soft descending pulse D5\u2192A4, not comical), 8 catch fanfare (original 4-note pulse figure ending on G6 with a triangle G3 under it). All band-limited, 25%/12.5% duty pulse, gentle 4 kHz low-pass for a cozy feel. Master to -17 LUFS integrated, true peak <= -1 dBTP. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm each slot starts on its frame and is silent (< -60 dBFS) before the next, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 57,
+  "timing": {
+    "fps": 30,
+    "durationSec": 4.0,
+    "samples": 192000,
+    "sampleRate": 48000
+  },
+  "master": {
+    "targetLufs": -17.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -17.0,
+    "truePeak": -3.1,
+    "durationSec": 4.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/pixel-fishing-minigame-sprite/out.wav",
+    "mp3": "/assets/pixel-fishing-minigame-sprite/out.mp3",
+    "spectrogram": "/assets/pixel-fishing-minigame-sprite/spectrogram.png",
+    "code": "/assets/pixel-fishing-minigame-sprite/generate.py"
+  },
+  "notes": "Eight pixel-game fishing UI slots (cast, plop, tick, bite, reel, perfect, miss, fanfare) with silence between. Mastered to \u221217 LUFS.",
+  "mood": [
+    "playful",
+    "happy",
+    "cozy"
+  ],
+  "tempo": "medium",
+  "cues": [
+    {
+      "frame": 0,
+      "label": "cast"
+    },
+    {
+      "frame": 15,
+      "label": "bobber plop"
+    },
+    {
+      "frame": 30,
+      "label": "waiting tick"
+    },
+    {
+      "frame": 45,
+      "label": "bite"
+    },
+    {
+      "frame": 60,
+      "label": "reel tick"
+    },
+    {
+      "frame": 75,
+      "label": "perfect"
+    },
+    {
+      "frame": 90,
+      "label": "miss"
+    },
+    {
+      "frame": 105,
+      "label": "catch fanfare"
+    }
+  ]
+}

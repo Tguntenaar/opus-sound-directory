@@ -1,0 +1,74 @@
+{
+  "id": "ui-callout-pop-sprite",
+  "slug": "ui-callout-pop-sprite",
+  "title": "Feature callout pops (6-sound sprite)",
+  "category": "ui-sounds",
+  "tags": [
+    "ui",
+    "callout",
+    "pop",
+    "mallet",
+    "app-launch"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 144,000 samples (3.0 s at 30 fps = 90 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 3.0-second UI sprite of six feature-callout pops for app-launch videos, each starting exactly on frames 0, 15, 30, 45, 60, 75 and fully silent before the next slot so each can be sliced. Each pop = a soft round body (sine with a 6 ms pitch drop from 2x), a 1 ms bright click, and a two-note mallet interval in Ab major (marimba-ish modal synthesis, partials at 1, 3.99, 9.2x with fast decay): 1 Ab5\u2192C6, 2 C6\u2192Eb6, 3 Eb6\u2192Ab6, 4 Db6\u2192F6, 5 Bb5\u2192Eb6, 6 a 3-note Ab6-Eb6-C7 sparkle for the final 'all done' callout. Second note 60 ms after the first. Each pop under 350 ms, centred with slight stereo spread on the second note. Master the sprite to -17 LUFS integrated instead of -14 (UI level), true peak <= -1 dBTP. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm each slot starts on its frame and is silent (< -60 dBFS) before the next, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 55,
+  "timing": {
+    "fps": 30,
+    "durationSec": 3.0,
+    "samples": 144000,
+    "sampleRate": 48000,
+    "bpm": 120
+  },
+  "master": {
+    "targetLufs": -17.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -17.0,
+    "truePeak": -4.0,
+    "durationSec": 3.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/ui-callout-pop-sprite/out.wav",
+    "mp3": "/assets/ui-callout-pop-sprite/out.mp3",
+    "spectrogram": "/assets/ui-callout-pop-sprite/spectrogram.png",
+    "code": "/assets/ui-callout-pop-sprite/generate.py"
+  },
+  "notes": "Six Ab-major feature-callout pops (modal mallet + soft body) on frames 0/15/30/45/60/75, each under 350 ms with silence between slots. Mastered to \u221217 LUFS.",
+  "mood": [
+    "bright",
+    "playful",
+    "happy"
+  ],
+  "tempo": "fast",
+  "cues": [
+    {
+      "frame": 0,
+      "label": "pop 1"
+    },
+    {
+      "frame": 15,
+      "label": "pop 2"
+    },
+    {
+      "frame": 30,
+      "label": "pop 3"
+    },
+    {
+      "frame": 45,
+      "label": "pop 4"
+    },
+    {
+      "frame": 60,
+      "label": "pop 5"
+    },
+    {
+      "frame": 75,
+      "label": "pop 6"
+    }
+  ]
+}

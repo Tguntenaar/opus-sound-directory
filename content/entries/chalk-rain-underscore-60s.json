@@ -1,0 +1,74 @@
+{
+  "id": "chalk-rain-underscore-60s",
+  "slug": "chalk-rain-underscore-60s",
+  "title": "Melancholic short-film underscore with rain",
+  "category": "ambient",
+  "tags": [
+    "cinematic",
+    "melancholic",
+    "music-box",
+    "rain",
+    "short-film"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 2,880,000 samples (60.0 s at 30 fps = 1800 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 60-second melancholic animated-short underscore in D major at 74 BPM (1 beat = 24.32 frames). Frames 0-150: a hazy wide pad (D, A, F#, slow chorus) and distant city air noise. Frames 150-750: a music-box line (sine partials 1, 2.76, 5.4 with 1.5 s decay, slight mechanical timing jitter \u00b18 ms) plays an original, slow, mostly stepwise melody over Dmaj7 \u2192 Bm7 \u2192 Gmaj9 \u2192 A6, with a soft sine bass on roots; light warm 'play' textures: occasional soft wood knocks. Frames 750-840: thinning, pad only, energy drops 12 dB. Frame 840: a filtered pink-noise rain bed fades in (high-passed 1 kHz, wide stereo, random droplet ticks 2-6 kHz at ~25/s) and stays until frame 1170; harmony turns to Bm(add9) \u2192 Gmaj7 with low cello-like saw (1.2 kHz low-pass) swells; a lone music-box note every 2 bars, slightly detuned. Frame 1170: rain gutters out over 30 frames, a single low D2 cello note and a final music-box D6 on frame 1260, ring to silence by frame 1800 (last 10 s are a long, quiet decay of pad and air). Stereo side/mid ~0.6, nothing above -14 LUFS short-term at the climax. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the energy change lands on each cue frame, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 57,
+  "timing": {
+    "fps": 30,
+    "durationSec": 60.0,
+    "samples": 2880000,
+    "sampleRate": 48000,
+    "bpm": 74
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.1,
+    "truePeak": -1.4,
+    "durationSec": 60.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master",
+    "shippedSampleRate": 16000,
+    "downsampled": true,
+    "note": "Public out.wav downsampled to 16000 Hz for Workers \u22645 MiB; metrics from 48 kHz master."
+  },
+  "assets": {
+    "wav": "/assets/chalk-rain-underscore-60s/out.wav",
+    "mp3": "/assets/chalk-rain-underscore-60s/out.mp3",
+    "spectrogram": "/assets/chalk-rain-underscore-60s/spectrogram.png",
+    "code": "/assets/chalk-rain-underscore-60s/generate.py"
+  },
+  "notes": "60 s melancholic D-major underscore: hazy pad, music-box melody, thinning drop, then filtered rain bed and quiet cello/music-box close.",
+  "mood": [
+    "sad",
+    "calm",
+    "melancholic",
+    "cinematic"
+  ],
+  "tempo": "slow",
+  "cues": [
+    {
+      "frame": 150,
+      "label": "music-box enter"
+    },
+    {
+      "frame": 750,
+      "label": "thinning"
+    },
+    {
+      "frame": 840,
+      "label": "rain in"
+    },
+    {
+      "frame": 1170,
+      "label": "rain out"
+    },
+    {
+      "frame": 1260,
+      "label": "final music-box"
+    }
+  ]
+}

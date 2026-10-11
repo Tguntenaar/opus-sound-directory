@@ -1,0 +1,65 @@
+{
+  "id": "kinetic-type-128-bed-30s",
+  "slug": "kinetic-type-128-bed-30s",
+  "title": "Kinetic typography 128 BPM bed",
+  "category": "ad-beds",
+  "tags": [
+    "kinetic-typography",
+    "motion-design",
+    "bauhaus",
+    "128bpm",
+    "hits"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 1,440,000 samples (30.0 s at 30 fps = 900 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 30-second kinetic-typography bed in F# minor at 128 BPM (1 beat = 14.0625 frames; place every event on round(beat*14.0625)). Frames 0-99 (bars 1-2): sparse dry hits on word reveals: a woody block click on frames 9, 30, 56, a short sub hit + paper-flap noise on frame 84. Frame 99 (beat 7): a paper TEAR (bandpassed noise with 30-60 Hz granular crackle, centroid sweeping 1\u21926 kHz over 0.35 s) into the drop. Frames 113-480: four-on-the-floor with a heavy sub kick (low end ~35% of energy), off-beat hats, a plucked F#m7 \u2192 Dmaj7 \u2192 Bm9 \u2192 C#7sus stab pattern sidechained to the kick (\u22125 dB), and bright square 'type-on' blips on 16ths during letter reveals; on each 3D-letter tumble (frames 169, 281, 394) a tom-like pitch-dropping hit. Frames 480-500: 1-beat stop. Frames 500-830: second half, add a rising acid-ish saw arp and a concentric-circle ripple (FM ping with 4 echoes at 1/16) every 2 bars. Frame 838: hard stop; frames 838-900: end card: a bouncing dot = 5 rubbery sine boinks (F#5, intervals shrinking 0.3, 0.2, 0.14, 0.1, 0.07 s, falling 3 semitones) over a held F#m(add9) pad that fades to 0. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the energy change lands on each cue frame, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 57,
+  "timing": {
+    "fps": 30,
+    "durationSec": 30.0,
+    "samples": 1440000,
+    "sampleRate": 48000,
+    "bpm": 128
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -1.4,
+    "durationSec": 30.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master",
+    "shippedSampleRate": 32000,
+    "downsampled": true,
+    "note": "Public out.wav downsampled to 32000 Hz for Workers \u22645 MiB; metrics from 48 kHz master."
+  },
+  "assets": {
+    "wav": "/assets/kinetic-type-128-bed-30s/out.wav",
+    "mp3": "/assets/kinetic-type-128-bed-30s/out.mp3",
+    "spectrogram": "/assets/kinetic-type-128-bed-30s/spectrogram.png",
+    "code": "/assets/kinetic-type-128-bed-30s/generate.py"
+  },
+  "notes": "Kinetic-typography bed in F# minor at 128 BPM: sparse hits, paper tear into four-on-floor, acid arp second half, bouncing-dot end card.",
+  "mood": [
+    "energetic",
+    "dark",
+    "bold"
+  ],
+  "tempo": "fast",
+  "cues": [
+    {
+      "frame": 99,
+      "label": "paper tear"
+    },
+    {
+      "frame": 480,
+      "label": "1-beat stop"
+    },
+    {
+      "frame": 838,
+      "label": "end card"
+    }
+  ]
+}

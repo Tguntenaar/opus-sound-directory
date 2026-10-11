@@ -1,0 +1,71 @@
+{
+  "id": "ugc-ad-promo-bed-20s",
+  "slug": "ugc-ad-promo-bed-20s",
+  "title": "Fast UGC ad-tool promo bed",
+  "category": "ad-beds",
+  "tags": [
+    "promo",
+    "saas",
+    "ugc",
+    "fast",
+    "metrics",
+    "tiktok"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 960,000 samples (20.0 s at 30 fps = 600 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 20-second punchy SaaS-promo bed in B minor at 120 BPM (1 beat = 15 frames, 10 bars). Frame 0: hit (kick + 808-ish sine sub on B1 + short noise crash). Frames 0-60: filtered intro, drums at 800 Hz low-pass opening up, typing-style clicks on 16ths (URL paste moment), a 'paste' pop on frame 45. Frame 60: full beat: tight kick on 1 and 3, clap on 2 and 4, 16th hats, sidechained (\u22126 dB pump, 150 ms release) supersaw chords Bm9 \u2192 Gmaj7 \u2192 D \u2192 A6, gliding 808 bass. Frames 120-360: a metric-flash tick (bright 6 kHz sine blip + 1 ms click, 60 ms) on every beat 2 and the '&' of 4, and a quick stutter (4 x 1/32 repeats of the chord) on frames 180, 240 and 300 for clip-cycling cuts. Frame 450: launch-toggle accent (two-tone up-chirp E6\u2192B6 with a soft switch click). Frames 525-540: 1-beat drop-out. Frame 540: end-card hit on Bm(add9), tail fades to 0 by frame 600. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the energy change lands on each cue frame, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 56,
+  "timing": {
+    "fps": 30,
+    "durationSec": 20.0,
+    "samples": 960000,
+    "sampleRate": 48000,
+    "bpm": 120
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.0,
+    "truePeak": -1.3,
+    "durationSec": 20.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/ugc-ad-promo-bed-20s/out.wav",
+    "mp3": "/assets/ugc-ad-promo-bed-20s/out.mp3",
+    "spectrogram": "/assets/ugc-ad-promo-bed-20s/spectrogram.png",
+    "code": "/assets/ugc-ad-promo-bed-20s/generate.py"
+  },
+  "notes": "Punchy B-minor SaaS promo bed at 120 BPM: supersaw stabs, 808, metric ticks, chord stutters, launch chirp, drop-out then end-card hit.",
+  "mood": [
+    "energetic",
+    "upbeat",
+    "bright"
+  ],
+  "tempo": "fast",
+  "cues": [
+    {
+      "frame": 45,
+      "label": "paste pop"
+    },
+    {
+      "frame": 60,
+      "label": "full beat"
+    },
+    {
+      "frame": 450,
+      "label": "launch chirp"
+    },
+    {
+      "frame": 525,
+      "label": "drop-out"
+    },
+    {
+      "frame": 540,
+      "label": "end-card hit"
+    }
+  ]
+}
