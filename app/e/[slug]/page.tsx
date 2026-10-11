@@ -212,7 +212,7 @@ export default async function EntryPage({ params }: Props) {
           {entry.timing.fps} fps · seed {entry.seed}
         </p>
         <ul className="list-inside list-disc text-zinc-400">
-          {entry.cues.map((c) => (
+          {(entry.cues ?? []).map((c) => (
             <li key={c.frame}>
               Frame {c.frame}: {c.label}
             </li>

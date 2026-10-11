@@ -23,7 +23,7 @@ export type SoundEntry = {
     samples: number;
     sampleRate: number;
   };
-  cues: { frame: number; label: string }[];
+  cues?: { frame: number; label: string }[];
   master: { targetLufs: number; truePeakDbTp: number };
   metrics: {
     lufs: number | null;

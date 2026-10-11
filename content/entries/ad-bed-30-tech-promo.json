@@ -1,0 +1,75 @@
+{
+  "id": "ad-bed-30-tech-promo",
+  "slug": "ad-bed-30-tech-promo",
+  "title": "30s tech product promo bed",
+  "category": "ad-beds",
+  "tags": [
+    "ad",
+    "30s",
+    "120bpm",
+    "tech",
+    "glitch",
+    "product-demo"
+  ],
+  "prompt": "A 30-second tech product promo bed in E major at 120 BPM (one beat = 15 frames at 30 fps), cut to a seven-scene app demo. Frame 0 is a hard opening hit (big kick, crash and a bright E major stab), followed by three bell blips on the beat while a 16th-note hat pulse tightens. A digital glitch build (buffer-repeat stutters, pitch-stepped slices, ring-mod bleeps) slams in on frame 75 (2.5 s) and a four-on-the-floor groove starts: off-beat bass, syncopated chord plucks moving I-V-vi-IV one chord per bar, claps on 2 and 4, shimmering hats. A bright major bell chord sparkles at 7.0 s. At 9.0 s the groove drops out to sparse hats and a riser, a second glitch slams in on frame 300 (10.0 s) over a tense C#-minor pad and a sparse C# pulse, and a filtered whoosh rises into a heavy impact on frame 366 (12.2 s). From 14.0 s the full groove returns with a sixteenth-note arpeggio, a riser builds into a crash at 21.0 s, the groove drops out at 24.0 s under a reverse swell, and a rising four-note bell motif with a tonic stab lands on frame 735 (24.5 s) and rings out over a wide pad to silence at 30.0 s. Everything below 120 Hz is a mono kick, bass and impact boom.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-06",
+  "seed": 30120,
+  "timing": {
+    "fps": 30,
+    "durationSec": 30.0,
+    "samples": 1440000,
+    "sampleRate": 48000,
+    "bpm": 120
+  },
+  "cues": [
+    {
+      "frame": 0,
+      "label": "opening hit"
+    },
+    {
+      "frame": 75,
+      "label": "glitch slam"
+    },
+    {
+      "frame": 300,
+      "label": "glitch slam"
+    },
+    {
+      "frame": 366,
+      "label": "impact"
+    },
+    {
+      "frame": 735,
+      "label": "logo sting"
+    }
+  ],
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1
+  },
+  "metrics": {
+    "lufs": -14.02,
+    "truePeak": -1.3,
+    "durationSec": 30.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master",
+    "shippedSampleRate": 32000,
+    "downsampled": true,
+    "note": "Public out.wav downsampled to 32000 Hz for Workers ≤5 MiB; metrics from 48 kHz master."
+  },
+  "assets": {
+    "wav": "/assets/ad-bed-30-tech-promo/out.wav",
+    "mp3": "/assets/ad-bed-30-tech-promo/out.mp3",
+    "spectrogram": "/assets/ad-bed-30-tech-promo/spectrogram.png",
+    "code": "/assets/ad-bed-30-tech-promo/generate.py"
+  },
+  "notes": "Standalone synthesis: the kick, clap, hat, pluck, pad, bell, riser, swell, reverb and mastering voices are copied from ad-bed-15-upbeat. The glitch builds (buffer-repeat stutter of a chord stab, slices shrinking from 1/16 to 1/64 notes and stepping up a semitone every three slices, ring-mod bleeps, gated noise), the slam (pitch-dropping 48 Hz boom plus a high-passed noise crack), the whoosh (SVF-swept noise panning left to right) and the four-note bell motif are all synthesised in code, with no samples. Each cue is preceded by about 25 ms of silence in the transition voice so it reads as a clean onset. Kick, bass and booms are the only content below 120 Hz (mono, side channel high-passed at 120 Hz). Mastered with the 4x-oversampled look-ahead limiter to -14 LUFS / -1.3 dBTP and TPDF-dithered to 16-bit.",
+  "mood": [
+    "energetic",
+    "upbeat",
+    "bright",
+    "tech"
+  ],
+  "tempo": "fast"
+}
