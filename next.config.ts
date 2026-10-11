@@ -28,6 +28,11 @@ const nextConfig: NextConfig = {
         destination: "/e/:id",
         permanent: true,
       },
+      {
+        source: "/rss.xml",
+        destination: "/blog/rss.xml",
+        permanent: true,
+      },
       ...hiddenEntryRedirects(),
     ];
   },
