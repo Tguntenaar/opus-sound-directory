@@ -52,7 +52,11 @@
     "lufs": -14.02,
     "truePeak": -1.3,
     "durationSec": 30.0,
-    "passedChecks": true
+    "passedChecks": true,
+    "measuredFrom": "48k master",
+    "shippedSampleRate": 32000,
+    "downsampled": true,
+    "note": "Public out.wav downsampled to 32000 Hz for Workers ≤5 MiB; metrics from 48 kHz master."
   },
   "assets": {
     "wav": "/assets/ad-bed-30-tech-promo/out.wav",

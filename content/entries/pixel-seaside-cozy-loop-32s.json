@@ -21,6 +21,7 @@
     "sampleRate": 48000,
     "bpm": 90
   },
+  "cues": [],
   "master": {
     "targetLufs": -14.0,
     "truePeakDbTp": -1.3
