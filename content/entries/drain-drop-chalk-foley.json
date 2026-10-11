@@ -1,0 +1,60 @@
+{
+  "id": "drain-drop-chalk-foley",
+  "slug": "drain-drop-chalk-foley",
+  "title": "Small object down a drain",
+  "category": "drops",
+  "tags": [
+    "foley",
+    "cinematic",
+    "drop",
+    "water",
+    "short-film"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 144,000 samples (3.0 s at 30 fps = 90 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 3-second foley moment: a small chalk stick dropping into a street drain. Frame 0: a light dry tap on wet stone (3 ms noise burst, bandpass 2.5 kHz, plus a short 1.1 kHz resonant tick). Frames 6-24: two smaller bounces, each 40% quieter and closer together. Frame 24: it falls in: a hollow metallic clink against a grate (inharmonic modal partials at 1, 2.32, 4.25, 6.63 x 870 Hz, 250 ms decay), then frames 30-60 a fall echo inside a pipe (comb filter at 7 ms + 21 ms feedback, low-passed), ending in a tiny distant plop at frame 66 (a sine 'bubble' sweeping 400\u21921100 Hz in 40 ms). Under everything, quiet rain bed (filtered pink noise, -24 dB relative) fading out by frame 90. Mono-centred source, rain wide. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the energy change lands on each cue frame, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 57,
+  "timing": {
+    "fps": 30,
+    "durationSec": 3.0,
+    "samples": 144000,
+    "sampleRate": 48000
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.1,
+    "truePeak": -1.4,
+    "durationSec": 3.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/drain-drop-chalk-foley/out.wav",
+    "mp3": "/assets/drain-drop-chalk-foley/out.mp3",
+    "spectrogram": "/assets/drain-drop-chalk-foley/spectrogram.png",
+    "code": "/assets/drain-drop-chalk-foley/generate.py"
+  },
+  "notes": "Foley: dry tap, two quieter bounces, grate clink into a darkening pipe echo, tiny bubble plop at frame 66 over quiet rain.",
+  "mood": [
+    "dark",
+    "cinematic"
+  ],
+  "tempo": "slow",
+  "cues": [
+    {
+      "frame": 0,
+      "label": "tap"
+    },
+    {
+      "frame": 24,
+      "label": "grate clink"
+    },
+    {
+      "frame": 66,
+      "label": "plop"
+    }
+  ]
+}

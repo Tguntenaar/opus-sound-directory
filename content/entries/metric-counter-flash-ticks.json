@@ -1,0 +1,54 @@
+{
+  "id": "metric-counter-flash-ticks",
+  "slug": "metric-counter-flash-ticks",
+  "title": "Metric counter flash ticks",
+  "category": "ui-sounds",
+  "tags": [
+    "ui",
+    "counter",
+    "ticks",
+    "metrics",
+    "dashboard"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 144,000 samples (3.0 s at 30 fps = 90 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 3-second counting-up metric flash for dashboards and ad promos. Frames 0-60: a numeric counter ticks: clean digital clicks (1 ms 5 kHz sine burst + tiny noise transient) starting at 6/s and accelerating to 30/s, with pitch rising from B5 to F#7 in B minor scale steps every 6 ticks. Under it a faint sine riser B3\u2192B4. Frame 60: the number locks: a bright two-layer 'ding' (FM bell B6 + glass partial at F#7, 600 ms decay) plus a soft sub tap on B1 and a 30 ms white-noise sparkle, panned centre; frames 60-90: light stereo shimmer tail (short ping-pong 125 ms delay). Silence from frame 84 to the end apart from the decaying tail. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the energy change lands on each cue frame, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 56,
+  "timing": {
+    "fps": 30,
+    "durationSec": 3.0,
+    "samples": 144000,
+    "sampleRate": 48000,
+    "bpm": 120
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.2,
+    "truePeak": -1.4,
+    "durationSec": 3.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/metric-counter-flash-ticks/out.wav",
+    "mp3": "/assets/metric-counter-flash-ticks/out.mp3",
+    "spectrogram": "/assets/metric-counter-flash-ticks/spectrogram.png",
+    "code": "/assets/metric-counter-flash-ticks/generate.py"
+  },
+  "notes": "Accelerating digital counter ticks rising in B minor into a glass ding lock at frame 60 with shimmer tail.",
+  "mood": [
+    "bright",
+    "energetic",
+    "focused"
+  ],
+  "tempo": "fast",
+  "cues": [
+    {
+      "frame": 60,
+      "label": "number locks"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "motion-graphics-glide-dropout-25s",
+  "slug": "motion-graphics-glide-dropout-25s",
+  "title": "Motion-graphics arp bed with glide drop-out",
+  "category": "risers",
+  "tags": [
+    "motion-graphics",
+    "arpeggio",
+    "bright",
+    "riser",
+    "dropout"
+  ],
+  "prompt": "Output: one WAV, 48 kHz / 16-bit / stereo, exactly 1,200,000 samples (25.0 s at 30 fps = 750 frames). Python + numpy/scipy only. Synthesise everything (no samples, no downloads, no speech). Fixed random seed (np.random.default_rng(55)). A 25-second bright motion-graphics bed in C major at 120 BPM (1 beat = 15 frames). Frames 0-60: intro of descending sine blips (C7, G6, E6, C6 on frames 18, 30, 42, 54) with tiny pitch slides, like UI elements landing. Frame 60: full bed: driving 1/8 sine-square arpeggio on Cmaj7 \u2192 Am9 \u2192 Fmaj7 \u2192 G6 (2 beats each), round kick on every beat, soft sub, clap on 2 and 4. Frames 450-525: a pure sine glide rises smoothly from C5 (523 Hz) to C7 (2093 Hz) on an exponential curve while the kick fades out. Frames 525-540: total silence (half a bar). Frame 540: hit and groove returns. Frame 660: switch to an outro: no drums, a gentle tremolo pad on Cmaj9 and sparse high chimes (C7, E7, G7) every half bar; fade to 0 by frame 750. Master: -14 LUFS integrated, true peak <= -1 dBTP (4x oversampled peak check), last frames fade to exactly 0. You can't listen, so verify: measure loudness and true peak with ffmpeg ebur128 (peak=true), check the exact sample count, confirm the energy change lands on each cue frame, check every note fits the chord under it, render a spectrogram PNG and inspect it. Fix and re-render until every check passes, then report the numbers.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 55,
+  "timing": {
+    "fps": 30,
+    "durationSec": 25.0,
+    "samples": 1200000,
+    "sampleRate": 48000,
+    "bpm": 120
+  },
+  "master": {
+    "targetLufs": -14.0,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.1,
+    "truePeak": -1.4,
+    "durationSec": 25.0,
+    "passedChecks": true,
+    "measuredFrom": "48k master",
+    "shippedSampleRate": 32000,
+    "downsampled": true,
+    "note": "Public out.wav downsampled to 32000 Hz for Workers \u22645 MiB; metrics from 48 kHz master."
+  },
+  "assets": {
+    "wav": "/assets/motion-graphics-glide-dropout-25s/out.wav",
+    "mp3": "/assets/motion-graphics-glide-dropout-25s/out.mp3",
+    "spectrogram": "/assets/motion-graphics-glide-dropout-25s/spectrogram.png",
+    "code": "/assets/motion-graphics-glide-dropout-25s/generate.py"
+  },
+  "notes": "Bright C-major motion bed with 1/8 arp, then exponential sine glide C5\u2192C7 into hard silence and groove return with tremolo outro.",
+  "mood": [
+    "bright",
+    "upbeat",
+    "energetic"
+  ],
+  "tempo": "medium",
+  "cues": [
+    {
+      "frame": 60,
+      "label": "full bed"
+    },
+    {
+      "frame": 450,
+      "label": "glide start"
+    },
+    {
+      "frame": 525,
+      "label": "silence"
+    },
+    {
+      "frame": 540,
+      "label": "hit return"
+    },
+    {
+      "frame": 660,
+      "label": "outro"
+    }
+  ]
+}
