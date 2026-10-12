@@ -9,7 +9,11 @@ from pathlib import Path
 
 from lib.loudness import remaster_wav_file
 from ship_wav import maybe_downsample_for_workers
-from verify import render_spectrogram, verify_wav
+from verify import ffmpeg_ebur128, render_spectrogram, verify_wav
+
+# libmp3lame can raise decoded true peak above the PCM source; pre-limit and verify.
+_MP3_PRE_LIMIT_DBTP = (-1.35, -1.5, -1.7, -2.0, -2.5, -3.0)
+_MP3_TRUE_PEAK_CEILING_DBTP = -1.0
 
 SAMPLE_RATE = 48000
 LUFS_TOLERANCE_LU = 0.5
@@ -23,9 +27,12 @@ def save_master_wav(entry_id: str, wav_path: Path) -> None:
     shutil.copy2(wav_path, dest_dir / "out.wav")
 
 
-def export_mp3(wav_path: Path, mp3_path: Path) -> bool:
+def limit_wav_true_peak_ffmpeg(wav_path: Path, ceiling_db: float) -> bool:
+    """In-place true-peak limit via ffmpeg (any sample rate)."""
     if not shutil.which("ffmpeg"):
         return False
+    tmp = wav_path.with_suffix(".peak-limit.wav")
+    af = f"alimiter=limit={ceiling_db}dB:attack=1:release=50:level=false"
     try:
         subprocess.run(
             [
@@ -36,15 +43,49 @@ def export_mp3(wav_path: Path, mp3_path: Path) -> bool:
                 "error",
                 "-i",
                 str(wav_path),
-                "-q:a",
-                "2",
-                str(mp3_path),
+                "-af",
+                af,
+                str(tmp),
             ],
             check=True,
         )
+        tmp.replace(wav_path)
         return True
     except subprocess.CalledProcessError:
+        tmp.unlink(missing_ok=True)
         return False
+
+
+def export_mp3(wav_path: Path, mp3_path: Path) -> bool:
+    if not shutil.which("ffmpeg"):
+        return False
+    for pre_limit in _MP3_PRE_LIMIT_DBTP:
+        af = f"alimiter=limit={pre_limit}dB:attack=1:release=50:level=false"
+        try:
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-y",
+                    "-hide_banner",
+                    "-loglevel",
+                    "error",
+                    "-i",
+                    str(wav_path),
+                    "-af",
+                    af,
+                    "-q:a",
+                    "2",
+                    str(mp3_path),
+                ],
+                check=True,
+            )
+        except subprocess.CalledProcessError:
+            continue
+        metrics = ffmpeg_ebur128(mp3_path)
+        peak = metrics.get("truePeak")
+        if peak is not None and peak <= _MP3_TRUE_PEAK_CEILING_DBTP:
+            return True
+    return False
 
 
 def run_generate_py(code_path: Path) -> None:
