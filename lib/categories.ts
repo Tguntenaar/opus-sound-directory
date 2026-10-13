@@ -50,6 +50,14 @@ export const CATEGORIES: Record<
     label: "Guitar",
     description: "Licks, stings, loops and beds played by synthesised guitars.",
   },
+  music: {
+    label: "Music",
+    description: "Longer-form pieces: fugues, themes and instrumental beds.",
+  },
+  foley: {
+    label: "Foley & vehicles",
+    description: "Physically modelled real-world sounds for picture.",
+  },
 };
 
 export const CATEGORY_ORDER = [
@@ -65,4 +73,6 @@ export const CATEGORY_ORDER = [
   "cinematic",
   "retro-tech",
   "guitar",
+  "music",
+  "foley",
 ] as const;

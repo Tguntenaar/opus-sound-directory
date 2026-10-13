@@ -19,7 +19,7 @@ describe("hidden catalog entries", () => {
   it("omits hidden entries from the public catalog", () => {
     const ids = loadPublicCatalog().map((e) => e.id);
     assert.ok(!ids.includes("ui-camera-shutter"));
-    assert.equal(loadPublicCatalog().length, 61);
+    assert.equal(loadPublicCatalog().length, 67);
   });
 
   it("marks ui-camera-shutter hidden in content", () => {

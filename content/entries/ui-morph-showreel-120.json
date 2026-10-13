@@ -1,0 +1,58 @@
+{
+  "id": "ui-morph-showreel-120",
+  "slug": "ui-morph-showreel-120",
+  "title": "UI morph showreel bed (14s)",
+  "category": "ad-beds",
+  "tags": [
+    "ui",
+    "showreel",
+    "morph",
+    "ad-bed",
+    "clicks"
+  ],
+  "prompt": "ui-morph-showreel-120 / take 2 (glassy Apple-keynote feel)\n\nBRIEF\n  A 14 s product-showreel bed for a code-made UI-morph video, where something happens on every beat.\n  Music and UI sound design at once. Take angle: glassy keynote. Every UI sound is a marimba bar or a\n  glass mallet (modal/additive synthesis, tuned to the chord under it), the plucked chords become an\n  airy pad (detuned additive saws, low-passed, plus a breath-noise layer), the kick is softer and\n  rounder, and the stereo image is wide (detuned L/R glass pairs, wide hats and clap, a 3-voice pad).\n  Same form as the brief: groove = soft round kick on 1 and 3, closed 8th hats, soft clap on 2 and 4\n  from bar 3, sub bass on the roots with 2nd/3rd harmonics, chords Amaj9 -> F#m11 -> Dmaj7 -> E6sus4;\n  everything but the kick sidechain-ducked 4 dB (120 ms release). Bars 1-2 kick + UI, bars 3-5 full,\n  bar 6 drums out (UI + pad + 1-bar riser, last 0.1 s true silence), frame 360 final hit (sub + clap +\n  full chord + bright logo chime) ringing to true silence by frame 420.\n  48 kHz stereo 16-bit, 672000 samples, about -14 LUFS, <= -1 dBTP, seed 43.\n\nGRID\n  120 BPM, 4/4, 7 bars = 28 beats. 1 beat = 0.5 s = 24000 samples = 15 frames @ 30 fps. Key A major.\n  A beat's time is read from its frame column (t = frame / 30); \"&\" = the 8th after it (+7.5 frames).\n\nCHORDS  name | bass root | pad voicing (+ root two octaves up) | chord tones (every pitched UI sound uses only these)\n  Amaj9   | A1  | G#3 B3 C#4 E4          | A C# E G# B\n  F#m11   | F#1 | A3 C#4 E4 B4           | F# A C# E B\n  Dmaj7   | D2  | D3 A3 C#4 F#4          | D F# A C#\n  E6sus4  | E2  | A3 B3 C#4 E4           | E A B C#\n  FINAL   | A1  | E3 A3 C#4 G#4 B4 E5    | chime A6 C#7 E7\n  Bar 7 resolves to the tonic Amaj9 (FINAL voicing) instead of continuing the cycle to Dmaj7.\n\nUI SOUNDS (marimba = modes 1 : 4 : 10, glass = harmonic modes 1 : 2 : 3 in a +-3 cent L/R pair)\n  tap     glass ping on the chord tone nearest 2 kHz\n  toggle  glass two-note up-glide: chord tone nearest 880 Hz -> next chord tone >= a 4th above\n  slide   airy filtered-noise swipe, band-pass 1.2 -> 9 kHz, panned hard L -> R (unpitched)\n  flip    card flip: two marimba tocks 45 ms apart, chord tone near 1.2 kHz dropping to the one below\n  bubble  noise through a resonant band-pass rising 0.45 f -> f (f = chord tone nearest 1.15 kHz), Haas-wide\n  type    4 tiny glass ticks in 60 ms on chord tones between 2.8 and 4.6 kHz, alternating L/R\n  check   rising minor-third marimba ding on the lowest chord-tone pair a m3 apart above 650 Hz\n  drop    drag-and-drop: soft low marimba bar on the bar root in octave 3 + a felt puff\n  logo    glass bell chord on the FINAL chime notes doubled by marimba an octave below\n  Cycle order: tap, toggle, slide, flip, bubble, type, check, drop (one 2-bar phrase), x3 over beats 1-24.\n  Extra layers: slide on beat 9, tap on beat 21 (section changes); bar 7 = logo + check, then echoes.\n  Level: every UI sound is set 3 dB under the music (K-weighted 100 ms window vs. bars 3-5 groove).\n\nBED CODES  K kick | H closed hats on the beat and its & | C clap | B bass root on the beat (0.9 beat)\n           b bass root on the & (0.4 beat) | D airy pad, one swell per bar on that bar's chord\n           R riser | Z last 0.1 s of the beat is true silence | X final hit | T final ring\n\nCUE SHEET\n beat bar.bt frame chord   ui                bed\n   1   1.1     0   Amaj9   tap               K\n   2   1.2    15   Amaj9   toggle            -\n   3   1.3    30   Amaj9   slide             K\n   4   1.4    45   Amaj9   flip              -\n   5   2.1    60   F#m11   bubble            K\n   6   2.2    75   F#m11   type              -\n   7   2.3    90   F#m11   check             K\n   8   2.4   105   F#m11   drop              -\n   9   3.1   120   Dmaj7   tap+slide@-4      K H B D\n  10   3.2   135   Dmaj7   toggle            H C b D\n  11   3.3   150   Dmaj7   slide             K H B D\n  12   3.4   165   Dmaj7   flip              H C b D\n  13   4.1   180   E6sus4  bubble            K H B D\n  14   4.2   195   E6sus4  type              H C b D\n  15   4.3   210   E6sus4  check             K H B D\n  16   4.4   225   E6sus4  drop              H C b D\n  17   5.1   240   Amaj9   tap               K H B D\n  18   5.2   255   Amaj9   toggle            H C b D\n  19   5.3   270   Amaj9   slide             K H B D\n  20   5.4   285   Amaj9   flip              H C b D\n  21   6.1   300   F#m11   bubble+tap        D R\n  22   6.2   315   F#m11   type              D R\n  23   6.3   330   F#m11   check             D R\n  24   6.4   345   F#m11   drop              D R Z\n  25   7.1   360   Amaj9   logo+check@-4     X\n  26   7.2   375   Amaj9   bubble@-6         T\n  27   7.3   390   Amaj9   toggle@-10        T\n  28   7.4   405   Amaj9   tap@-14           T\n  (end) frame 420 = 14.0 s = sample 672000: true silence.\n\nMIX  kick + bass + final sub: mono, the only content below 120 Hz (everything else high-passed at 120 Hz).\n     Duck: all but the kick -4 dB at each kick (3 ms look-ahead attack, 12 ms hold, 120 ms linear release).\n     Master: 25 Hz DC high-pass -> loudness to -14 LUFS -> look-ahead 4:1 true-peak compressor + trim (-1.3 dBTP)\n     -> silence gates (11.9-12.0 s, end) -> 16-bit.",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 43,
+  "timing": {
+    "fps": 30,
+    "durationSec": 14,
+    "samples": 672000,
+    "sampleRate": 48000,
+    "bpm": 120
+  },
+  "master": {
+    "targetLufs": -14,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14,
+    "truePeak": -1.3,
+    "durationSec": 14,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/ui-morph-showreel-120/out.wav",
+    "mp3": "/assets/ui-morph-showreel-120/out.mp3",
+    "spectrogram": "/assets/ui-morph-showreel-120/spectrogram.png",
+    "code": "/assets/ui-morph-showreel-120/generate.py"
+  },
+  "notes": "Marimba and glass-mallet UI over a breathy pad, soft kick, wide stereo. Feels most like a product reveal.",
+  "mood": [
+    "minimal",
+    "tech",
+    "upbeat"
+  ],
+  "tempo": "medium",
+  "cues": [
+    {
+      "frame": 0,
+      "label": "groove start"
+    },
+    {
+      "frame": 360,
+      "label": "final chord"
+    }
+  ]
+}

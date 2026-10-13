@@ -237,6 +237,44 @@ export const CATEGORY_SEO: Record<string, CategorySeoContent> = {
       },
     ],
   },
+  music: {
+    h1: "Free Royalty-Free Music & Instrumental Pieces",
+    intro:
+      "Longer synthesised music with baroque counterpoint, game themes and other instrumental forms — frame-timed, with prompts, code and loudness metrics.",
+    faq: [
+      {
+        q: "Are these recordings of real instruments?",
+        a: "No. They are built in Python (numpy/scipy) from written prompts — pipe organs, FM chips and ensembles are modelled, not sampled.",
+      },
+      {
+        q: "Do fugues or themes copy famous works?",
+        a: "Entries are original compositions. Counterpoint checks in the code reject quotations of well-known subjects.",
+      },
+      {
+        q: "Can I use them in monetised videos?",
+        a: "Yes. Sounds are CC0 (public domain).",
+      },
+    ],
+  },
+  foley: {
+    h1: "Free Foley & Vehicle Sound Effects",
+    intro:
+      "Physically modelled real-world sounds — engines, pass-bys and mechanical detail — timed to video frames with WAV, MP3 and synthesis code.",
+    faq: [
+      {
+        q: "Are these field recordings?",
+        a: "No. They are synthesised from physical models (firing order, Doppler, reflections) in Python, not microphone captures.",
+      },
+      {
+        q: "Can I sync them to picture?",
+        a: "Yes. Each entry lists cue frames at 30 fps for starter, throttle and other key moments.",
+      },
+      {
+        q: "Are they royalty-free?",
+        a: "Yes — CC0 with no attribution required.",
+      },
+    ],
+  },
 };
 
 export function isValidCategorySlug(slug: string): boolean {

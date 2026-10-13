@@ -9,6 +9,9 @@ const CATEGORY_GUIDE_SLUG: Record<string, string> = {
   risers: "how-to-add-sound-and-music-to-ai-generated-videos",
   "chaos-calm": "how-to-add-sound-and-music-to-ai-generated-videos",
   ambient: "how-to-add-sound-and-music-to-ai-generated-videos",
+  music: "how-to-add-sound-and-music-to-ai-generated-videos",
+  foley: "how-to-add-sound-and-music-to-ai-generated-videos",
+  gaming: "synthwave-and-8-bit-music-for-videos",
 };
 
 /** Entry-specific guide overrides (takes precedence over category map). */
