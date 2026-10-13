@@ -1,0 +1,14 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "directory.opussounds/opus-sounds",
+  "title": "Opus Sounds Directory",
+  "description": "Search and retrieve CC0 synthesised sounds for AI video; submit new entries for review.",
+  "version": "1.0.0",
+  "websiteUrl": "https://opussounds.directory",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://opussounds.directory/mcp"
+    }
+  ]
+}

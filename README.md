@@ -124,6 +124,8 @@ Run in your project with Node.js and npm installed, then choose your agent in th
 
 [Website installation guide](https://opussounds.directory/agents) · [MCP tool details](https://opussounds.directory/mcp)
 
+Registry metadata for the [official MCP Registry](https://registry.modelcontextprotocol.io) is in [`server.json`](server.json) (`directory.opussounds/opus-sounds`). After domain verification, publish from the repo root with the [`mcp-publisher`](https://modelcontextprotocol.io/registry/publishing) CLI.
+
 Try: **“Find a gentle notification sound under one second.”** Read tools include `search_sounds`, `get_sound`, `list_categories` and `get_prompt_template`. The skill can fall back to public catalog pages when MCP is unavailable.
 
 This skill focuses on finding and using sounds. Publication is a separate workflow; MCP submission is not included in the verified setup.
