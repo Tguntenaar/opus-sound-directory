@@ -1,0 +1,62 @@
+{
+  "id": "bass-wobble-drop-150",
+  "slug": "bass-wobble-drop-150",
+  "title": "Bass wobble drop",
+  "category": "drops",
+  "tags": [
+    "bass",
+    "wobble",
+    "drop",
+    "dubstep",
+    "riddim"
+  ],
+  "prompt": "bass-wobble-drop-150 -- take 3 (heavy riddim)\n\nCREATIVE BRIEF\nBass music made entirely in code; the 8th-note grid is the master clock. 14.4 s at 150 BPM in F minor.\nTake angle: heavy riddim. Minimal, darker and repetitive. The brief's build is kept: an accelerating snare roll\n(4ths -> 8ths -> 16ths -> 32nds), a noise riser whose high-pass sweeps 200 Hz -> 8 kHz, a pitch riser on F, a\nfiltered Fm chord stab each bar, and 0.1 s of true silence before the drop. Frame 96 drops into half-time\n(kick on 1, snare on 3). The bass is a square + FM riddim patch (a band-limited square on F2 plus an FM pair\nwith a swept index) into a resonant 24 dB/oct low-pass, chopped by tight LFO gates. Each gate pulse also\nfires a filter envelope. The gate rate switches every half-bar and is mostly 1/16T, alternating with 1/8,\n1/8T, 1/16 and one 1/4 as written below. The line is a pedal on F that touches Ab, Db and C only on the\nsecond half of bars 4-6 (F-Ab-Db-C, little melody). The snare is metallic: a 200 Hz body, inharmonic\nring-modulated partials, 2 kHz band-passed noise and a short plate. A heavier pure-sine sub sits under 100 Hz\nin mono. Bars 7-8 add a dark growl (u/o vowels, no speech) on the same gates and a 1-beat stutter fill.\nFrame 384: kick + sub + reverse cymbal into it, ringing out to true silence before 14.4 s.\nMix chain (all ten steps named in master()): EQ, saturation, multiband split, sidechain to the kick,\nstereo-widen only above 250 Hz, bus glue compression, soft clip, limiter, DC high-pass, final true-peak trim.\nEvery oscillator is additive with partials under 16 kHz, so nothing aliases.\n\nCUE SHEET\nGrid: 48 kHz; 1 frame = 1/30 s = 1600 samples; 150 BPM 4/4 -> 1 beat = 12 frames, 8th = 6 frames,\n16th = 3 frames, 32nd = 1.5 frames, 1 bar = 48 frames. Total 432 frames = 14.4 s = 691200 samples.\nBass roots: 3 F | 4 F Ab | 5 F Db | 6 F C | 7 F | 8 F (half-bars); Fm stab in the build.\nGate/LFO rates: 1/4 = 1 cycle/beat, 1/8 = 2, 1/8T = 3, 1/16 = 4, 1/16T = 6 (restarting each half-bar).\nThe code parses the rows below; nothing else in the script carries timing.\n\nframe  | bar:beat | EVENT    | value\n-------+----------+----------+------------------------------------------\n0      | 1:1.000  | PITCH    | F3->F5, to 93\n0      | 1:1.000  | RISER    | noise HP 200->8000 Hz, to 93\n0      | 1:1.000  | ROLL     | 1/4\n0      | 1:1.000  | STAB     | lp=450\n12     | 1:2.000  | ROLL     | 1/4\n24     | 1:3.000  | ROLL     | 1/8\n30     | 1:3.500  | ROLL     | 1/8\n36     | 1:4.000  | ROLL     | 1/8\n42     | 1:4.500  | ROLL     | 1/8\n48     | 2:1.000  | ROLL     | 1/16\n48     | 2:1.000  | STAB     | lp=1500\n51     | 2:1.250  | ROLL     | 1/16\n54     | 2:1.500  | ROLL     | 1/16\n57     | 2:1.750  | ROLL     | 1/16\n60     | 2:2.000  | ROLL     | 1/16\n63     | 2:2.250  | ROLL     | 1/16\n66     | 2:2.500  | ROLL     | 1/16\n69     | 2:2.750  | ROLL     | 1/16\n72     | 2:3.000  | ROLL     | 1/32\n73.5   | 2:3.125  | ROLL     | 1/32\n75     | 2:3.250  | ROLL     | 1/32\n76.5   | 2:3.375  | ROLL     | 1/32\n78     | 2:3.500  | ROLL     | 1/32\n79.5   | 2:3.625  | ROLL     | 1/32\n81     | 2:3.750  | ROLL     | 1/32\n82.5   | 2:3.875  | ROLL     | 1/32\n84     | 2:4.000  | ROLL     | 1/32\n85.5   | 2:4.125  | ROLL     | 1/32\n87     | 2:4.250  | ROLL     | 1/32\n88.5   | 2:4.375  | ROLL     | 1/32\n90     | 2:4.500  | ROLL     | 1/32\n91.5   | 2:4.625  | ROLL     | 1/32\n93     | 2:4.750  | SILENCE  | to 96 (true digital silence)\n96     | 3:1.000  | KICK     | beat 1 (half-time)\n96     | 3:1.000  | LFO      | 1/16T\n96     | 3:1.000  | NOTE     | F1\n120    | 3:3.000  | LFO      | 1/8\n120    | 3:3.000  | SNARE    | beat 3 (half-time)\n144    | 4:1.000  | KICK     | beat 1 (half-time)\n144    | 4:1.000  | LFO      | 1/16T\n144    | 4:1.000  | NOTE     | F1\n168    | 4:3.000  | LFO      | 1/8T\n168    | 4:3.000  | NOTE     | Ab1\n168    | 4:3.000  | SNARE    | beat 3 (half-time)\n192    | 5:1.000  | KICK     | beat 1 (half-time)\n192    | 5:1.000  | LFO      | 1/16T\n192    | 5:1.000  | NOTE     | F1\n216    | 5:3.000  | LFO      | 1/16\n216    | 5:3.000  | NOTE     | Db2\n216    | 5:3.000  | SNARE    | beat 3 (half-time)\n240    | 6:1.000  | KICK     | beat 1 (half-time)\n240    | 6:1.000  | LFO      | 1/16T\n240    | 6:1.000  | NOTE     | F1\n264    | 6:3.000  | LFO      | 1/4\n264    | 6:3.000  | NOTE     | C2\n264    | 6:3.000  | SNARE    | beat 3 (half-time)\n288    | 7:1.000  | GROWL    | u-o-u-a-u-o-u, to 372\n288    | 7:1.000  | KICK     | beat 1 (half-time)\n288    | 7:1.000  | LFO      | 1/16T\n288    | 7:1.000  | NOTE     | F1\n312    | 7:3.000  | LFO      | 1/8T\n312    | 7:3.000  | SNARE    | beat 3 (half-time)\n336    | 8:1.000  | KICK     | beat 1 (half-time)\n336    | 8:1.000  | LFO      | 1/16T\n336    | 8:1.000  | NOTE     | F1\n360    | 8:3.000  | LFO      | 1/16\n360    | 8:3.000  | REVCYM   | to 384, gap 25 ms before the hit\n360    | 8:3.000  | SNARE    | beat 3 (half-time)\n372    | 8:4.000  | SNARE    | fill source for stutter\n372    | 8:4.000  | STUTTER  | 1/16 1/16 1/32 1/32 1/32 1/32, to 384, gate 55%\n383.25 | 8:4.938  | SILENCE  | to 384 (25 ms of true silence before the end hit)\n384    | 9:1.000  | END      | kick + sub F1, ring out\n429    | 9:4.750  | SILENCE  | to end (true digital silence)",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 44,
+  "timing": {
+    "fps": 30,
+    "durationSec": 14.4,
+    "samples": 691200,
+    "sampleRate": 48000,
+    "bpm": 150
+  },
+  "master": {
+    "targetLufs": -14,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14,
+    "truePeak": -1.9,
+    "durationSec": 14.4,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/bass-wobble-drop-150/out.wav",
+    "mp3": "/assets/bass-wobble-drop-150/out.mp3",
+    "spectrogram": "/assets/bass-wobble-drop-150/spectrogram.png",
+    "code": "/assets/bass-wobble-drop-150/generate.py"
+  },
+  "notes": "Dark, minimal, tight 1/16T gates, metallic snare, heaviest sub. Biggest drop (+11 LU).",
+  "mood": [
+    "dark",
+    "energetic",
+    "bold"
+  ],
+  "tempo": "fast",
+  "cues": [
+    {
+      "frame": 0,
+      "label": "build"
+    },
+    {
+      "frame": 96,
+      "label": "drop"
+    },
+    {
+      "frame": 384,
+      "label": "outro hit"
+    }
+  ]
+}

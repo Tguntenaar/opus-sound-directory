@@ -1,0 +1,65 @@
+{
+  "id": "organ-fugue-exposition-30s",
+  "slug": "organ-fugue-exposition-30s",
+  "title": "Organ fugue exposition",
+  "category": "music",
+  "tags": [
+    "organ",
+    "fugue",
+    "baroque",
+    "music",
+    "cathedral"
+  ],
+  "prompt": "organ-fugue-exposition-30s / take 1 (faithful): cathedral organ, principal chorus.\n\nCREATIVE BRIEF\nAn original three-voice fugue exposition in D minor for pipe organ, about 30 s long. The alto states a two-bar\nsubject that leaps up a fifth and then runs down in 8ths, with a second launch (F up to Bb) in bar 2. The soprano\nanswers tonally in A minor while the alto turns into a countersubject that moves in contrary motion against it.\nThe pedal brings in the subject on 16' + 8'. A circle-of-fifths episode built from the subject's falling 8ths\nleads to a iv6 - V(4-3) - I cadence and a held D major chord (Picardy third). Bar 10 is the cathedral tail.\nRegistration: manuals on principal 8' + octave 4' + fifteenth 2', a quiet mixture added on the last chord;\npedal 16' (sine + 2nd/3rd harmonic) + principal 8'. Each pipe has a 30 ms chiff (band-passed noise at about 4x f0),\na +-0.3 % / 5 Hz wind tremor and a short release. The room is an 8-line feedback-delay network (RT60 4 s,\npre-delay 40 ms). Alto is panned left, soprano right, pedal centre. The tuning is Werckmeister III with A4 = 440 Hz.\n\nSUBJECT (alto, D minor, original):  D4 A4 | C5 Bb4 A4 G4 | F4 Bb4 A4 G4 F4 E4 | D4\n  rhythm  q q e e e e | e e e e e e q   (opens with a leap of a 5th, then running 8ths)\nTONAL ANSWER (soprano, A minor):    A4 D5 | G5 F5 E5 D5 | C5 F5 E5 D5 C5 B4 | A4\n  (head mutated: subject D->A is answered A->D; the rest is transposed up a 5th)\n\nGRID: bpm=80 beats_per_bar=4 bars=10 fps=30\n  1 beat = 0.75 s = 22.5 frames = 36000 samples; bar n starts at frame 90*(n-1); total 900 frames = 1440000 samples.\n\nEVENTS (frame = beat * 22.5; the code checks each one against the note table below)\n  E f0    beat 0   subject enters, alto, D minor              [checker cue]\n  E f180  beat 8   tonal answer, soprano, A minor; alto countersubject\n  E f360  beat 16  pedal entry: subject in D minor on 16' + 8'; soprano countersubject, alto free voice\n  E f540  beat 24  episode: subject's falling 8ths in sequence over g - C - F - Bb (circle of fifths)\n  E f720  beat 32  cadence: iv6 - V with 4-3 suspension - V7\n  E f765  beat 34  D major chord (Picardy third), held, quiet mixture added\n  E f810  beat 36  chord released: cathedral tail (bar 10)\n  E f900  beat 40  end of file\n\nHARMONY UNDER EVERY BAR (one symbol per beat; printed from the note table)\n  bar 1  (f0)    subject alone, implies   i     .     V     .\n  bar 2  (f90)   subject alone, implies   III   VI    V     i\n  bar 3  (f180)  a minor:                 i6    vii   VII   III\n  bar 4  (f270)  a minor:                 i     III   VI6-V i6\n  bar 5  (f360)  d minor:                 i     V     VII   VI6\n  bar 6  (f450)  d minor:                 i6    VI6   VI    i\n  bar 7  (f540)  d minor (circle):        iv    VI6   VII   VII6\n  bar 8  (f630)  d minor (circle):        III   v6    VI    VI6\n  bar 9  (f720)  cadence:                 iv6   V4-3/V7     I (D major, held)\n  bar 10 (f810)  tail (no notes)\n\nNOTE TABLE (voice bar | pitch/beats ...; r = rest; '~' ties into the next token; bass is written at 8' pitch)\n  S 1 | r/4\n  S 2 | r/4\n  S 3 | A4/1 D5/1 G5/.5 F5/.5 E5/.5 D5/.5\n  S 4 | C5/.5 F5/.5 E5/.5 D5/.5 C5/.5 B4/.5 A4/1\n  S 5 | F5/.5 G5/.5 E5/.5 D5/.5 C5/.5 D5/.5 F5/1\n  S 6 | D5/1 F5/.5 G5/.5 A5/.5 G5/.5 F5/1\n  S 7 | D5/.5 C5/.5 Bb4/.5 A4/.5 E5/.5 D5/.5 C5/.5 Bb4/.5\n  S 8 | C5/.5 Bb4/.5 A4/.5 G4/.5 D5/.5 C5/.5 Bb4/.5 A4/.5\n  S 9 | D5/1.5 C#5/.5 D5/2\n  A 1 | D4/1 A4/1 C5/.5 Bb4/.5 A4/.5 G4/.5\n  A 2 | F4/.5 Bb4/.5 A4/.5 G4/.5 F4/.5 E4/.5 D4/1\n  A 3 | C4/.5 D4/.5 B3/.5 A3/.5 G3/.5 A3/.5 C4/1\n  A 4 | A3/1 C4/.5 D4/.5 E4/.5 D4/.5 C4/1\n  A 5 | D4/1 C#4/1 E4/.5 D4/.5 C4/1\n  A 6 | D4/1 C4/1.5 C#4/.5 D4/1\n  A 7 | Bb4/1 F4/1 E4/1 G4/1\n  A 8 | A4/1 E4/1 D4/1 F4/1\n  A 9 | G4/1 A4/.5 G4/.5 F#4/2\n  T 9 | r/2 A3/2\n  B 5 | D3/1 A3/1 C4/.5 Bb3/.5 A3/.5 G3/.5\n  B 6 | F3/.5 Bb3/.5 A3/.5 G3/.5 F3/.5 E3/.5 D3/1\n  B 7 | G2/1 D3/1 C3/1 E3/1\n  B 8 | F3/1 C3/1 Bb2/1 D3/1\n  B 9 | Bb2/1 A2/1 D3/2\nEND NOTE TABLE\n\nCOUNTERPOINT CHECK (run by this script before it renders; copy of its output)\n  sonorities on the 8th grid: 56 (28 on beats, 28 off-beats; bars 1-2 are the solo subject)\n  dissonances on beats: 1, all prepared suspensions (beat 33: S D5 over B A2, 4-3, resolves to C#5)\n  off-beat dissonances: 19, all passing / neighbour / appoggiatura / escape tones (step in or step out)\n  parallel 5ths or 8ves between any pair of voices (successive sonorities, any direction): 0\n  accented (beat-to-beat) parallels in the outer voices: 0\n  voice crossings: 0;  ranges: S C4-A5, A F3-D5, T C3-A4, B(8') D2-D4 all respected\n  subject vs well-known fugue subjects (BWV 565, 578, 542, 851, Art of Fugue, K.626 Kyrie):\n    longest shared run of identical intervals = 2 (needs >= 5 to count as a quotation)",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 42,
+  "timing": {
+    "fps": 30,
+    "durationSec": 30,
+    "samples": 1440000,
+    "sampleRate": 48000,
+    "bpm": 80
+  },
+  "master": {
+    "targetLufs": -14,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14,
+    "truePeak": -1.9,
+    "durationSec": 30,
+    "passedChecks": true,
+    "measuredFrom": "48k master",
+    "shippedSampleRate": 32000,
+    "downsampled": true,
+    "note": "Public out.wav downsampled to 32000 Hz for Workers ≤5 MiB; metrics from 48 kHz master."
+  },
+  "assets": {
+    "wav": "/assets/organ-fugue-exposition-30s/out.wav",
+    "mp3": "/assets/organ-fugue-exposition-30s/out.mp3",
+    "spectrogram": "/assets/organ-fugue-exposition-30s/spectrogram.png",
+    "code": "/assets/organ-fugue-exposition-30s/generate.py"
+  },
+  "notes": "Cathedral principal organ fugue in D minor, 3 voices + pedal, Picardy close.",
+  "mood": [
+    "cinematic",
+    "calm",
+    "focused"
+  ],
+  "tempo": "slow",
+  "cues": [
+    {
+      "frame": 0,
+      "label": "subject"
+    },
+    {
+      "frame": 180,
+      "label": "answer"
+    },
+    {
+      "frame": 360,
+      "label": "pedal entry"
+    }
+  ]
+}

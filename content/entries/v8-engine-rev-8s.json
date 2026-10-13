@@ -1,0 +1,61 @@
+{
+  "id": "v8-engine-rev-8s",
+  "slug": "v8-engine-rev-8s",
+  "title": "V8 engine start and rev",
+  "category": "foley",
+  "tags": [
+    "engine",
+    "v8",
+    "foley",
+    "car",
+    "pass-by"
+  ],
+  "prompt": "V8 engine start, rev and shutdown -- take 3 (old big-block muscle car, passing the listener).\n\nCREATIVE BRIEF\nSame physical engine model as take 1 (rpm integrated into crank angle, one exhaust pulse per firing event, cross-\nplane firing order 1-8-4-3-6-5-7-2, firing frequency rpm/60*4, left bank cyl 1-4 / right bank cyl 5-8 each into\nits own pipe) tuned as an old big-block: duller, heavier blow-down pulses with low port rings, long log-style\nprimaries and long dual pipes, chambered mufflers (strong ~70 Hz body resonance, 2 kHz low-pass), more overrun\npops. Lopey idle from a big cam: overlap dilutes the charge so random cylinders fire weakly (32 % of idle\nfirings at 20-55 %), extra timing jitter, and the idle hunts (+-45 rpm noise + a 1.7 Hz lope).\nThe car idles 21 m up the road on the listener's left (7 m lateral offset). From frame 75 it launches and drives\npast left -> right (closest ~7.1 m at 5.0 s), and is already receding when it upshifts at frame 180. The\npass-by is physical, applied to the rendered car signal:\n  * Doppler: the listener at time t hears the emission time tau with tau + (r(tau) - r0)/c = t (the constant\n    r0/c bulk delay is dropped, so everything before the launch lands on its frame); the signal is read at tau(t).\n  * 1/r distance gain (7 m reference), a ground reflection off the asphalt (image source below the road, gain\n    0.55) read through its own Doppler path -> the classic sweeping pass-by comb,\n  * air absorption: a low-pass whose cutoff falls with distance (crossfaded filter bank), and an equal-power\n    left -> right pan from the azimuth; the two banks only separate (stereo side) when the car is close.\n  * All engine keyframes after the launch are written in HEARD frames and converted to emission time by\n    inverting the propagation, so the stab and the upshift cut land on frames 75 and 180 for the listener.\nUnder the exhaust: intake roar with a throttle gulp, valvetrain tick, belt whine, whir, overrun pumping whoosh.\nOutdoors: no room. Master: 25 Hz high-pass, mono below 120 Hz (side high-passed), a slow 2.5:1 fader ride so the\nclose pass is turned down smoothly, -14 LUFS, hold-type true-peak limiter at -1.35 dBTP (4x oversampled).\n\nCUE SHEET (30 fps, 48 kHz, 1 frame = 1600 samples; frames are HEARD time). All times read from CUE / RPM_KEYS /\nLOAD_KEYS / SPEED_KEYS.\n frame   time    event\n   0    0.000 s  starter (22 m away): solenoid clack + geared starter whine, cranking ~210 rpm\n  18    0.600 s  catch: misfiring first firings, flare to 1,800 rpm (frame 31)\n  20    0.667 s  starter pinion disengages\n  31-75          lopey 750 rpm idle (weak cylinders, hunting)\n  75    2.500 s  THROTTLE STAB (cue) and launch: firing pulse phase-locked to 2.500 s, load 0.12 -> 1.0, gulp\n  93    3.100 s  6,500 rpm; the car is rolling towards the listener (12 m/s by frame 120)\n  95    3.167 s  lift-off: overrun burble, crackles and pops, coming closer\n 150    5.000 s  second pull at full load right as the car passes the listener (closest, 7.1 m)\n 180    6.000 s  7,000 rpm, IGNITION CUT for the upshift (cue), heard receding (17 m away, 19 m/s), 80 ms\n 185    6.167 s  4,800 rpm, decaying to idle as the car rolls away (a few pops)\n 225    7.500 s  key-off far away (~44 m): chuffs, last shudder\n 230    7.667 s  cooling-metal tick 1 (far away, barely audible)\n 235    7.833 s  cooling-metal tick 2 (far away, barely audible)\n 240    8.000 s  end, true silence (384000 samples)\n\n RPM_KEYS and LOAD_KEYS: as take 1 (see the tables below in the code).\n SPEED_KEYS (frame, m/s), linear: 0:0  75:0  120:12  150:12.5  180:19  195:20  225:16  240:15",
+  "modelId": "claude-opus-5-5",
+  "generatedAt": "2026-10-09",
+  "seed": 44,
+  "timing": {
+    "fps": 30,
+    "durationSec": 8,
+    "samples": 384000,
+    "sampleRate": 48000
+  },
+  "master": {
+    "targetLufs": -14,
+    "truePeakDbTp": -1.3
+  },
+  "metrics": {
+    "lufs": -14.2,
+    "truePeak": -1.4,
+    "durationSec": 8,
+    "passedChecks": true,
+    "measuredFrom": "48k master"
+  },
+  "assets": {
+    "wav": "/assets/v8-engine-rev-8s/out.wav",
+    "mp3": "/assets/v8-engine-rev-8s/out.mp3",
+    "spectrogram": "/assets/v8-engine-rev-8s/spectrogram.png",
+    "code": "/assets/v8-engine-rev-8s/generate.py"
+  },
+  "notes": "Doppler, ground-reflection comb and distance filtering as it drives past. The most convincing as a real car.",
+  "mood": [
+    "energetic",
+    "bold",
+    "cinematic"
+  ],
+  "tempo": "medium",
+  "cues": [
+    {
+      "frame": 0,
+      "label": "starter"
+    },
+    {
+      "frame": 75,
+      "label": "throttle stab / launch"
+    },
+    {
+      "frame": 180,
+      "label": "upshift cut"
+    }
+  ]
+}
