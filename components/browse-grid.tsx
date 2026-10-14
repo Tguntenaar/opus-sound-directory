@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { ArrowDownAZ, Bookmark, ChevronDown, Search, SlidersHorizontal, TrendingUp } from "lucide-react";
+import { ArrowDownAZ, Bookmark, Search, SlidersHorizontal, TrendingUp, X } from "lucide-react";
+import { BrowseEmptyState } from "@/components/browse-empty-state";
 import { useBookmarks } from "@/lib/use-bookmarks";
 import type { SoundEntry } from "@/lib/entries";
 import { CATEGORY_ORDER, CATEGORIES } from "@/lib/categories";
@@ -200,7 +201,20 @@ export function BrowseGrid({
     return () => window.removeEventListener("keydown", onKey);
   }, [filterKey]);
 
-  const sortLabel = sort === "popular" ? "Sort: Popular" : "Sort: Newest";
+  const sortLabel =
+    sort === "popular"
+      ? "Sorted by popularity (switch to newest)"
+      : "Sorted by newest (switch to popular)";
+
+  const clearFacets = useCallback(() => {
+    if (!lockedCategory) setCategoryWithUrl("all");
+    if (mood !== "all") captureEvent("filter_change", { filter: "mood", value: "all" });
+    setMood("all");
+  }, [lockedCategory, mood, setCategoryWithUrl]);
+
+  const hasFacetFilters =
+    (!lockedCategory && category !== "all") || mood !== "all";
+  const hasQuery = query.trim().length > 0;
 
   return (
     <div className="flex flex-col gap-8">
@@ -217,8 +231,8 @@ export function BrowseGrid({
         className="sticky top-0 z-30 -mx-4 border-b border-zinc-800/70 bg-zinc-950/90 px-4 py-3 backdrop-blur-md supports-[backdrop-filter]:bg-zinc-950/75"
       >
         <div className="flex flex-col gap-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <label className="relative min-w-[12rem] flex-1">
+          <div className="flex flex-nowrap items-center gap-1.5 sm:gap-2">
+            <label className="relative min-w-0 flex-1">
               <span className="sr-only">Search sounds</span>
               <Search
                 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
@@ -228,68 +242,154 @@ export function BrowseGrid({
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search title, mood, tags…"
-                className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 py-2 pl-9 pr-3 text-sm text-zinc-100 placeholder:text-zinc-600 transition-colors focus:border-violet-500/40 focus:outline-none focus:ring-2 focus:ring-violet-500/25"
+                placeholder="Search…"
+                className="w-full rounded-lg border border-zinc-800 bg-zinc-900/50 py-2 pl-9 pr-3 text-sm text-zinc-100 placeholder:text-zinc-600 transition-[border-color,box-shadow] duration-200 focus:border-violet-500/40 focus:outline-none focus:ring-2 focus:ring-violet-500/25"
               />
             </label>
-            <IconButton label={bookmarksOnly ? "Show all sounds" : "Show bookmarked sounds"}
-              aria-pressed={bookmarksOnly} variant="outline" onClick={() => setBookmarksOnly(value => !value)}>
-              <Bookmark className={`h-4 w-4 ${bookmarksOnly ? "fill-violet-400 text-violet-400" : ""}`} aria-hidden />
-            </IconButton>
-            <IconButton
-              label={sortLabel}
-              onClick={cycleSort}
-              variant="outline"
-              className="shrink-0"
-            >
-              {sort === "popular" ? (
-                <TrendingUp className="h-4 w-4" aria-hidden />
-              ) : (
-                <ArrowDownAZ className="h-4 w-4" aria-hidden />
-              )}
-            </IconButton>
-            <button type="button" aria-expanded={filtersOpen} aria-controls={filtersId}
-              onClick={() => setFiltersOpen(open => !open)}
-              className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-zinc-800 px-3 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:bg-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400">
-              <SlidersHorizontal className="h-4 w-4" aria-hidden />
-              Filters
-              {activeFilterCount > 0 && <span className="rounded-full bg-violet-500/15 px-1.5 text-xs text-violet-300">{activeFilterCount}</span>}
-              <ChevronDown className={`h-3.5 w-3.5 transition-transform ${filtersOpen ? "rotate-180" : ""}`} aria-hidden />
-            </button>
+            <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
+              <IconButton
+                label={bookmarksOnly ? "Show all sounds" : "Bookmarked only"}
+                aria-pressed={bookmarksOnly}
+                variant="outline"
+                onClick={() => setBookmarksOnly((value) => !value)}
+              >
+                <Bookmark
+                  className={`h-4 w-4 ${bookmarksOnly ? "fill-violet-400 text-violet-400" : ""}`}
+                  aria-hidden
+                />
+              </IconButton>
+              <IconButton
+                label={sortLabel}
+                onClick={cycleSort}
+                variant="outline"
+              >
+                {sort === "popular" ? (
+                  <TrendingUp className="h-4 w-4" aria-hidden />
+                ) : (
+                  <ArrowDownAZ className="h-4 w-4" aria-hidden />
+                )}
+              </IconButton>
+              <span className="relative inline-flex">
+                <IconButton
+                  label={
+                    filtersOpen
+                      ? "Hide category and mood filters"
+                      : "Category and mood filters"
+                  }
+                  aria-expanded={filtersOpen}
+                  aria-controls={filtersId}
+                  variant="outline"
+                  onClick={() => setFiltersOpen((open) => !open)}
+                  className={
+                    filtersOpen || activeFilterCount > 0
+                      ? "border-violet-500/35 bg-zinc-900/80"
+                      : undefined
+                  }
+                >
+                  <SlidersHorizontal className="h-4 w-4" aria-hidden />
+                </IconButton>
+                {activeFilterCount > 0 && (
+                  <span
+                    className="pointer-events-none absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-violet-500 px-1 text-[10px] font-medium leading-none text-white"
+                    aria-hidden
+                  >
+                    {activeFilterCount}
+                  </span>
+                )}
+              </span>
+            </div>
           </div>
-          {activeFilterCount > 0 && <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-400">
-            {!lockedCategory && category !== "all" && <span className="rounded-md bg-violet-500/10 px-2 py-1 text-violet-300">{categoryPills.find(option => option.value === category)?.label}</span>}
-            {mood !== "all" && <span className="rounded-md bg-violet-500/10 px-2 py-1 text-violet-300">{formatMood(mood)}</span>}
-            <button type="button" className="rounded px-2 py-1 hover:text-zinc-100 focus-visible:outline-violet-400" onClick={() => {
-              if (!lockedCategory) setCategoryWithUrl("all");
-              if (mood !== "all") captureEvent("filter_change", { filter: "mood", value: "all" });
-              setMood("all");
-            }}>Clear filters</button>
-          </div>}
+          {activeFilterCount > 0 && (
+            <div className="pill-scroll flex flex-nowrap items-center gap-1.5 overflow-x-auto pb-0.5 text-xs text-zinc-400">
+              {!lockedCategory && category !== "all" && (
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-violet-500/20 bg-violet-500/10 px-2.5 py-1 text-violet-200">
+                  {categoryPills.find((option) => option.value === category)?.label}
+                  <button
+                    type="button"
+                    className="rounded-full p-0.5 text-violet-300/80 transition-colors hover:bg-violet-500/20 hover:text-violet-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400"
+                    aria-label="Remove category filter"
+                    onClick={() => setCategoryWithUrl("all")}
+                  >
+                    <X className="h-3 w-3" aria-hidden />
+                  </button>
+                </span>
+              )}
+              {mood !== "all" && (
+                <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-violet-500/20 bg-violet-500/10 px-2.5 py-1 text-violet-200">
+                  {formatMood(mood)}
+                  <button
+                    type="button"
+                    className="rounded-full p-0.5 text-violet-300/80 transition-colors hover:bg-violet-500/20 hover:text-violet-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400"
+                    aria-label="Remove mood filter"
+                    onClick={() => {
+                      captureEvent("filter_change", { filter: "mood", value: "all" });
+                      setMood("all");
+                    }}
+                  >
+                    <X className="h-3 w-3" aria-hidden />
+                  </button>
+                </span>
+              )}
+              <IconButton label="Clear all filters" variant="ghost" size="sm" onClick={clearFacets}>
+                <X className="h-3.5 w-3.5" aria-hidden />
+              </IconButton>
+            </div>
+          )}
           <div id={filtersId} hidden={!filtersOpen}>
-            {filtersOpen && <div className="max-h-[50vh] space-y-5 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/30 p-4 sm:p-5">
-              {!lockedCategory && <section className="space-y-2">
-                <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-500">Category</h2>
-                <FilterPillGroup aria-label="Category" options={categoryPills} value={category} onChange={setCategoryWithUrl}
-                  hrefForValue={(v) => (v === "all" ? "/" : `/c/${v}`)} />
-              </section>}
-              {moodOptions.length > 0 && <section className={`space-y-2 ${!lockedCategory ? "border-t border-zinc-800 pt-4" : ""}`}>
-                <h2 className="text-xs font-medium uppercase tracking-wide text-zinc-500">Mood</h2>
-                <FilterPillGroup aria-label="Mood" options={moodPills} value={mood} onChange={(next) => {
-                  if (next !== mood) captureEvent("filter_change", { filter: "mood", value: next });
-                  setMood(next);
-                }} />
-              </section>}
-            </div>}
+            {filtersOpen && (
+              <div className="max-h-[50vh] space-y-4 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/30 p-3 sm:space-y-5 sm:p-5">
+                {!lockedCategory && (
+                  <section className="space-y-2">
+                    <h2 className="text-[11px] font-medium uppercase tracking-wide text-zinc-500">
+                      Category
+                    </h2>
+                    <FilterPillGroup
+                      scrollable
+                      aria-label="Category"
+                      options={categoryPills}
+                      value={category}
+                      onChange={setCategoryWithUrl}
+                      hrefForValue={(v) => (v === "all" ? "/" : `/c/${v}`)}
+                    />
+                  </section>
+                )}
+                {moodOptions.length > 0 && (
+                  <section
+                    className={`space-y-2 ${!lockedCategory ? "border-t border-zinc-800 pt-4" : ""}`}
+                  >
+                    <h2 className="text-[11px] font-medium uppercase tracking-wide text-zinc-500">
+                      Mood
+                    </h2>
+                    <FilterPillGroup
+                      scrollable
+                      aria-label="Mood"
+                      options={moodPills}
+                      value={mood}
+                      onChange={(next) => {
+                        if (next !== mood) {
+                          captureEvent("filter_change", { filter: "mood", value: next });
+                        }
+                        setMood(next);
+                      }}
+                    />
+                  </section>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       <div ref={gridRef}>
         {filtered.length === 0 ? (
-          <p className="animate-fade-in py-16 text-center text-sm text-zinc-600">
-            {bookmarksOnly ? "No bookmarked sounds match these filters." : "No sounds match these filters."}
-          </p>
+          <BrowseEmptyState
+            bookmarksOnly={bookmarksOnly}
+            hasQuery={hasQuery}
+            hasFacetFilters={hasFacetFilters}
+            onClearSearch={() => setQuery("")}
+            onClearFacets={clearFacets}
+            onShowAll={() => setBookmarksOnly(false)}
+          />
         ) : (
           <div
             key={filterKey}

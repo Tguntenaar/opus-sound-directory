@@ -13,6 +13,8 @@ type Props = {
   "aria-label": string;
   /** Optional SEO href; plain click still calls onChange (instant filter). Cmd/Ctrl+click follows link. */
   hrefForValue?: (value: string) => string | undefined;
+  /** Horizontal scroll instead of wrapping (dense filter panels on narrow viewports). */
+  scrollable?: boolean;
 };
 
 export function FilterPillGroup({
@@ -21,6 +23,7 @@ export function FilterPillGroup({
   onChange,
   "aria-label": ariaLabel,
   hrefForValue,
+  scrollable = false,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const reduced = usePrefersReducedMotion();
@@ -66,7 +69,12 @@ export function FilterPillGroup({
   return (
     <div
       ref={containerRef}
-      className="relative flex flex-wrap gap-1.5"
+      className={cn(
+        "relative flex gap-1.5",
+        scrollable
+          ? "pill-scroll -mx-1 flex-nowrap overflow-x-auto overscroll-x-contain px-1 pb-0.5"
+          : "flex-wrap",
+      )}
       role="group"
       aria-label={ariaLabel}
     >
