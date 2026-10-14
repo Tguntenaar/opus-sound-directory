@@ -171,10 +171,10 @@ export function EntryCard({ entry, staggerIndex = 0, featured = false }: Props) 
           type="button"
           onClick={playPreview}
           className={cn(
-            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-[border-color,background-color,transform] duration-200 active:scale-95",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-[border-color,background-color,transform,box-shadow] duration-200 ease-out active:scale-95 motion-reduce:transform-none",
             playing
-              ? "border-violet-500/50 bg-violet-500/10 text-violet-200"
-              : "border-zinc-700 text-zinc-300 hover:border-violet-500/50 hover:bg-zinc-900/80 hover:text-violet-300",
+              ? "border-violet-500/50 bg-violet-500/10 text-violet-200 shadow-[0_0_24px_-10px_rgb(139_92_246/0.55)]"
+              : "border-zinc-700 text-zinc-300 group-hover:scale-[1.04] group-hover:border-violet-500/45 group-hover:bg-violet-500/[0.07] group-hover:text-violet-200 group-hover:shadow-[0_0_22px_-12px_rgb(139_92_246/0.45)] hover:border-violet-500/50 hover:bg-zinc-900/80 hover:text-violet-300",
           )}
           aria-label={playing ? `Pause preview of ${entry.title}` : `Preview ${entry.title}`}
         >
