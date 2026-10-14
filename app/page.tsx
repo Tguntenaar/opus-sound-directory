@@ -6,9 +6,18 @@ import { homeCollectionPageJsonLd } from "@/lib/structured-data";
 import { HomeBrowse } from "@/components/home-browse";
 import { BrowseGrid } from "@/components/browse-grid";
 import { JsonLd } from "@/components/json-ld";
+import { isValidCategorySlug } from "@/lib/category-seo";
 
-export default async function HomePage() {
+type HomePageProps = {
+  searchParams?: Promise<{ q?: string; category?: string }>;
+};
+
+export default async function HomePage({ searchParams }: HomePageProps) {
   const entries = await getAllEntriesMerged();
+  const sp = searchParams ? await searchParams : {};
+  const initialQuery = sp.q?.trim() ?? "";
+  const initialCategory =
+    sp.category && isValidCategorySlug(sp.category) ? sp.category : "all";
 
   return (
     <div className="flex flex-col gap-12">
@@ -28,8 +37,18 @@ export default async function HomePage() {
           Add your sound
         </TrackedLink>
       </header>
-      <Suspense fallback={<BrowseGrid entries={entries} />}>
-        <HomeBrowse entries={entries} />
+      <Suspense
+        fallback={
+          <BrowseGrid
+            entries={entries}
+            syncCategoryToUrl
+            syncQueryToUrl
+            initialCategory={initialCategory}
+            initialQuery={initialQuery}
+          />
+        }
+      >
+        <HomeBrowse entries={entries} initialQueryFromServer={initialQuery} />
       </Suspense>
     </div>
   );
