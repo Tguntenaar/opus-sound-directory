@@ -5,9 +5,33 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
 import sharp from "sharp";
-import toIco from "to-ico";
-
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
+
+/** Multi-size favicon.ico with embedded PNGs (no extra deps). */
+function encodeIcoFromPngBuffers(pngBuffers) {
+  const count = pngBuffers.length;
+  const header = Buffer.alloc(6);
+  header.writeUInt16LE(0, 0);
+  header.writeUInt16LE(1, 2);
+  header.writeUInt16LE(count, 4);
+  const chunks = [header];
+  let offset = 6 + 16 * count;
+  for (const png of pngBuffers) {
+    const width = png.readUInt32BE(16);
+    const height = png.readUInt32BE(20);
+    const entry = Buffer.alloc(16);
+    entry[0] = width >= 256 ? 0 : width;
+    entry[1] = height >= 256 ? 0 : height;
+    entry.writeUInt16LE(1, 4);
+    entry.writeUInt16LE(32, 6);
+    entry.writeUInt32LE(png.length, 8);
+    entry.writeUInt32LE(offset, 12);
+    chunks.push(entry);
+    chunks.push(png);
+    offset += png.length;
+  }
+  return Buffer.concat(chunks);
+}
 const PUBLIC = join(ROOT, "public");
 const BRAND = join(PUBLIC, "brand");
 const ARTIFACTS = "/opt/cursor/artifacts";
@@ -179,7 +203,7 @@ console.log("Wrote public/icon-512-maskable.png");
 
 const icoSizes = [16, 32, 48];
 const icoBuffers = await Promise.all(icoSizes.map((s) => svgToPng(markTileSvg, s)));
-writeFileSync(join(PUBLIC, "favicon.ico"), await toIco(icoBuffers));
+writeFileSync(join(PUBLIC, "favicon.ico"), encodeIcoFromPngBuffers(icoBuffers));
 console.log("Wrote public/favicon.ico");
 
 writeFileSync(join(BRAND, "og-mark-200.png"), await svgToPng(markTileSvg, 200));
