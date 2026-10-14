@@ -17,6 +17,7 @@ import { matchesSearch, sortEntries, type SortMode } from "@/lib/browse-sort";
 import { useStats } from "@/components/stats-provider";
 import { IconButton } from "@/components/icon-button";
 import { captureEvent } from "@/lib/analytics-client";
+import { buildHomeBrowseHref } from "@/lib/home-browse-url";
 
 type Props = {
   entries: SoundEntry[];
@@ -24,7 +25,10 @@ type Props = {
   lockedCategory?: string;
   /** Sync ?category= on the home page without full navigation. */
   syncCategoryToUrl?: boolean;
+  /** Sync ?q= on the home page (replaceState, debounced). */
+  syncQueryToUrl?: boolean;
   initialCategory?: string;
+  initialQuery?: string;
 };
 
 const PAGE_SIZE = 18;
@@ -41,7 +45,9 @@ export function BrowseGrid({
   entries,
   lockedCategory,
   syncCategoryToUrl,
+  syncQueryToUrl,
   initialCategory = "all",
+  initialQuery = "",
 }: Props) {
   // Freeze ranking to the loaded snapshot so playing a card never moves it.
   const { rankingStats: stats } = useStats();
@@ -49,7 +55,7 @@ export function BrowseGrid({
     lockedCategory ?? initialCategory ?? "all",
   );
   const [mood, setMood] = useState<string>("all");
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const bookmarks = useBookmarks();
   const [bookmarksOnly, setBookmarksOnly] = useState(false);
   const [sort, setSort] = useState<SortMode>("popular");
@@ -73,6 +79,10 @@ export function BrowseGrid({
     if (initialCategory) setCategory(initialCategory);
   }, [lockedCategory, initialCategory]);
 
+  useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
+
   const setCategoryWithUrl = useCallback(
     (next: string) => {
       if (next !== category) {
@@ -80,13 +90,26 @@ export function BrowseGrid({
       }
       setCategory(next);
       if (syncCategoryToUrl && !lockedCategory) {
-        const path =
-          next === "all" ? "/" : `/?category=${encodeURIComponent(next)}`;
+        const path = buildHomeBrowseHref({ category: next, query });
         window.history.pushState(null, "", path);
       }
     },
-    [syncCategoryToUrl, lockedCategory, category],
+    [syncCategoryToUrl, lockedCategory, category, query],
   );
+
+  const queryUrlDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    if (!syncQueryToUrl || lockedCategory) return;
+    if (queryUrlDebounceRef.current) clearTimeout(queryUrlDebounceRef.current);
+    queryUrlDebounceRef.current = setTimeout(() => {
+      const path = buildHomeBrowseHref({ category, query });
+      const current = `${window.location.pathname}${window.location.search}`;
+      if (current !== path) window.history.replaceState(null, "", path);
+    }, 300);
+    return () => {
+      if (queryUrlDebounceRef.current) clearTimeout(queryUrlDebounceRef.current);
+    };
+  }, [syncQueryToUrl, lockedCategory, category, query]);
 
   const homeSponsor = lockedCategory ? null : getHomeSponsor();
   const featured = useMemo(() => {
