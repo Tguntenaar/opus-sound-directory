@@ -17,3 +17,26 @@ test("popular ranks usage; newest remains chronological; input is unchanged", ()
   assert.deepEqual(sortEntries(entries, "popular", {}).map(e => e.id), ["new", "old"]);
   assert.equal(entries[0].id, "old");
 });
+test("popular with empty stats uses editorial seed before newer long beds", () => {
+  const entries = [
+    entry("bass-wobble-drop-150", "2026-09-01"),
+    entry("heavy-boom-meme", "2025-01-01"),
+    entry("calendar-chaos-to-order-33s", "2026-08-01"),
+    entry("whoosh-pass-by", "2025-02-01"),
+  ];
+  const order = sortEntries(entries, "popular", {}).map(e => e.id);
+  assert.deepEqual(order.slice(0, 2), ["heavy-boom-meme", "whoosh-pass-by"]);
+  assert.ok(order.indexOf("heavy-boom-meme") < order.indexOf("bass-wobble-drop-150"));
+  assert.ok(order.indexOf("whoosh-pass-by") < order.indexOf("calendar-chaos-to-order-33s"));
+});
+test("popular still prefers higher real popularity over editorial seed", () => {
+  const entries = [
+    entry("heavy-boom-meme", "2025-01-01"),
+    entry("bass-wobble-drop-150", "2026-09-01"),
+  ];
+  const stats = { "bass-wobble-drop-150": { play: 1, copy: 0, download: 0 } };
+  assert.deepEqual(sortEntries(entries, "popular", stats).map(e => e.id), [
+    "bass-wobble-drop-150",
+    "heavy-boom-meme",
+  ]);
+});

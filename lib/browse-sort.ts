@@ -3,6 +3,30 @@ import type { StatsMap } from "@/lib/stats-types";
 
 export type SortMode = "popular" | "new";
 
+/** Tie-break when popularity scores match (typical cold start). Lower index = earlier in grid. */
+export const EDITORIAL_COLD_START_ORDER: readonly string[] = [
+  "heavy-boom-meme",
+  "whoosh-pass-by",
+  "ui-cozy-sprite",
+  "endless-riser-shepard",
+  "dialup-modem-56k",
+  "arcade-game-over",
+  "trailer-braam-hit",
+  "drop-impact-heavy",
+  "wah-wah-fail",
+  "drop-whoosh-stinger",
+  "ui-success-chime",
+  "ui-toggle-on",
+  "logo-sting-bright",
+];
+
+const editorialTieRank = (() => {
+  const rank = new Map<string, number>();
+  EDITORIAL_COLD_START_ORDER.forEach((id, i) => rank.set(id, i));
+  const fallback = EDITORIAL_COLD_START_ORDER.length;
+  return (id: string) => rank.get(id) ?? fallback;
+})();
+
 export function popularityScore(entryId: string, stats: StatsMap): number {
   const s = stats[entryId];
   if (!s) return 0;
@@ -23,6 +47,8 @@ export function sortEntries(
   list.sort((a, b) => {
     const diff = popularityScore(b.id, stats) - popularityScore(a.id, stats);
     if (diff !== 0) return diff;
+    const rankDiff = editorialTieRank(a.id) - editorialTieRank(b.id);
+    if (rankDiff !== 0) return rankDiff;
     return b.generatedAt.localeCompare(a.generatedAt);
   });
   return list;
