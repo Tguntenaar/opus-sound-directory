@@ -99,10 +99,38 @@ def run_generate_py(code_path: Path) -> None:
 
 
 def remaster_entry_wav(entry: dict, wav_path: Path) -> None:
+    import wave
+
+    from lib.loudness import remaster_wav_file, remaster_wav_file_any_rate
+
     master = entry.get("master") or {}
     target_lufs = float(master.get("targetLufs", -14))
     true_peak_db = float(master.get("truePeakDbTp", -1))
-    remaster_wav_file(wav_path, target_lufs=target_lufs, true_peak_db=true_peak_db)
+
+    master_path = MASTER_ROOT / entry["id"] / "out.wav"
+    source_48k: Path | None = None
+    if master_path.is_file():
+        with wave.open(str(master_path), "rb") as wf:
+            if wf.getframerate() == SAMPLE_RATE:
+                source_48k = master_path
+    if source_48k is None and wav_path.is_file():
+        with wave.open(str(wav_path), "rb") as wf:
+            if wf.getframerate() == SAMPLE_RATE:
+                source_48k = wav_path
+
+    from lib.loudness import trim_true_peak_stereo_file
+
+    if source_48k is not None:
+        remaster_wav_file(source_48k, target_lufs=target_lufs, true_peak_db=true_peak_db)
+        trim_true_peak_stereo_file(source_48k, ceiling_db=true_peak_db)
+        if source_48k != master_path:
+            master_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source_48k, master_path)
+        shutil.copy2(source_48k, wav_path)
+        return
+
+    remaster_wav_file_any_rate(wav_path, target_lufs=target_lufs, true_peak_db=true_peak_db)
+    trim_true_peak_stereo_file(wav_path, ceiling_db=true_peak_db)
 
 
 def ship_wav_for_workers(entry: dict, wav_path: Path) -> str:
@@ -127,15 +155,11 @@ def verify_entry_audio(
         expected_samples=expected_samples,
         expected_sr=int(entry["timing"].get("sampleRate", SAMPLE_RATE)),
     )
-    target_lufs = float(entry.get("master", {}).get("targetLufs", -14))
-    lufs_ok = metrics.get("lufs") is not None and abs(metrics["lufs"] - target_lufs) <= LUFS_TOLERANCE_LU
-    tp_ceiling = float(entry.get("master", {}).get("truePeakDbTp", -1))
-    peak_ok = metrics.get("truePeak") is not None and metrics["truePeak"] <= tp_ceiling + 0.05
+    from loudness_policy import check_loudness_metrics
+
+    loud_ok, _ = check_loudness_metrics(entry, metrics)
     metrics["passedChecks"] = bool(
-        metrics.get("lengthOk")
-        and metrics.get("sampleRateOk")
-        and lufs_ok
-        and peak_ok
+        metrics.get("lengthOk") and metrics.get("sampleRateOk") and loud_ok
     )
     return metrics
 

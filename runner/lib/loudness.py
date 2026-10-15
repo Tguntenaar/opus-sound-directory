@@ -100,6 +100,25 @@ def remaster_wav_file_any_rate(
     write_wav_stereo(path, stereo, sr)
 
 
+def trim_true_peak_stereo_file(
+    path: Path,
+    ceiling_db: float = -1.0,
+    margin_db: float = 0.08,
+) -> bool:
+    """Scale stereo PCM down only when ffmpeg true peak exceeds ceiling (preserves LUFS)."""
+    from verify import ffmpeg_ebur128
+
+    metrics = ffmpeg_ebur128(path)
+    peak = metrics.get("truePeak")
+    if peak is None or peak <= ceiling_db + 0.02:
+        return False
+    stereo, sr = read_wav_stereo(path)
+    gain = 10 ** ((ceiling_db - margin_db - peak) / 20.0)
+    stereo = (stereo * gain).astype(np.float32)
+    write_wav_stereo(path, stereo, sr)
+    return True
+
+
 def loudness_within_target(
     measured_lufs: float | None,
     target_lufs: float,

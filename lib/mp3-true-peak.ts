@@ -17,6 +17,7 @@ export function ffmpegAvailable(): boolean {
 export type Ebur128Summary = {
   lufs: number | null;
   truePeakDbTp: number | null;
+  lufsMomentaryMax: number | null;
 };
 
 export function measureEbur128(filePath: string): Ebur128Summary {
@@ -26,22 +27,31 @@ export function measureEbur128(filePath: string): Ebur128Summary {
     { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 },
   );
   if (error || status !== 0 || !stderr) {
-    return { lufs: null, truePeakDbTp: null };
+    return { lufs: null, truePeakDbTp: null, lufsMomentaryMax: null };
   }
   let lufs: number | null = null;
   let truePeakDbTp: number | null = null;
+  let lufsMomentaryMax: number | null = null;
   for (const line of stderr.split("\n")) {
     const iMatch = line.match(/\bI:\s*([-0-9.]+)\s*LUFS/);
     if (iMatch) {
       const v = Number(iMatch[1]);
       if (v > -70) lufs = v;
     }
+    const mMatch = line.match(/\bM:\s*([-0-9.]+)/);
+    if (mMatch) {
+      const v = Number(mMatch[1]);
+      if (v > -70) {
+        lufsMomentaryMax =
+          lufsMomentaryMax === null ? v : Math.max(lufsMomentaryMax, v);
+      }
+    }
     if (line.includes("Peak:") && line.includes("dBFS")) {
       const peakPart = line.split("Peak:")[1]?.split("dBFS")[0]?.trim();
       if (peakPart) truePeakDbTp = Number(peakPart);
     }
   }
-  return { lufs, truePeakDbTp };
+  return { lufs, truePeakDbTp, lufsMomentaryMax };
 }
 
 export function listPublicMp3Files(publicRoot: string): string[] {

@@ -1,0 +1,57 @@
+{
+  "truePeakDbTpMax": -1.0,
+  "integratedToleranceLu": 0.5,
+  "momentaryToleranceLu": 1.0,
+  "useMomentaryWhenDurationBelowSec": 0.4,
+  "entryOverrides": {
+    "metric-counter-flash-ticks": {
+      "integratedLufs": -14.0,
+      "note": "3 s UI sprite; brief specifies program-level -14 LUFS."
+    }
+  },
+  "profiles": [
+    {
+      "id": "ui-quiet",
+      "integratedLufs": -17.0,
+      "categories": ["ui-sounds"],
+      "maxDurationSec": 1.05,
+      "excludeEntryIds": ["metric-counter-flash-ticks"]
+    },
+    {
+      "id": "ui-sprite",
+      "integratedLufs": -17.0,
+      "categories": ["ui-sounds"],
+      "minDurationSec": 1.05,
+      "excludeEntryIds": ["metric-counter-flash-ticks"]
+    },
+    {
+      "id": "program",
+      "integratedLufs": -14.0,
+      "categories": [
+        "ad-beds",
+        "ambient",
+        "chaos-calm",
+        "drops",
+        "risers",
+        "logo-stings",
+        "meme",
+        "retro-tech",
+        "guitar",
+        "motion-graphics",
+        "explainer",
+        "game",
+        "cinematic",
+        "devlog",
+        "organ",
+        "pixel",
+        "trailer",
+        "foley",
+        "tech",
+        "countdown",
+        "gaming",
+        "music"
+      ]
+    }
+  ],
+  "defaultIntegratedLufs": -14.0
+}
