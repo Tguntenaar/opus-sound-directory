@@ -12,7 +12,7 @@ import {
 } from "react";
 import type { EntryStats, StatEvent, StatsMap } from "@/lib/stats-types";
 import { EMPTY_STATS } from "@/lib/stats-types";
-import { getPosthogWhenReady } from "@/lib/analytics-client";
+import { getPosthogWhenReady } from "@/lib/posthog-browser";
 import { PosthogPageviews } from "@/components/posthog-pageviews";
 
 type StatsContextValue = {
@@ -30,7 +30,15 @@ export function StatsProvider({ children }: { children: ReactNode }) {
   const [rankingStats, setRankingStats] = useState<StatsMap>({});
 
   useEffect(() => {
-    void getPosthogWhenReady();
+    const boot = () => {
+      void getPosthogWhenReady();
+    };
+    if (typeof requestIdleCallback === "function") {
+      const id = requestIdleCallback(boot, { timeout: 3500 });
+      return () => cancelIdleCallback(id);
+    }
+    const timer = window.setTimeout(boot, 2000);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {

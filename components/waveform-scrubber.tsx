@@ -27,6 +27,7 @@ export function WaveformScrubber({
   const [loadPeaks, setLoadPeaks] = useState(false);
 
   useEffect(() => {
+    if (compact) return;
     const rail = railRef.current;
     if (!rail || loadPeaks) return;
     const io = new IntersectionObserver(
@@ -40,7 +41,12 @@ export function WaveformScrubber({
     );
     io.observe(rail);
     return () => io.disconnect();
-  }, [loadPeaks]);
+  }, [loadPeaks, compact]);
+
+  useEffect(() => {
+    if (!compact || !playing || loadPeaks) return;
+    setLoadPeaks(true);
+  }, [compact, playing, loadPeaks]);
 
   useEffect(() => {
     if (!loadPeaks) return;
@@ -89,6 +95,9 @@ export function WaveformScrubber({
       tabIndex={0}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
+      onPointerEnter={() => {
+        if (compact) setLoadPeaks(true);
+      }}
       onClick={onClick}
       onKeyDown={(e) => {
         if (e.key === "ArrowLeft") {

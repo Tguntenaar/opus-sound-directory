@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { CATEGORY_ORDER, CATEGORIES } from "@/lib/categories";
 import { getCategorySeo, isValidCategorySlug } from "@/lib/category-seo";
 import { getAllEntriesMerged } from "@/lib/entries";
+import { slimEntriesForBrowse } from "@/lib/browse-catalog-payload";
 import { canonicalForPath } from "@/lib/site-metadata";
 import { SITE_NAME } from "@/lib/site-url";
 import {
@@ -42,7 +43,9 @@ export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
   if (!isValidCategorySlug(category)) notFound();
   const seo = getCategorySeo(category)!;
-  const entries = (await getAllEntriesMerged()).filter((e) => e.category === category);
+  const entries = slimEntriesForBrowse(
+    (await getAllEntriesMerged()).filter((e) => e.category === category),
+  );
   const catLabel = CATEGORIES[category]?.label ?? category;
   const breadcrumbs = breadcrumbListJsonLd([
     { name: "Browse", path: "/" },

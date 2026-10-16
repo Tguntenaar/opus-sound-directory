@@ -39,9 +39,11 @@ body {
   .click-notes:not([data-preview-motion="full"]) { display: none; }
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 :where(a[href], button, summary, select, [role="button"], [role="link"],

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { getPosthogWhenReady } from "@/lib/analytics-client";
+import { getPosthogWhenReady } from "@/lib/posthog-browser";
 
 export function PosthogPageviews() {
   const pathname = usePathname();

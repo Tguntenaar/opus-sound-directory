@@ -21,6 +21,11 @@ import { buildHomeBrowseHref } from "@/lib/home-browse-url";
 
 type Props = {
   entries: SoundEntry[];
+  /** Home: hydrate the full catalog from a static asset instead of the RSC payload. */
+  catalogHref?: string;
+  /** Featured editorial pick when `entries` is only the first page (home). */
+  featuredEntry?: SoundEntry;
+  featuredControl?: SoundEntry;
   /** Lock grid to one category (category landing pages). */
   lockedCategory?: string;
   /** Sync ?category= on the home page without full navigation. */
@@ -42,13 +47,37 @@ function moodsInCatalog(entries: SoundEntry[]): string[] {
 }
 
 export function BrowseGrid({
-  entries,
+  entries: entriesProp,
+  catalogHref,
+  featuredEntry,
+  featuredControl,
   lockedCategory,
   syncCategoryToUrl,
   syncQueryToUrl,
   initialCategory = "all",
   initialQuery = "",
 }: Props) {
+  const [entries, setEntries] = useState(entriesProp);
+
+  useEffect(() => {
+    setEntries(entriesProp);
+  }, [entriesProp]);
+
+  useEffect(() => {
+    if (!catalogHref) return;
+    let cancelled = false;
+    fetch(catalogHref)
+      .then((r) => (r.ok ? r.json() as Promise<SoundEntry[]> : Promise.reject()))
+      .then((data) => {
+        if (!cancelled && Array.isArray(data)) setEntries(data);
+      })
+      .catch(() => {
+        /* Keep the first-page snapshot when the catalog asset is unavailable. */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [catalogHref]);
   // Freeze ranking to the loaded snapshot so playing a card never moves it.
   const { rankingStats: stats } = useStats();
   const [category, setCategory] = useState<string>(
@@ -114,8 +143,8 @@ export function BrowseGrid({
   const homeSponsor = lockedCategory ? null : getHomeSponsor();
   const featured = useMemo(() => {
     if (lockedCategory || homeSponsor) return undefined;
-    return getFeaturedEntry(entries) ?? undefined;
-  }, [entries, lockedCategory, homeSponsor]);
+    return featuredEntry ?? getFeaturedEntry(entries) ?? undefined;
+  }, [entries, lockedCategory, homeSponsor, featuredEntry]);
   const moodOptions = useMemo(() => moodsInCatalog(entries), [entries]);
 
   const categoryPills: PillOption[] = useMemo(() => {
@@ -151,6 +180,17 @@ export function BrowseGrid({
   const filterKey = JSON.stringify([category, mood, query, sort, bookmarksOnly]);
   const [pagination, setPagination] = useState({ key: filterKey, count: PAGE_SIZE });
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const [autoLoadMore, setAutoLoadMore] = useState(false);
+
+  useEffect(() => {
+    const enable = () => setAutoLoadMore(true);
+    if (document.readyState === "complete") {
+      const timer = window.setTimeout(enable, 800);
+      return () => window.clearTimeout(timer);
+    }
+    window.addEventListener("load", enable, { once: true });
+    return () => window.removeEventListener("load", enable);
+  }, []);
   // Reset in the same render so a new search never flashes the previous page count.
   if (pagination.key !== filterKey) setPagination({ key: filterKey, count: PAGE_SIZE });
   const visibleCount = pagination.key === filterKey ? pagination.count : PAGE_SIZE;
@@ -164,7 +204,7 @@ export function BrowseGrid({
   }, [filterKey, filtered.length]);
 
   useEffect(() => {
-    if (!hasMore || !loadMoreRef.current || !("IntersectionObserver" in window)) return;
+    if (!autoLoadMore || !hasMore || !loadMoreRef.current || !("IntersectionObserver" in window)) return;
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry?.isIntersecting) return;
       observer.disconnect();
@@ -172,7 +212,7 @@ export function BrowseGrid({
     }, { rootMargin: "0px 0px 400px 0px" });
     observer.observe(loadMoreRef.current);
     return () => observer.disconnect();
-  }, [hasMore, loadMore, visibleCount]);
+  }, [autoLoadMore, hasMore, loadMore, visibleCount]);
 
   const cycleSort = useCallback(() => {
     const next = sort === "popular" ? "new" : "popular";
@@ -243,7 +283,7 @@ export function BrowseGrid({
     <div className="flex flex-col gap-8">
       {featured && !bookmarksOnly && !lockedCategory && !homeSponsor ? <FeaturedSoundExperiment
         entry={featured}
-        control={entries.find((entry) => entry.slug === FEATURED_CONTROL_SLUG)}
+        control={featuredControl ?? entries.find((entry) => entry.slug === FEATURED_CONTROL_SLUG)}
       /> : <FeaturedSlot
         entry={bookmarksOnly ? undefined : featured}
         placement={lockedCategory ? "category" : "home"}
@@ -425,7 +465,7 @@ export function BrowseGrid({
         )}
       </div>
       {filtered.length > 0 && <div ref={loadMoreRef} className="flex flex-col items-center gap-3 py-4">
-        <p role="status" className="text-xs text-zinc-500">
+        <p role="status" className="text-xs text-zinc-400">
           {visibleEntries.length} of {filtered.length} sounds
         </p>
         {hasMore && <button type="button" onClick={loadMore}
