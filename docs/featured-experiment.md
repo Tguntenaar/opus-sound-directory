@@ -40,7 +40,7 @@ WHERE s.$end_timestamp < now() - INTERVAL 30 MINUTE
 GROUP BY exposure.variant
 ```
 
-The client waits up to 1.5 seconds for flags, then freezes the displayed sound for that mount. Missing flags, blocked analytics, opted-out visitors, missing control content, and timeouts show Endless Riser without experiment exposure. A late flag does not replace a sound being played. No random client-side assignment is used: PostHog controls allocation.
+The client renders the editorial featured sound on first paint, waits up to 1.5 seconds for flags to assign the experiment variant, then freezes the displayed sound for that mount. Missing flags, blocked analytics, opted-out visitors, missing control content, and timeouts keep Endless Riser without experiment exposure. A late flag does not replace a sound being played. No random client-side assignment is used: PostHog controls allocation.
 
 Creating or launching the hosted experiment requires project access. Deploy the integration before starting the experiment. Without its flag, the new default is shown to everyone.
 
