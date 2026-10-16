@@ -4,6 +4,10 @@ import { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import { IconTooltip } from "@/components/icon-tooltip";
 
+function formatStarCount(stars: number): string {
+  return new Intl.NumberFormat("en", { notation: "compact" }).format(stars);
+}
+
 export function GithubStars() {
   const [stars, setStars] = useState<number | null>(null);
   useEffect(() => {
@@ -16,12 +20,23 @@ export function GithubStars() {
     return () => controller.abort();
   }, []);
 
+  const starCountLabel =
+    stars === null ? undefined : formatStarCount(stars);
+
   return <IconTooltip label="Star on GitHub" side="bottom">
     <a href="https://github.com/Tguntenaar/opus-sound-directory" target="_blank" rel="noopener noreferrer"
-      aria-label={stars === null ? "Star Opus Sounds on GitHub" : `Star Opus Sounds on GitHub (${stars} stars)`}
+      aria-label={
+        stars === null
+          ? "Star Opus Sounds on GitHub"
+          : `Star Opus Sounds on GitHub, ${starCountLabel}`
+      }
       className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg px-2 text-zinc-400 transition-colors hover:bg-zinc-900/80 hover:text-zinc-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400">
       <Star className="h-4 w-4" aria-hidden="true" />
-      <span className="min-w-2 text-xs tabular-nums">{stars === null ? "" : new Intl.NumberFormat("en", { notation: "compact" }).format(stars)}</span>
+      {starCountLabel !== undefined && (
+        <span className="min-w-2 text-xs tabular-nums" aria-hidden="true">
+          {starCountLabel}
+        </span>
+      )}
     </a>
   </IconTooltip>;
 }

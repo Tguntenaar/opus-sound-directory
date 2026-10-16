@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { SoundEntry } from "@/lib/entries-types";
-import { getPosthogWhenReady } from "@/lib/posthog-browser";
 import {
   FEATURED_ENTRY_SLUG,
   FEATURED_EXPERIMENT_FLAG,
@@ -44,7 +43,7 @@ export function FeaturedSoundExperiment({ entry, control }: { entry: SoundEntry;
       setSelection({ variant });
     };
     const timeout = setTimeout(() => choose(null), 1500);
-    void getPosthogWhenReady().then((ph) => {
+    void import("@/lib/posthog-browser").then(({ getPosthogWhenReady }) => getPosthogWhenReady()).then((ph) => {
       if (finished) return;
       if (!ph || ph.has_opted_out_capturing() || !control || entry.slug !== FEATURED_ENTRY_SLUG) return choose(null);
       const read = () => featuredVariant(ph.getFeatureFlag(FEATURED_EXPERIMENT_FLAG, { send_event: false }));
@@ -68,7 +67,7 @@ export function FeaturedSoundExperiment({ entry, control }: { entry: SoundEntry;
       if (fired || !visible || document.visibilityState !== "visible") return;
       fired = true;
       observer.disconnect();
-      void getPosthogWhenReady().then((ph) => {
+      void import("@/lib/posthog-browser").then(({ getPosthogWhenReady }) => getPosthogWhenReady()).then((ph) => {
         if (disposed || !ph || ph.has_opted_out_capturing()) return;
         const session = ph.get_session_id();
         const key = `${FEATURED_EXPERIMENT_FLAG}:${session}`;

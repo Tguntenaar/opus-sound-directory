@@ -7,11 +7,20 @@ import { isValidCategorySlug } from "@/lib/category-seo";
 
 type Props = {
   entries: SoundEntry[];
+  catalogHref?: string;
+  featuredEntry?: SoundEntry;
+  featuredControl?: SoundEntry;
   /** From the server on first paint so the Suspense fallback matches. */
   initialQueryFromServer?: string;
 };
 
-export function HomeBrowse({ entries, initialQueryFromServer = "" }: Props) {
+export function HomeBrowse({
+  entries,
+  catalogHref,
+  featuredEntry,
+  featuredControl,
+  initialQueryFromServer = "",
+}: Props) {
   const searchParams = useSearchParams();
   const fromUrl = searchParams.get("category");
   const initialCategory =
@@ -22,6 +31,9 @@ export function HomeBrowse({ entries, initialQueryFromServer = "" }: Props) {
   return (
     <BrowseGrid
       entries={entries}
+      catalogHref={catalogHref}
+      featuredEntry={featuredEntry}
+      featuredControl={featuredControl}
       syncCategoryToUrl
       syncQueryToUrl
       initialCategory={initialCategory}
