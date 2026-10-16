@@ -3,19 +3,43 @@
 import { useEffect, useRef, useState } from "react";
 import type { SoundEntry } from "@/lib/entries-types";
 import { getPosthogWhenReady } from "@/lib/posthog-browser";
-import { FEATURED_ENTRY_SLUG, FEATURED_EXPERIMENT_FLAG, featuredVariant } from "@/lib/featured";
+import {
+  FEATURED_ENTRY_SLUG,
+  FEATURED_EXPERIMENT_FLAG,
+  canApplyFeaturedVariant,
+  featuredVariant,
+  resolveFeaturedSound,
+} from "@/lib/featured";
+import { subscribePlayback } from "@/lib/audio-controller";
 import { FeaturedSlot } from "@/components/featured-slot";
 
-/** Freeze the assignment before showing the card; late flags never swap a playing sound. */
+/** Editorial default on first paint; PostHog may reassign within 1.5s unless playback started. */
 export function FeaturedSoundExperiment({ entry, control }: { entry: SoundEntry; control?: SoundEntry }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [selection, setSelection] = useState<{ variant: ReturnType<typeof featuredVariant> } | null>(null);
+  const playbackLockedRef = useRef(false);
+  const [selection, setSelection] = useState<{ variant: ReturnType<typeof featuredVariant> }>({ variant: null });
+  const selectionRef = useRef(selection);
+  selectionRef.current = selection;
+
+  const selected = resolveFeaturedSound(selection.variant, entry, control);
+  const selectedIdRef = useRef(selected.id);
+  selectedIdRef.current = selected.id;
+
+  useEffect(() => {
+    return subscribePlayback((id) => {
+      if (!id) return;
+      const displayed = selectedIdRef.current;
+      if (id === displayed || id.startsWith(`${displayed}:`)) playbackLockedRef.current = true;
+    });
+  }, []);
 
   useEffect(() => {
     let finished = false;
     let unsubscribe: (() => void) | undefined;
     const choose = (variant: ReturnType<typeof featuredVariant>) => {
       if (finished) return;
+      const current = resolveFeaturedSound(selectionRef.current.variant, entry, control);
+      if (!canApplyFeaturedVariant(variant, current, entry, control, playbackLockedRef.current)) return;
       finished = true;
       setSelection({ variant });
     };
@@ -35,9 +59,8 @@ export function FeaturedSoundExperiment({ entry, control }: { entry: SoundEntry;
     };
   }, [control, entry.slug]);
 
-  const selected = selection?.variant === "control" && control ? control : entry;
   useEffect(() => {
-    if (!selection?.variant || !ref.current) return;
+    if (!selection.variant || !ref.current) return;
     let disposed = false;
     let visible = false;
     let fired = false;
@@ -76,8 +99,9 @@ export function FeaturedSoundExperiment({ entry, control }: { entry: SoundEntry;
     };
   }, [selection, selected.id, selected.slug]);
 
-  return <div ref={ref}>
-    {selection ? <FeaturedSlot entry={selected} placement="home" /> :
-      <div className="min-h-64 rounded-xl border border-violet-500/20 bg-zinc-900/30" aria-busy="true" aria-label="Loading featured sound" />}
-  </div>;
+  return (
+    <div ref={ref}>
+      <FeaturedSlot entry={selected} placement="home" />
+    </div>
+  );
 }
