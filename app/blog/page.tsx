@@ -10,17 +10,21 @@ const title = "Blog";
 
 export const metadata: Metadata = {
   title,
-  description: "Notes on synthesised audio, prompts, and video workflows.",
+  description:
+    "Notes on synthesised audio, sound-effect prompts, loudness, and workflows for AI video and apps.",
   alternates: blogPageAlternates("/blog"),
   openGraph: {
     title: `${title} · ${SITE_NAME}`,
-    description: "Notes on synthesised audio, prompts, and video workflows.",
+    description:
+      "Notes on synthesised audio, sound-effect prompts, loudness, and workflows for AI video and apps.",
     url: "/blog",
     images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${title} · ${SITE_NAME}`,
+    description:
+      "Notes on synthesised audio, sound-effect prompts, loudness, and workflows for AI video and apps.",
     images: [DEFAULT_OG_IMAGE],
   },
 };
