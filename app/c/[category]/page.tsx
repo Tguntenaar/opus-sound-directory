@@ -8,7 +8,7 @@ import { getCategorySeo, isValidCategorySlug } from "@/lib/category-seo";
 import { getAllEntriesMerged } from "@/lib/entries";
 import { slimEntriesForBrowse } from "@/lib/browse-catalog-payload";
 import { canonicalForPath } from "@/lib/site-metadata";
-import { SITE_NAME } from "@/lib/site-url";
+import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 import {
   breadcrumbListJsonLd,
   categoryFaqPageJsonLd,
@@ -35,6 +35,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${seo.h1} · ${SITE_NAME}`,
       description: seo.intro,
       url: path,
+      images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${seo.h1} · ${SITE_NAME}`,
+      description: seo.intro,
+      images: [DEFAULT_OG_IMAGE],
     },
   };
 }
