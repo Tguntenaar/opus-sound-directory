@@ -3,28 +3,29 @@ import Link from "next/link";
 import { ArrowLeft, BookOpen } from "lucide-react";
 import { getAllBlogPosts } from "@/lib/blog";
 import { blogPageAlternates } from "@/lib/site-metadata";
+import { fitMetaDescription } from "@/lib/seo-limits";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 import { BlogAdvertiseLink } from "@/components/blog-advertise-link";
 
 const title = "Blog";
+const description = fitMetaDescription(
+  "Notes on synthesised audio, sound-effect prompts, loudness, and workflows for AI video and apps.",
+);
 
 export const metadata: Metadata = {
   title,
-  description:
-    "Notes on synthesised audio, sound-effect prompts, loudness, and workflows for AI video and apps.",
+  description,
   alternates: blogPageAlternates("/blog"),
   openGraph: {
     title: `${title} · ${SITE_NAME}`,
-    description:
-      "Notes on synthesised audio, sound-effect prompts, loudness, and workflows for AI video and apps.",
+    description,
     url: "/blog",
     images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: `${title} · ${SITE_NAME}`,
-    description:
-      "Notes on synthesised audio, sound-effect prompts, loudness, and workflows for AI video and apps.",
+    description,
     images: [DEFAULT_OG_IMAGE],
   },
 };

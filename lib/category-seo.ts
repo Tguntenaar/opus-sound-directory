@@ -1,4 +1,4 @@
-import { CATEGORY_ORDER } from "@/lib/categories";
+import { CATEGORY_ORDER } from "./categories.ts";
 
 export type CategoryFaq = { q: string; a: string };
 

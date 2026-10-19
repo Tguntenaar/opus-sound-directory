@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES } from "./categories.ts";
 import {
   DEFAULT_OG_IMAGE,
   DEFAULT_SITE_DESCRIPTION,
   SITE_NAME,
+  canonicalForPath,
   getSiteUrl,
-} from "@/lib/site-url";
+} from "./site-url.ts";
+import { fitMetaDescription } from "./seo-limits.ts";
 
 /** Bump when favicon assets change so browsers pick up new icons. */
 export const FAVICON_VERSION = "2";
@@ -14,11 +16,7 @@ function iconHref(path: string): string {
   return `${path}?v=${FAVICON_VERSION}`;
 }
 
-export function canonicalForPath(path: string): string {
-  const base = getSiteUrl();
-  if (!path || path === "/") return base;
-  return `${base}${path.startsWith("/") ? path : `/${path}`}`;
-}
+export { canonicalForPath } from "./site-url.ts";
 
 /** Canonical + RSS discovery for `/blog` and `/blog/<slug>` pages. */
 export function blogPageAlternates(canonicalPath: string): Metadata["alternates"] {
@@ -32,15 +30,16 @@ export function blogPageAlternates(canonicalPath: string): Metadata["alternates"
 
 export function rootSiteMetadata(): Metadata {
   const siteUrl = getSiteUrl();
+  const siteDescription = fitMetaDescription(DEFAULT_SITE_DESCRIPTION);
   const googleVerification = process.env.GOOGLE_SITE_VERIFICATION?.trim();
   const bingVerification = process.env.BING_SITE_VERIFICATION?.trim();
   return {
     metadataBase: new URL(siteUrl),
     title: {
-      default: SITE_NAME,
+      default: "Free CC0 Sound Effects & Music Beds",
       template: `%s · ${SITE_NAME}`,
     },
-    description: DEFAULT_SITE_DESCRIPTION,
+    description: siteDescription,
     alternates: {
       canonical: siteUrl,
     },
@@ -61,7 +60,7 @@ export function rootSiteMetadata(): Metadata {
       url: siteUrl,
       siteName: SITE_NAME,
       title: SITE_NAME,
-      description: DEFAULT_SITE_DESCRIPTION,
+      description: siteDescription,
       images: [
         {
           url: DEFAULT_OG_IMAGE,
@@ -74,7 +73,7 @@ export function rootSiteMetadata(): Metadata {
     twitter: {
       card: "summary_large_image",
       title: SITE_NAME,
-      description: DEFAULT_SITE_DESCRIPTION,
+      description: siteDescription,
       images: [DEFAULT_OG_IMAGE],
     },
     ...(googleVerification || bingVerification

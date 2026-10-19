@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
 import { CATEGORY_ORDER, CATEGORIES } from "@/lib/categories";
 import { getCategorySeo, isValidCategorySlug } from "@/lib/category-seo";
+import { categoryPageDescription, categoryPageTitle } from "@/lib/category-seo-meta";
 import { getAllEntriesMerged } from "@/lib/entries";
 import { slimEntriesForBrowse } from "@/lib/browse-catalog-payload";
 import { canonicalForPath } from "@/lib/site-metadata";
@@ -27,20 +28,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!isValidCategorySlug(category)) return { title: "Not found" };
   const seo = getCategorySeo(category)!;
   const path = `/c/${category}`;
+  const title = categoryPageTitle(seo);
+  const description = categoryPageDescription(seo.intro);
   return {
-    title: seo.h1,
-    description: seo.intro,
+    title,
+    description,
     alternates: { canonical: canonicalForPath(path) },
     openGraph: {
       title: `${seo.h1} · ${SITE_NAME}`,
-      description: seo.intro,
+      description,
       url: path,
       images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${seo.h1} · ${SITE_NAME}`,
-      description: seo.intro,
+      description,
       images: [DEFAULT_OG_IMAGE],
     },
   };

@@ -1,8 +1,8 @@
-import { CATEGORIES } from "@/lib/categories";
-import { formatMood } from "@/lib/mood";
-import type { SoundEntry } from "@/lib/entries-types";
-import { canonicalForPath } from "@/lib/site-metadata";
-import { getSiteUrl } from "@/lib/site-url";
+import { CATEGORIES } from "./categories.ts";
+import { formatMood } from "./mood.ts";
+import type { SoundEntry } from "./entries-types.ts";
+import { canonicalForPath, getSiteUrl } from "./site-url.ts";
+import { pickMetaDescription, pickTitleSegment } from "./seo-limits.ts";
 
 const CATEGORY_NOUN: Record<string, string> = {
   "ad-beds": "Ad Music Bed",
@@ -19,6 +19,24 @@ const CATEGORY_NOUN: Record<string, string> = {
   guitar: "Guitar Sound",
   music: "Music Track",
   foley: "Foley Sound Effect",
+};
+
+/** Shorter nouns when the full title would exceed snippet limits. */
+const SHORT_CATEGORY_NOUN: Record<string, string> = {
+  "ad-beds": "Ad Bed",
+  "ui-sounds": "UI SFX",
+  "logo-stings": "Logo Sting",
+  drops: "Whoosh SFX",
+  risers: "Riser SFX",
+  "chaos-calm": "Transition Bed",
+  ambient: "Ambient Bed",
+  meme: "Meme SFX",
+  gaming: "Game SFX",
+  cinematic: "Cinematic SFX",
+  "retro-tech": "Retro Tech SFX",
+  guitar: "Guitar",
+  music: "Music Bed",
+  foley: "Foley SFX",
 };
 
 const USE_CASE: Record<string, string> = {
@@ -42,9 +60,24 @@ export function categoryNoun(category: string): string {
   return CATEGORY_NOUN[category] ?? "Sound Effect";
 }
 
+function shortCategoryNoun(category: string): string {
+  return SHORT_CATEGORY_NOUN[category] ?? "SFX";
+}
+
 export function entryPageTitle(entry: SoundEntry): string {
   const noun = categoryNoun(entry.category);
-  return `${entry.title} — Free ${noun} (WAV, MP3, CC0)`;
+  const shortNoun = shortCategoryNoun(entry.category);
+  const title = entry.title;
+  const variants = [
+    `${title} — Free ${noun} (WAV, MP3, CC0)`,
+    `${title} — Free ${noun} (CC0)`,
+    `${title} — Free ${noun}`,
+    `${title} — Free ${shortNoun} (CC0)`,
+    `${title} — Free ${shortNoun}`,
+  ];
+  const segment = pickTitleSegment(variants);
+  if (segment.length > 0) return segment;
+  return pickTitleSegment([`${title} — Free ${shortNoun}`]);
 }
 
 export function entryMetaDescription(entry: SoundEntry): string {
@@ -54,10 +87,19 @@ export function entryMetaDescription(entry: SoundEntry): string {
   const use = USE_CASE[entry.category] ?? "video";
   const cat = CATEGORIES[entry.category]?.label ?? entry.category;
   const moodPart = moods ? `${moods} · ` : "";
-  const lufs =
-    entry.metrics.lufs != null ? ` ${entry.metrics.lufs} LUFS.` : "";
+  const lufs = entry.metrics.lufs != null ? ` ${entry.metrics.lufs} LUFS.` : "";
   const bpmPart = bpm != null ? ` at ${bpm} BPM` : "";
-  return `Free ${cat.toLowerCase()} — ${entry.title}, ${dur}s${bpmPart}. ${moodPart}CC0 download for ${use}.${lufs} Prompt, Python code, and spectrogram.`;
+  const footer = " Prompt, Python code, and spectrogram.";
+  const shortUse = use.length > 36 ? "video edits" : use;
+
+  const full = `Free ${cat.toLowerCase()} — ${entry.title}, ${dur}s${bpmPart}. ${moodPart}CC0 download for ${use}.${lufs}${footer}`;
+  const noFooter = `Free ${cat.toLowerCase()} — ${entry.title}, ${dur}s${bpmPart}. ${moodPart}CC0 download for ${use}.${lufs}`;
+  const noLufs = `Free ${cat.toLowerCase()} — ${entry.title}, ${dur}s${bpmPart}. ${moodPart}CC0 download for ${use}.`;
+  const noMood = `Free ${cat.toLowerCase()} — ${entry.title}, ${dur}s${bpmPart}. CC0 download for ${use}.`;
+  const noBpm = `Free ${cat.toLowerCase()} — ${entry.title}, ${dur}s. CC0 download for ${shortUse}.`;
+  const compact = `Free ${categoryNoun(entry.category).toLowerCase()}: ${entry.title}. ${dur}s CC0 WAV/MP3 for ${shortUse}.`;
+
+  return pickMetaDescription([full, noFooter, noLufs, noMood, noBpm, compact]);
 }
 
 export function spectrogramAlt(entry: SoundEntry): string {
