@@ -1,5 +1,6 @@
 ---
 title: "Open-Source AI Audio Models on Hugging Face: Music, Sound Effects and Video-to-Audio"
+seoTitle: "Open-source AI audio on HF"
 slug: "open-source-ai-audio-models-on-hugging-face"
 description: "A guide to open AI audio models on Hugging Face (MusicGen, AudioGen, Stable Audio Open, AudioLDM 2, ACE-Step, MMAudio) with what each does and its license."
 date: "2026-10-06"

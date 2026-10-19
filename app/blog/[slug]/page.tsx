@@ -5,7 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import { getAllBlogPosts, getBlogPostBySlug } from "@/lib/blog";
 import { renderBlogBody } from "@/lib/blog-markdown";
 import { blogPageAlternates } from "@/lib/site-metadata";
-import { fitMetaDescription, pickTitleSegment } from "@/lib/seo-limits";
+import { blogPageTitle } from "@/lib/blog-seo";
+import { fitMetaDescription } from "@/lib/seo-limits";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 import { blogPostingJsonLd, faqPageJsonLd } from "@/lib/structured-data";
 import { BlogArticleBody } from "@/components/blog-article-body";
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getBlogPostBySlug(slug);
   if (!post) return { title: "Not found" };
-  const title = pickTitleSegment([post.title]);
+  const title = blogPageTitle(post);
   const description = fitMetaDescription(post.description);
   return {
     title,

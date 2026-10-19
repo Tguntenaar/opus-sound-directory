@@ -1,5 +1,6 @@
 ---
 title: "How to Make Procedural Game Sound Effects with Code (sfxr, Web Audio and Python)"
+seoTitle: "Procedural game SFX with code"
 slug: "procedural-game-sound-effects-with-code"
 description: "Make game sound effects with code: sfxr-style tools, Web Audio, Python and engine APIs, plus copyable prompts for jump, coin, hit and UI sounds."
 date: "2026-10-06"

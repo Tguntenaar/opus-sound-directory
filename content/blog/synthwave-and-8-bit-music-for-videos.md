@@ -1,5 +1,6 @@
 ---
 title: "Synthwave and 8-Bit Music for Videos: What Makes the Sound and How to Make It"
+seoTitle: "Synthwave & 8-bit video music"
 slug: "synthwave-and-8-bit-music-for-videos"
 description: "The ingredients of synthwave and chiptune, gated reverb, and how to make retro cues, coin pickups and level-up sounds."
 date: "2026-10-06"

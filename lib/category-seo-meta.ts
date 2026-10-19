@@ -3,8 +3,9 @@ import type { CategorySeoContent } from "./category-seo.ts";
 
 /** Document `<title>` segment for a category hub (visual h1 stays unchanged). */
 export function categoryPageTitle(seo: CategorySeoContent): string {
-  const { h1 } = seo;
+  const { h1, titleSegment } = seo;
   const variants = [
+    ...(titleSegment ? [titleSegment] : []),
     h1,
     h1.replace(/^Free Royalty-Free /, "Free "),
     h1.replace(/ Sound Effects/g, " SFX"),
@@ -14,6 +15,8 @@ export function categoryPageTitle(seo: CategorySeoContent): string {
   return pickTitleSegment(variants);
 }
 
-export function categoryPageDescription(intro: string): string {
-  return pickMetaDescription([intro]);
+export function categoryPageDescription(seo: CategorySeoContent): string {
+  const variants = [seo.intro];
+  if (seo.introShort) variants.push(seo.introShort);
+  return pickMetaDescription(variants);
 }

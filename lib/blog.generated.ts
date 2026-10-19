@@ -4,6 +4,7 @@ import type { BlogPost } from "./blog-types";
 export const ALL_BLOG_POSTS: BlogPost[] = [
   {
     "title": "How to Find Background Music for YouTube Videos Without Copyright Claims or Strikes",
+    "seoTitle": "YouTube BGM without copyright",
     "slug": "background-music-for-youtube-without-copyright",
     "description": "Where to get background music for YouTube that won't trigger Content ID claims or copyright strikes, how claims differ from strikes, and what to check.",
     "date": "2026-10-06",
@@ -46,6 +47,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "The Best Directories for AI Prompts and Assets in 2026",
+    "seoTitle": "Best AI prompt directories",
     "slug": "best-ai-prompt-directories",
     "description": "A practical list of AI prompt directories and asset libraries for code, images, video and sound, and how to judge whether a prompt is worth copying.",
     "date": "2026-10-06",
@@ -86,7 +88,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
     "title": "Draft pipeline test",
     "slug": "draft-pipeline-test",
     "description": "Internal placeholder to verify blog build, RSS, and llms exclusions.",
-    "date": "Tue Oct 06 2026 00:00:00 GMT+0000 (Coordinated Universal Time)",
+    "date": "Mon Oct 05 2026 19:00:00 GMT-0500 (Central Daylight Time)",
     "keywords": [
       "test",
       "draft"
@@ -102,6 +104,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "How to Fix the Sound in Claude Opus 5.5 Videos (Music, SFX, Voice and Loudness)",
+    "seoTitle": "Fix Opus 5.5 video sound",
     "slug": "fix-sound-in-claude-opus-5-5-videos",
     "description": "Why Opus 5.5 videos often sound generic, harsh or out of sync, and the fixes creators share: constrained music prompts, measured beats, voice-first timing.",
     "date": "2026-10-06",
@@ -140,6 +143,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "Glitch, Tape-Stop and Countdown Sound Effects: How They Work and How to Make Them",
+    "seoTitle": "Glitch, tape-stop & countdown SFX",
     "slug": "glitch-tape-stop-and-countdown-sound-effects",
     "description": "What tape-stop, glitch and countdown effects are, how to make them, and how to sync their cue moment to a cut.",
     "date": "2026-10-06",
@@ -178,6 +182,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "Horror and Tension Sound Effects: Heartbeats, Braams and Silence",
+    "seoTitle": "Horror & tension sound effects",
     "slug": "horror-and-tension-sound-effects",
     "description": "How accelerating heartbeats, risers, braams and sudden silence build and pay off tension, with frame-timed prompts.",
     "date": "2026-10-06",
@@ -216,6 +221,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "How to Add Sound Effects and Music to AI-Generated Videos",
+    "seoTitle": "SFX and music for AI video",
     "slug": "how-to-add-sound-and-music-to-ai-generated-videos",
     "description": "A step-by-step workflow for adding music beds, sound effects and transitions to AI-generated video, with copyable sound prompts and loudness targets.",
     "date": "2026-10-06",
@@ -254,6 +260,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "How to Make an Audio Logo (Sonic Logo) for Your Videos and App",
+    "seoTitle": "Make an audio logo (sonic logo)",
     "slug": "how-to-make-an-audio-logo",
     "description": "How to make an audio logo or sonic logo: length, notes, timbre, versions for video and app, and copyable prompts to generate a logo sting with code.",
     "date": "2026-10-06",
@@ -292,6 +299,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "How to Write a Good Sound Effect Prompt (With UI and App Sound Examples)",
+    "seoTitle": "How to write a sound FX prompt",
     "slug": "how-to-write-a-sound-effect-prompt",
     "description": "A template for writing sound effect prompts that work, with copyable UI, notification and transition examples and the basics of UI sound design.",
     "date": "2026-10-06",
@@ -330,6 +338,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "Open-Source AI Audio Models on Hugging Face: Music, Sound Effects and Video-to-Audio",
+    "seoTitle": "Open-source AI audio on HF",
     "slug": "open-source-ai-audio-models-on-hugging-face",
     "description": "A guide to open AI audio models on Hugging Face (MusicGen, AudioGen, Stable Audio Open, AudioLDM 2, ACE-Step, MMAudio) with what each does and its license.",
     "date": "2026-10-06",
@@ -368,6 +377,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "How Long Should a Podcast Intro Be? How to Make Podcast Intro Music",
+    "seoTitle": "Podcast intro length & music",
     "slug": "podcast-intro-music",
     "description": "Intro length, planning a theme in bars so it ends on time, licensed sources, and Apple's -16 LKFS loudness guidance.",
     "date": "2026-10-06",
@@ -406,6 +416,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "How to Make Procedural Game Sound Effects with Code (sfxr, Web Audio and Python)",
+    "seoTitle": "Procedural game SFX with code",
     "slug": "procedural-game-sound-effects-with-code",
     "description": "Make game sound effects with code: sfxr-style tools, Web Audio, Python and engine APIs, plus copyable prompts for jump, coin, hit and UI sounds.",
     "date": "2026-10-06",
@@ -444,6 +455,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "How to Prompt an LLM to Write Code That Generates Sound (Python and Web Audio)",
+    "seoTitle": "Prompt LLMs for synthesis code",
     "slug": "prompt-llm-to-write-audio-synthesis-code",
     "description": "How to get Claude or another LLM to write numpy/scipy or Web Audio code that renders sound effects with exact length, cue timing and loudness.",
     "date": "2026-10-06",
@@ -482,6 +494,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "Where to Find Royalty-Free Sound Effects and Music for TikTok, Reels and Shorts Ads",
+    "seoTitle": "Royalty-free SFX for Shorts ads",
     "slug": "royalty-free-sound-effects-and-music-for-tiktok-reels-shorts-ads",
     "description": "Where to get royalty-free music beds and sound effects for TikTok, Reels and Shorts ads, what the licenses allow, and how to cut beds to 6, 15 and 30 s.",
     "date": "2026-10-06",
@@ -524,6 +537,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "How to Make Seamless Ambient Loops and Meditation Sounds for Videos and Apps",
+    "seoTitle": "Seamless ambient & meditation",
     "slug": "seamless-ambient-loops-and-meditation-sounds",
     "description": "Click-free loop techniques (zero crossings, crossfades, circular rendering), calm meditation sound design, and looping in web and iOS apps.",
     "date": "2026-10-06",
@@ -562,6 +576,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "Synthwave and 8-Bit Music for Videos: What Makes the Sound and How to Make It",
+    "seoTitle": "Synthwave & 8-bit video music",
     "slug": "synthwave-and-8-bit-music-for-videos",
     "description": "The ingredients of synthwave and chiptune, gated reverb, and how to make retro cues, coin pickups and level-up sounds.",
     "date": "2026-10-06",
@@ -600,6 +615,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "What LUFS Should Video Be? Loudness, True Peak and Timing Basics for Video",
+    "seoTitle": "Video loudness: LUFS & peaks",
     "slug": "video-loudness-lufs-true-peak-and-timing-basics",
     "description": "What LUFS and true peak mean for video, why -14 LUFS and -1 dBTP are common targets, how to measure with ffmpeg, and how to sync cues to fps and BPM.",
     "date": "2026-10-06",
@@ -642,6 +658,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "Which AI Video Generators Make Their Own Audio? (And What to Do When They Don't)",
+    "seoTitle": "AI video tools that add audio",
     "slug": "which-ai-video-generators-make-their-own-audio",
     "description": "Which AI video generators create sound with the picture (Veo 3.1, Kling 3.0, Seedance 2.0), and how to add audio when your clip comes back silent.",
     "date": "2026-10-06",
@@ -680,6 +697,7 @@ export const ALL_BLOG_POSTS: BlogPost[] = [
   },
   {
     "title": "Whoosh, Riser and Transition Sound Effects: How to Use Them in Video Editing",
+    "seoTitle": "Whoosh & transition SFX guide",
     "slug": "whoosh-and-transition-sound-effects-for-video-editing",
     "description": "How to place whooshes, risers and impacts on cuts so transitions feel smooth, with frame timing tips, free sources and copyable prompts.",
     "date": "2026-10-06",

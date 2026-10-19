@@ -1,5 +1,6 @@
 ---
 title: "Where to Find Royalty-Free Sound Effects and Music for TikTok, Reels and Shorts Ads"
+seoTitle: "Royalty-free SFX for Shorts ads"
 slug: "royalty-free-sound-effects-and-music-for-tiktok-reels-shorts-ads"
 description: "Where to get royalty-free music beds and sound effects for TikTok, Reels and Shorts ads, what the licenses allow, and how to cut beds to 6, 15 and 30 s."
 date: "2026-10-06"

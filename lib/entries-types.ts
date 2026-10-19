@@ -2,6 +2,8 @@ export type SoundEntry = {
   id: string;
   slug: string;
   title: string;
+  /** Optional short `<title>` segment when the display title is too long for snippets. */
+  seoTitle?: string;
   category: string;
   tags: string[];
   /** Style facets for browse/filter display (e.g. upbeat, sad, bright). */

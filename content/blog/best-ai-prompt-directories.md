@@ -1,5 +1,6 @@
 ---
 title: "The Best Directories for AI Prompts and Assets in 2026"
+seoTitle: "Best AI prompt directories"
 slug: "best-ai-prompt-directories"
 description: "A practical list of AI prompt directories and asset libraries for code, images, video and sound, and how to judge whether a prompt is worth copying."
 date: "2026-10-06"

@@ -1,5 +1,6 @@
 ---
 title: "Glitch, Tape-Stop and Countdown Sound Effects: How They Work and How to Make Them"
+seoTitle: "Glitch, tape-stop & countdown SFX"
 slug: "glitch-tape-stop-and-countdown-sound-effects"
 description: "What tape-stop, glitch and countdown effects are, how to make them, and how to sync their cue moment to a cut."
 date: "2026-10-06"

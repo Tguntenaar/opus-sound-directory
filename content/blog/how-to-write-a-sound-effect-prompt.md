@@ -1,5 +1,6 @@
 ---
 title: "How to Write a Good Sound Effect Prompt (With UI and App Sound Examples)"
+seoTitle: "How to write a sound FX prompt"
 slug: "how-to-write-a-sound-effect-prompt"
 description: "A template for writing sound effect prompts that work, with copyable UI, notification and transition examples and the basics of UI sound design."
 date: "2026-10-06"

@@ -7,7 +7,7 @@ import { fitMetaDescription } from "@/lib/seo-limits";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 import { BlogAdvertiseLink } from "@/components/blog-advertise-link";
 
-const title = "Blog";
+const title = "Sound & video blog";
 const description = fitMetaDescription(
   "Notes on synthesised audio, sound-effect prompts, loudness, and workflows for AI video and apps.",
 );

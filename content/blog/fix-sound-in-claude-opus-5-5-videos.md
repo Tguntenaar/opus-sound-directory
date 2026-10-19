@@ -1,5 +1,6 @@
 ---
 title: "How to Fix the Sound in Claude Opus 5.5 Videos (Music, SFX, Voice and Loudness)"
+seoTitle: "Fix Opus 5.5 video sound"
 slug: "fix-sound-in-claude-opus-5-5-videos"
 description: "Why Opus 5.5 videos often sound generic, harsh or out of sync, and the fixes creators share: constrained music prompts, measured beats, voice-first timing."
 date: "2026-10-06"

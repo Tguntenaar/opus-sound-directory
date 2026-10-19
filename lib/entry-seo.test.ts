@@ -5,6 +5,7 @@ import { describe, it } from "node:test";
 import type { SoundEntry } from "./entries-types.ts";
 import { isEntryHidden } from "./entry-visibility.ts";
 import { entryMetaDescription, entryPageTitle } from "./entry-seo.ts";
+import { blogPageTitle } from "./blog-seo.ts";
 import { CATEGORY_SEO } from "./category-seo.ts";
 import { categoryPageDescription, categoryPageTitle } from "./category-seo-meta.ts";
 import {
@@ -12,10 +13,11 @@ import {
   DESC_MIN,
   TITLE_MAX,
   documentTitleFromSegment,
+  endsWithTruncationEllipsis,
+  fitMetaDescription,
 } from "./seo-limits.ts";
 import { SITE_NAME, DEFAULT_SITE_DESCRIPTION } from "./site-url.ts";
 import { ALL_BLOG_POSTS } from "./blog.generated.ts";
-import { fitMetaDescription, pickTitleSegment } from "./seo-limits.ts";
 
 const entriesDir = path.join(import.meta.dirname, "../content/entries");
 
@@ -27,6 +29,13 @@ function loadPublicCatalog(): SoundEntry[] {
     .filter((e) => !isEntryHidden(e));
 }
 
+function assertNoEllipsisTruncation(label: string, text: string) {
+  assert.ok(
+    !endsWithTruncationEllipsis(text),
+    `${label} ends with truncation ellipsis: ${text}`,
+  );
+}
+
 describe("entry SEO metadata", () => {
   it("keeps every public entry title and description within snippet limits", () => {
     for (const entry of loadPublicCatalog()) {
@@ -36,9 +45,12 @@ describe("entry SEO metadata", () => {
         docTitle.length <= TITLE_MAX,
         `${entry.slug} title ${docTitle.length}: ${docTitle}`,
       );
+      assertNoEllipsisTruncation(entry.slug, segment);
+      assertNoEllipsisTruncation(`${entry.slug} document`, docTitle);
       const desc = entryMetaDescription(entry);
       assert.ok(desc.length <= DESC_MAX, `${entry.slug} desc ${desc.length}`);
       assert.ok(desc.length >= DESC_MIN, `${entry.slug} desc ${desc.length}`);
+      assertNoEllipsisTruncation(`${entry.slug} description`, desc);
       assert.ok(desc.includes("Free"), entry.slug);
       assert.ok(desc.includes("CC0"), entry.slug);
     }
@@ -60,31 +72,42 @@ describe("entry SEO metadata", () => {
 });
 
 describe("blog SEO metadata", () => {
-  it("fits blog post titles and descriptions at render time", () => {
+  it("fits blog post titles and descriptions at render time without ellipsis", () => {
     for (const post of ALL_BLOG_POSTS.filter((p) => !p.draft)) {
-      const doc = documentTitleFromSegment(pickTitleSegment([post.title]), SITE_NAME);
+      const segment = blogPageTitle(post);
+      const doc = documentTitleFromSegment(segment, SITE_NAME);
       assert.ok(doc.length <= TITLE_MAX, `${post.slug} title ${doc.length}`);
+      assertNoEllipsisTruncation(post.slug, segment);
+      assertNoEllipsisTruncation(`${post.slug} document`, doc);
       const desc = fitMetaDescription(post.description);
       assert.ok(desc.length <= DESC_MAX, post.slug);
+      assertNoEllipsisTruncation(`${post.slug} description`, desc);
     }
   });
 });
 
 describe("site defaults", () => {
   it("fits the home page default description", () => {
+    assert.ok(DEFAULT_SITE_DESCRIPTION.includes("Claude Opus 5.5"));
+    assert.ok(DEFAULT_SITE_DESCRIPTION.length <= DESC_MAX);
     const desc = fitMetaDescription(DEFAULT_SITE_DESCRIPTION);
     assert.ok(desc.length <= DESC_MAX);
     assert.ok(desc.length >= DESC_MIN);
+    assertNoEllipsisTruncation("home description", desc);
   });
 });
 
 describe("category SEO metadata", () => {
-  it("fits category hub titles and intros", () => {
+  it("fits category hub titles and intros without ellipsis", () => {
     for (const seo of Object.values(CATEGORY_SEO)) {
-      const doc = documentTitleFromSegment(categoryPageTitle(seo), SITE_NAME);
+      const segment = categoryPageTitle(seo);
+      const doc = documentTitleFromSegment(segment, SITE_NAME);
       assert.ok(doc.length <= TITLE_MAX, `${seo.h1} → ${doc}`);
-      const desc = categoryPageDescription(seo.intro);
+      assertNoEllipsisTruncation(seo.h1, segment);
+      assertNoEllipsisTruncation(`${seo.h1} document`, doc);
+      const desc = categoryPageDescription(seo);
       assert.ok(desc.length <= DESC_MAX, seo.h1);
+      assertNoEllipsisTruncation(`${seo.h1} description`, desc);
     }
   });
 });

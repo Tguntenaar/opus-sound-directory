@@ -35,6 +35,19 @@ function stripTags(html) {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
 }
 
+/** Decode common HTML entities so length checks match visible snippet text. */
+function decodeHtmlEntities(str) {
+  return str
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCharCode(parseInt(h, 16)));
+}
+
 const TITLE_MIN = 30;
 const TITLE_MAX = 65;
 const DESC_MIN = 70;
@@ -203,8 +216,10 @@ async function auditPage(url) {
     return { title: "", description: "", html: text };
   }
 
-  const title = (text.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1] ?? "").trim();
-  const description = extractMeta(text, "description");
+  const title = decodeHtmlEntities(
+    (text.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1] ?? "").trim(),
+  );
+  const description = decodeHtmlEntities(extractMeta(text, "description"));
   const canonicals = extractLinkRel(text, "canonical");
   const h1Count = [...text.matchAll(/<h1[^>]*>/gi)].length;
 

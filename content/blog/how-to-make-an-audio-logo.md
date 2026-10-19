@@ -1,5 +1,6 @@
 ---
 title: "How to Make an Audio Logo (Sonic Logo) for Your Videos and App"
+seoTitle: "Make an audio logo (sonic logo)"
 slug: "how-to-make-an-audio-logo"
 description: "How to make an audio logo or sonic logo: length, notes, timbre, versions for video and app, and copyable prompts to generate a logo sting with code."
 date: "2026-10-06"
