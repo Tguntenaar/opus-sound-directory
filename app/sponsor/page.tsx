@@ -3,11 +3,13 @@ import { Suspense } from "react";
 import { SponsorInterestForm } from "@/components/sponsor-interest-form";
 import { SPONSOR_PACKAGES } from "@/lib/sponsor-packages";
 import { canonicalForPath } from "@/lib/site-metadata";
+import { fitMetaDescription } from "@/lib/seo-limits";
 import { DEFAULT_OG_IMAGE, SITE_NAME } from "@/lib/site-url";
 
 const title = "Sponsor";
-const description =
-  "Featured placements and brand partnerships on the Opus Sounds Directory — homepage slots, category takeovers, and model packs.";
+const description = fitMetaDescription(
+  "Featured placements and brand partnerships on the Opus Sounds Directory — homepage slots, category takeovers, and model packs.",
+);
 
 export const metadata: Metadata = {
   title,
