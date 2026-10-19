@@ -1,5 +1,6 @@
 ---
 title: "How to Prompt an LLM to Write Code That Generates Sound (Python and Web Audio)"
+seoTitle: "Prompt LLMs for synthesis code"
 slug: "prompt-llm-to-write-audio-synthesis-code"
 description: "How to get Claude or another LLM to write numpy/scipy or Web Audio code that renders sound effects with exact length, cue timing and loudness."
 date: "2026-10-06"

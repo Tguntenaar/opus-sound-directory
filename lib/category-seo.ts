@@ -4,7 +4,11 @@ export type CategoryFaq = { q: string; a: string };
 
 export type CategorySeoContent = {
   h1: string;
+  /** Optional short `<title>` segment when `h1` is too long for snippets. */
+  titleSegment?: string;
   intro: string;
+  /** Shorter meta description when `intro` exceeds snippet limits. */
+  introShort?: string;
   faq: CategoryFaq[];
 };
 
@@ -201,6 +205,7 @@ export const CATEGORY_SEO: Record<string, CategorySeoContent> = {
   },
   "retro-tech": {
     h1: "Free Retro Tech Sounds: Dial-Up Modem & More",
+    titleSegment: "Free retro tech & modem sounds",
     intro:
       "Nostalgic machine sounds rebuilt from the protocols up — dial tones, DTMF and a full 56k modem handshake, all synthesised in code.",
     faq: [
@@ -222,6 +227,8 @@ export const CATEGORY_SEO: Record<string, CategorySeoContent> = {
     h1: "Free Guitar Licks, Loops & Stings",
     intro:
       "Expressive guitar sounds built entirely in code — clean neo-soul licks, singing blues bends, fingerstyle acoustic loops and funk rhythm grooves, every string modelled from scratch.",
+    introShort:
+      "Free guitar licks, loops and stings built in Python — neo-soul, blues bends, fingerstyle acoustic and funk grooves. CC0 WAV/MP3 with prompts.",
     faq: [
       {
         q: "Are these guitar recordings or samples?",

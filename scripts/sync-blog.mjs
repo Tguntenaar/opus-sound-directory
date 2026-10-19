@@ -38,6 +38,9 @@ const posts = files.map((f) => {
   const slug = String(data.slug ?? f.replace(/\.md$/, ""));
   return {
     title: String(data.title ?? slug),
+    ...(data.seoTitle != null && String(data.seoTitle).trim()
+      ? { seoTitle: String(data.seoTitle).trim() }
+      : {}),
     slug,
     description: String(data.description ?? ""),
     date: String(data.date ?? ""),

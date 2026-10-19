@@ -1,5 +1,6 @@
 ---
 title: "How to Add Sound Effects and Music to AI-Generated Videos"
+seoTitle: "SFX and music for AI video"
 slug: "how-to-add-sound-and-music-to-ai-generated-videos"
 description: "A step-by-step workflow for adding music beds, sound effects and transitions to AI-generated video, with copyable sound prompts and loudness targets."
 date: "2026-10-06"

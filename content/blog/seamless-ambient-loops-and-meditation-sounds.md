@@ -1,5 +1,6 @@
 ---
 title: "How to Make Seamless Ambient Loops and Meditation Sounds for Videos and Apps"
+seoTitle: "Seamless ambient & meditation"
 slug: "seamless-ambient-loops-and-meditation-sounds"
 description: "Click-free loop techniques (zero crossings, crossfades, circular rendering), calm meditation sound design, and looping in web and iOS apps."
 date: "2026-10-06"

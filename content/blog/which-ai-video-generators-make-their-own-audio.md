@@ -1,5 +1,6 @@
 ---
 title: "Which AI Video Generators Make Their Own Audio? (And What to Do When They Don't)"
+seoTitle: "AI video tools that add audio"
 slug: "which-ai-video-generators-make-their-own-audio"
 description: "Which AI video generators create sound with the picture (Veo 3.1, Kling 3.0, Seedance 2.0), and how to add audio when your clip comes back silent."
 date: "2026-10-06"

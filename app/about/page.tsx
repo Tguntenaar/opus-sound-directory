@@ -18,7 +18,7 @@ import { IconTooltip } from "@/components/icon-tooltip";
 import { OwnerProfileLinks } from "@/components/owner-profile-links";
 import { cn } from "@/lib/utils";
 
-const title = "About";
+const title = "About this directory";
 
 export const metadata: Metadata = {
   title,

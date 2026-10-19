@@ -1,5 +1,6 @@
 ---
 title: "What LUFS Should Video Be? Loudness, True Peak and Timing Basics for Video"
+seoTitle: "Video loudness: LUFS & peaks"
 slug: "video-loudness-lufs-true-peak-and-timing-basics"
 description: "What LUFS and true peak mean for video, why -14 LUFS and -1 dBTP are common targets, how to measure with ffmpeg, and how to sync cues to fps and BPM."
 date: "2026-10-06"

@@ -1,5 +1,6 @@
 ---
 title: "Horror and Tension Sound Effects: Heartbeats, Braams and Silence"
+seoTitle: "Horror & tension sound effects"
 slug: "horror-and-tension-sound-effects"
 description: "How accelerating heartbeats, risers, braams and sudden silence build and pay off tension, with frame-timed prompts."
 date: "2026-10-06"

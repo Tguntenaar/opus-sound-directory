@@ -21,6 +21,12 @@ export function maxTitleSegmentLength(siteName = SITE_NAME): number {
   return TITLE_MAX - titleSuffix(siteName).length;
 }
 
+/** True when text was shortened with an ellipsis marker (Unicode or ASCII). */
+export function endsWithTruncationEllipsis(text: string): boolean {
+  const t = text.trimEnd();
+  return t.endsWith("…") || t.endsWith("...");
+}
+
 export function truncateAtWordBoundary(text: string, maxLen: number, ellipsis = "…"): string {
   const trimmed = text.trim();
   if (trimmed.length <= maxLen) return trimmed;

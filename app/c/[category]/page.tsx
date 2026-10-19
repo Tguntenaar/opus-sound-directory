@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const seo = getCategorySeo(category)!;
   const path = `/c/${category}`;
   const title = categoryPageTitle(seo);
-  const description = categoryPageDescription(seo.intro);
+  const description = categoryPageDescription(seo);
   return {
     title,
     description,

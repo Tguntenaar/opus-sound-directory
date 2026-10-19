@@ -1,5 +1,6 @@
 ---
 title: "Whoosh, Riser and Transition Sound Effects: How to Use Them in Video Editing"
+seoTitle: "Whoosh & transition SFX guide"
 slug: "whoosh-and-transition-sound-effects-for-video-editing"
 description: "How to place whooshes, risers and impacts on cuts so transitions feel smooth, with frame timing tips, free sources and copyable prompts."
 date: "2026-10-06"

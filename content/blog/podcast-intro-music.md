@@ -1,5 +1,6 @@
 ---
 title: "How Long Should a Podcast Intro Be? How to Make Podcast Intro Music"
+seoTitle: "Podcast intro length & music"
 slug: "podcast-intro-music"
 description: "Intro length, planning a theme in bars so it ends on time, licensed sources, and Apple's -16 LKFS loudness guidance."
 date: "2026-10-06"

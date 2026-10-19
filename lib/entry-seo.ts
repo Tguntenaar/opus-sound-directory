@@ -68,16 +68,17 @@ export function entryPageTitle(entry: SoundEntry): string {
   const noun = categoryNoun(entry.category);
   const shortNoun = shortCategoryNoun(entry.category);
   const title = entry.title;
+  const custom = entry.seoTitle?.trim();
   const variants = [
+    ...(custom ? [custom] : []),
     `${title} — Free ${noun} (WAV, MP3, CC0)`,
     `${title} — Free ${noun} (CC0)`,
     `${title} — Free ${noun}`,
     `${title} — Free ${shortNoun} (CC0)`,
     `${title} — Free ${shortNoun}`,
+    title,
   ];
-  const segment = pickTitleSegment(variants);
-  if (segment.length > 0) return segment;
-  return pickTitleSegment([`${title} — Free ${shortNoun}`]);
+  return pickTitleSegment(variants);
 }
 
 export function entryMetaDescription(entry: SoundEntry): string {
